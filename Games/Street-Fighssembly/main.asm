@@ -1,20 +1,39 @@
 org 100h
 
 ; -----------------------------------------------
-; We declare some initialized data.
 section .data
-    hello db 'Hello, World!$'   ; DOS printable string must be terminated by a dollar sign.
+    color db 0x28
+    xpos dw 10
+    ypos dw 10
 
 ; -----------------------------------------------
-; This section host code.
 section .text
+    ; set video mode
+    mov ax, 13h
+    int 10h
+    jmp cyclePixelTest
 
-    ; Print the message to the screen
-    mov ah, 9       ; AH=9 means "print string" function
-    mov dx, hello   ; Load the offset address of 'hello' into DX
-    int 21h         ; Call the DOS interrupt 21h to execute the function
+; -----------------------------------------------
+; Set a pixel value.
+;   ax = x position
+;   bl = y position
+;   bh = palette index
+setPixelValue:
+    mov cx, 320
+    mul cx
+    mov cl, bh
+    xor bh, bh
+    add ax, bx
+    mov di, ax
+    mov bx, 0a000h
+    mov es, bx
+    mov [es:di] ,cl
+    ret
 
-    ; Exit the program
-    mov ah, 4Ch     ; AH=4Ch means "exit" function
-    xor al, al      ; Set AL to 0 (return code)
-    int 21h         ; Call the DOS interrupt 21h to exit the program
+; -----------------------------------------------
+cyclePixelTest:
+    mov ax, [xpos]  ; x
+    mov bl, [ypos]  ; y
+    mov bh, [color]  ; color
+    call setPixelValue
+    jmp cyclePixelTest
