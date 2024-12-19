@@ -1,12 +1,15 @@
 org 100h
 
-; -----------------------------------------------
-section .data
-    color db 0x28
-    xpos dw 10
-    ypos dw 10
 
-; -----------------------------------------------
+section .data
+    color_1 db 0x28
+    x_pos_1 dw 10
+    y_pos_1 dw 10
+
+    color_2 db 0x2F
+    x_pos_2 dw 20
+    y_pos_2 dw 20
+
 section .text
     ; set video mode
     mov ax, 13h
@@ -33,13 +36,17 @@ setPixelValue:
 ; -----------------------------------------------
 cyclePixelTest:
     call clearScreen
-    mov bl, [xpos]  ; x
-    mov ax, [ypos]  ; y
-    mov bh, [color]  ; color
+    mov bl, [x_pos_1]  ; x
+    mov ax, [y_pos_1]  ; y
+    mov bh, [color_1]  ; color
+    call setPixelValue
+    mov bl, [x_pos_2]  ; x
+    mov ax, [y_pos_2]  ; y
+    mov bh, [color_2]  ; color
     call setPixelValue
     jmp readKeyboard
 
-; CLEAR SCREEN ---------------------------------------------------------
+; ---------------------------------------------------------
 clearScreen:
     mov ax, 0xA000
     mov es, ax
