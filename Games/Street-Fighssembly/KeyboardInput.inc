@@ -23,13 +23,13 @@ section .text
         int 16h
 
         cmp ah, LEFT_ARROW
-        je left1
+        je checkCollisionLeft1
         cmp ah, RIGHT_ARROW
-        je right1
+        je checkCollisionRight1
         cmp ah, UP_ARROW 
-        je up1
+        je checkCollisionTop1
         cmp ah, DOWN_ARROW
-        je down1
+        je checkCollisionDown1
 
         cmp ah, A_KEY
         je left2
@@ -42,6 +42,24 @@ section .text
 
         cmp ah, ESCAPE_KEY
         je exitProgram
+        jmp cyclePixelTest
+
+    ; ------------------------
+    checkCollisionTop1:
+        cmp byte [y_pos_1], WINDOW_TOP_BORDER
+        jg up1
+        jmp cyclePixelTest
+    checkCollisionLeft1:
+        cmp byte [x_pos_1], WINDOW_LEFT_BORDER
+        jg left1
+        jmp cyclePixelTest
+    checkCollisionRight1:
+        cmp byte [x_pos_1], WINDOW_RIGHT_BORDER
+        jl right1
+        jmp cyclePixelTest
+    checkCollisionDown1:
+        cmp byte [y_pos_1], WINDOW_DOWN_BORDER
+        jl down1
         jmp cyclePixelTest
 
     ; ------------------------

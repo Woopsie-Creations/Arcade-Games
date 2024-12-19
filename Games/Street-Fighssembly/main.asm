@@ -10,6 +10,11 @@ section .data
     x_pos_2 dw 20
     y_pos_2 dw 20
 
+    %define WINDOW_TOP_BORDER 0
+    %define WINDOW_LEFT_BORDER 0
+    %define WINDOW_RIGHT_BORDER 320
+    %define WINDOW_DOWN_BORDER 200
+
 section .text
     ; set video mode
     mov ax, 13h
