@@ -23,13 +23,13 @@ section .text
         int 16h
 
         cmp ah, LEFT_ARROW
-        je checkCollisionLeft1
+        je left1
         cmp ah, RIGHT_ARROW
-        je checkCollisionRight1
+        je right1
         cmp ah, UP_ARROW 
-        je checkCollisionTop1
+        je up1
         cmp ah, DOWN_ARROW
-        je checkCollisionDown1
+        je down1
 
         cmp ah, A_KEY
         je left2
@@ -45,52 +45,50 @@ section .text
         jmp cyclePixelTest
 
     ; ------------------------
-    checkCollisionTop1:
-        cmp byte [y_pos_1], WINDOW_TOP_BORDER
-        jg up1
-        jmp cyclePixelTest
-    checkCollisionLeft1:
-        cmp byte [x_pos_1], WINDOW_LEFT_BORDER
-        jg left1
-        jmp cyclePixelTest
-    checkCollisionRight1:
-        cmp byte [x_pos_1], WINDOW_RIGHT_BORDER
-        jl right1
-        jmp cyclePixelTest
-    checkCollisionDown1:
-        cmp byte [y_pos_1], WINDOW_DOWN_BORDER
-        jl down1
-        jmp cyclePixelTest
-
-    ; ------------------------
     up1:
-        sub byte [y_pos_1], 10
+        cmp word [y_pos_1], WINDOW_TOP_BORDER 
+        jle cyclePixelTest ; jump if collision
+        sub word [y_pos_1], 10
         jmp cyclePixelTest
     
     left1:
-        sub byte [x_pos_1], 10
+        cmp word [x_pos_1], WINDOW_LEFT_BORDER
+        jle cyclePixelTest ; jump if collision
+        sub word [x_pos_1], 10
         jmp cyclePixelTest
     
     right1:
-        add byte [x_pos_1], 10
+        cmp word [x_pos_1], WINDOW_RIGHT_BORDER
+        jge cyclePixelTest ; jump if collision
+        add word [x_pos_1], 10
         jmp cyclePixelTest
     
     down1:
-        add byte [y_pos_1], 10
+        cmp word [y_pos_1], WINDOW_DOWN_BORDER
+        jge cyclePixelTest ; jump if collision
+        add word [y_pos_1], 10
         jmp cyclePixelTest
 
     up2:
-        sub byte [y_pos_2], 10
+        cmp word [y_pos_2], WINDOW_TOP_BORDER
+        jle cyclePixelTest ; jump if collision
+        sub word [y_pos_2], 10
         jmp cyclePixelTest
     
     left2:
-        sub byte [x_pos_2], 10
+        cmp word [x_pos_2], WINDOW_LEFT_BORDER
+        jle cyclePixelTest ; jump if collision
+        sub word [x_pos_2], 10
         jmp cyclePixelTest
     
     right2:
-        add byte [x_pos_2], 10
+        cmp word [x_pos_2], WINDOW_RIGHT_BORDER
+        jge cyclePixelTest ; jump if collision
+        add word [x_pos_2], 10
         jmp cyclePixelTest
     
     down2:
-        add byte [y_pos_2], 10
+        cmp word [y_pos_2], WINDOW_DOWN_BORDER
+        jge cyclePixelTest ; jump if collision
+        add word [y_pos_2], 10
         jmp cyclePixelTest
