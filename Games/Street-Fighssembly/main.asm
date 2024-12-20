@@ -10,10 +10,10 @@ section .data
     x_pos_2 dw 20
     y_pos_2 dw 20
 
-    %define WINDOW_TOP_BORDER 0
-    %define WINDOW_LEFT_BORDER 0
-    %define WINDOW_RIGHT_BORDER 320
-    %define WINDOW_DOWN_BORDER 200
+    %define WINDOW_TOP_BORDER 10
+    %define WINDOW_LEFT_BORDER 10
+    %define WINDOW_RIGHT_BORDER 310
+    %define WINDOW_DOWN_BORDER 190
 
 section .text
     ; set video mode
@@ -23,31 +23,29 @@ section .text
 
 ; -----------------------------------------------
 ; Set a pixel value.
-;   bl = x position
+;   bx = x position
 ;   ax = y position
-;   bh = palette index
+;   cx = palette index
 setPixelValue:
-    mov cx, 320
-    mul cx
-    mov cl, bh
-    xor bh, bh
+    mov dx, 320
+    mul dx
     add ax, bx
     mov di, ax
     mov bx, 0a000h
     mov es, bx
-    mov [es:di] ,cl
+    mov [es:di], cl
     ret
 
 ; -----------------------------------------------
 cyclePixelTest:
     call clearScreen
-    mov bl, [x_pos_1]  ; x
+    mov bx, [x_pos_1]  ; x
     mov ax, [y_pos_1]  ; y
-    mov bh, [color_1]  ; color
+    mov cl, [color_1]  ; color
     call setPixelValue
-    mov bl, [x_pos_2]  ; x
+    mov bx, [x_pos_2]  ; x
     mov ax, [y_pos_2]  ; y
-    mov bh, [color_2]  ; color
+    mov cl, [color_2]  ; color
     call setPixelValue
     jmp readKeyboard
 
