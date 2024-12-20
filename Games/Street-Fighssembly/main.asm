@@ -18,8 +18,8 @@ org 100h
 
 section .data
     color_1 db 0x28
-    x_pos_1 dw 10
-    y_pos_1 dw 10
+    x_pos_1 dw 30
+    y_pos_1 dw 30
 
     color_2 db 0x2F
     x_pos_2 dw 20
@@ -30,13 +30,12 @@ section .data
     %define WINDOW_RIGHT_BORDER 310
     %define WINDOW_DOWN_BORDER 190
 
-    delay_waitloop dw 1000
+    delay_waitloop dw 2000
 
 section .text
     ; set video mode
     mov ax, 13h
     int 10h
-    call clearScreen
     jmp init
 
 ; -----------------------------------------------
@@ -56,11 +55,12 @@ drawPixel:
 
 ; -----------------------------------------------
 init:
+    call clearScreen
     setPixelPosition [x_pos_1], [y_pos_1], [color_1]
     setPixelPosition [x_pos_2], [y_pos_2], [color_2]
 
 gameLoop:
-    ; call applyGravity
+    call applyGravity
     jmp readKeyboard
 
 ; ---------------------------------------------------------

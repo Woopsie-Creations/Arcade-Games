@@ -20,6 +20,8 @@ section .text
     readKeyboard:
         mov cx, [delay_waitloop]
         call waitLoop
+        call waitLoop
+        call waitLoop
         xor cx, cx
         
         ; is key pressed ?
@@ -37,8 +39,8 @@ section .text
         je right1
         cmp ah, UP_ARROW 
         je up1
-        cmp ah, DOWN_ARROW
-        je down1
+        ; cmp ah, DOWN_ARROW
+        ; je down1
 
         ; second player
         cmp ah, A_KEY
@@ -57,15 +59,16 @@ section .text
     ; ------------------------
     up1:
         cmp word [y_pos_1], WINDOW_TOP_BORDER 
-        jle gameLoop ; jump if collision
-        clearOldPosition [x_pos_1], [y_pos_1]
-        sub word [y_pos_1], 10
-        setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+        jle gameLoop ; skip if collision
+        cmp word [y_pos_1], WINDOW_DOWN_BORDER
+        jl gameLoop ; skip if in the air
+        mov byte [jumping_1], 1
+        mov word [y_velocity_1], 10
         jmp gameLoop
     
     left1:
         cmp word [x_pos_1], WINDOW_LEFT_BORDER
-        jle gameLoop ; jump if collision
+        jle gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         sub word [x_pos_1], 10
         setPixelPosition [x_pos_1], [y_pos_1], [color_1]
@@ -73,23 +76,23 @@ section .text
     
     right1:
         cmp word [x_pos_1], WINDOW_RIGHT_BORDER
-        jge gameLoop ; jump if collision
+        jge gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         add word [x_pos_1], 10
         setPixelPosition [x_pos_1], [y_pos_1], [color_1]
         jmp gameLoop
     
-    down1:
-        cmp word [y_pos_1], WINDOW_DOWN_BORDER
-        jge gameLoop ; jump if collision
-        clearOldPosition [x_pos_1], [y_pos_1]
-        add word [y_pos_1], 10
-        setPixelPosition [x_pos_1], [y_pos_1], [color_1]
-        jmp gameLoop
+    ; down1:
+    ;     cmp word [y_pos_1], WINDOW_DOWN_BORDER
+    ;     je gameLoop ; skip if collision
+    ;     clearOldPosition [x_pos_1], [y_pos_1]
+    ;     add word [y_pos_1], 10
+    ;     setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+    ;     jmp gameLoop
 
     up2:
         cmp word [y_pos_2], WINDOW_TOP_BORDER
-        jle gameLoop ; jump if collision
+        jle gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         sub word [y_pos_2], 10
         setPixelPosition [x_pos_2], [y_pos_2], [color_2]
@@ -97,7 +100,7 @@ section .text
     
     left2:
         cmp word [x_pos_2], WINDOW_LEFT_BORDER
-        jle gameLoop ; jump if collision
+        jle gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         sub word [x_pos_2], 10
         setPixelPosition [x_pos_2], [y_pos_2], [color_2]
@@ -105,7 +108,7 @@ section .text
     
     right2:
         cmp word [x_pos_2], WINDOW_RIGHT_BORDER
-        jge gameLoop ; jump if collision
+        jge gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         add word [x_pos_2], 10
         setPixelPosition [x_pos_2], [y_pos_2], [color_2]
@@ -113,8 +116,11 @@ section .text
     
     down2:
         cmp word [y_pos_2], WINDOW_DOWN_BORDER
-        jge gameLoop ; jump if collision
+        jge gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         add word [y_pos_2], 10
         setPixelPosition [x_pos_2], [y_pos_2], [color_2]
         jmp gameLoop
+
+
+    ; ------------------------
