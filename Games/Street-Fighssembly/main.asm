@@ -1,6 +1,21 @@
 org 100h
 
 
+%macro setPixelPosition 3
+    mov bx, %1  ; x
+    mov ax, %2  ; y
+    mov cl, %3  ; color
+    call drawPixel
+%endmacro
+
+%macro clearOldPosition 2
+    mov bx, %1  ; x
+    mov ax, %2  ; y
+    mov cl, 00h  ; color
+    call drawPixel
+%endmacro
+
+
 section .data
     color_1 db 0x28
     x_pos_1 dw 10
@@ -15,18 +30,21 @@ section .data
     %define WINDOW_RIGHT_BORDER 310
     %define WINDOW_DOWN_BORDER 190
 
+    delay_waitloop dw 1000
+
 section .text
     ; set video mode
     mov ax, 13h
     int 10h
-    jmp cyclePixelTest
+    call clearScreen
+    jmp init
 
 ; -----------------------------------------------
 ; Set a pixel value.
 ;   bx = x position
 ;   ax = y position
 ;   cx = palette index
-setPixelValue:
+drawPixel:
     mov dx, 320
     mul dx
     add ax, bx
@@ -37,16 +55,12 @@ setPixelValue:
     ret
 
 ; -----------------------------------------------
-cyclePixelTest:
-    call clearScreen
-    mov bx, [x_pos_1]  ; x
-    mov ax, [y_pos_1]  ; y
-    mov cl, [color_1]  ; color
-    call setPixelValue
-    mov bx, [x_pos_2]  ; x
-    mov ax, [y_pos_2]  ; y
-    mov cl, [color_2]  ; color
-    call setPixelValue
+init:
+    setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+    setPixelPosition [x_pos_2], [y_pos_2], [color_2]
+
+gameLoop:
+    ; call applyGravity
     jmp readKeyboard
 
 ; ---------------------------------------------------------
@@ -58,6 +72,10 @@ clearScreen:
     rep stosb
     ret
 
+waitLoop:
+    loop waitLoop
+    ret
+
 exitProgram:
     mov ah, 4Ch
     xor al, al
@@ -65,3 +83,4 @@ exitProgram:
 
 
 %include "KeyboardInput.inc"
+%include "Physic.inc"
