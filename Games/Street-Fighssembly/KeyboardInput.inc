@@ -65,6 +65,7 @@ section .text
         jl gameLoop ; skip if in the air
         mov byte [jumping_1], 1
         mov word [y_velocity_1], 10
+        setPixelPosition [x_pos_1], [y_pos_1], [color_1]
         jmp gameLoop
     
     left1:
@@ -99,6 +100,7 @@ section .text
         jl gameLoop ; skip if in the air
         mov byte [jumping_2], 1
         mov word [y_velocity_2], 10
+        setPixelPosition [x_pos_2], [y_pos_2], [color_2]
         jmp gameLoop
     
     left2:

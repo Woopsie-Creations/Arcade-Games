@@ -60,7 +60,8 @@ init:
     setPixelPosition [x_pos_2], [y_pos_2], [color_2]
 
 gameLoop:
-    call applyGravity
+    call applyGravity1
+    call applyGravity2
     jmp readKeyboard
 
 ; ---------------------------------------------------------
