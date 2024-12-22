@@ -6,13 +6,17 @@
 section .data
     gravity db 2
 
-    jumping_1 db 0
-    x_velocity_1 dw 0
-    y_velocity_1 dw 0
+section .bss
+    ; the .bss section will create uninitialized data
+    ; - we only reserve the amount of data of a variable we could attribute it (resb = reserve byte, resw = reserve word)
+    ; - 0 is attributed to those variables as soon as the program runs
+    jumping_1: resb 1
+    x_velocity_1: resw 1
+    y_velocity_1: resw 1
 
-    jumping_2 db 0
-    x_velocity_2 dw 0
-    y_velocity_2 dw 0
+    jumping_2: resb 1
+    x_velocity_2: resw 1
+    y_velocity_2: resw 1
 
 section .text 
     applyGravity1:

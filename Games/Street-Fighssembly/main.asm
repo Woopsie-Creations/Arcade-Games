@@ -28,14 +28,7 @@ org 100h
 
 
 section .data
-    color_1 db 0x28
-    x_pos_1 dw 30
-    y_pos_1 dw 30
-
-    color_2 db 0x2F
-    x_pos_2 dw 100
-    y_pos_2 dw 20
-
+    ; constant initialization
     %define WINDOW_TOP_BORDER 10
     %define WINDOW_LEFT_BORDER 10
     %define WINDOW_RIGHT_BORDER 310
@@ -43,9 +36,21 @@ section .data
 
     delay_waitloop dw 2000
 
+    %define INIT_X_POS_1 11
+    %define INIT_X_POS_2 240
+    %define INIT_Y_POS_1 100
+    %define INIT_Y_POS_2 100
+
     %define SPRITE_WIDTH 64
     %define SPRITE_HEIGHT 92
     backgroundSpriteData db 64 * 92 dup(00h)
+
+section .bss
+    x_pos_1: resw 1
+    y_pos_1: resw 1
+
+    x_pos_2: resw 1
+    y_pos_2: resw 1
 
 section .text
     ; set video mode
@@ -57,6 +62,7 @@ section .text
 ; -----------------------------------------------
 init:
     call clearScreen
+    call positionSetup
     setPixelPosition [x_pos_1], [y_pos_1]
     setPixelPosition [x_pos_2], [y_pos_2]
 
@@ -72,6 +78,14 @@ eachLine:
     add di, 320 - SPRITE_WIDTH
     dec dx
     jnz eachLine
+    ret
+
+; -------------------
+positionSetup:
+    mov word [x_pos_1], INIT_X_POS_1
+    mov word [x_pos_2], INIT_X_POS_2
+    mov word [y_pos_1], INIT_Y_POS_1
+    mov word [y_pos_2], INIT_Y_POS_2
     ret
 
 ; ---------------------------------------------------------
