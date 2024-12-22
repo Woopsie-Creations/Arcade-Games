@@ -58,14 +58,12 @@ section .text
 
     ; ------------------------
     up1:
-        clearOldPosition [x_pos_1], [y_pos_1]
         mov ax, [y_pos_1]
         add ax, SPRITE_HEIGHT
         cmp ax, WINDOW_DOWN_BORDER
         jl gameLoop ; skip if in the air
         mov byte [jumping_1], 1
-        mov word [y_velocity_1], 10
-        setPixelPosition [x_pos_1], [y_pos_1]
+        mov word [y_velocity_1], 14
         jmp gameLoop
     
     left1:
@@ -95,14 +93,12 @@ section .text
         jmp gameLoop
 
     up2:
-        clearOldPosition [x_pos_2], [y_pos_2]
         mov ax, [y_pos_2]
         add ax, SPRITE_HEIGHT
         cmp ax, WINDOW_DOWN_BORDER
         jl gameLoop ; skip if in the air
         mov byte [jumping_2], 1
-        mov word [y_velocity_2], 10
-        setPixelPosition [x_pos_2], [y_pos_2]
+        mov word [y_velocity_2], 14
         jmp gameLoop
     
     left2:

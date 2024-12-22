@@ -4,115 +4,98 @@
 ; --------------------------------------------------
 
 section .data
-    gravity db 10
+    gravity db 2
 
     jumping_1 db 0
-    jumping_2 db 0
     x_velocity_1 dw 0
     y_velocity_1 dw 0
 
+    jumping_2 db 0
     x_velocity_2 dw 0
     y_velocity_2 dw 0
 
-    %define JUMP_HEIGHT 40
-
 section .text 
     applyGravity1:
-        xor ax, ax 
+        xor ax, ax
 
-        ; gravity for player 1
-        clearOldPosition [x_pos_1], [y_pos_1]
-        mov ax, [gravity]
-        cmp byte [jumping_1], 1
-        jne .fall1 ; if jumping, apply jump velocity. if not, jump to fall velocity
+        cmp byte [jumping_1], 0
+        je .fall1
         cmp word [y_velocity_1], 0
-        jle .fall1 
-        jmp .jumpLoop1 ; if the player's jumping and his velocity > 0, then he jumps
-        
-        .fall1: ; falling
-            mov word bx, [y_pos_1] 
-            add word bx, SPRITE_HEIGHT
-            cmp word bx, WINDOW_DOWN_BORDER ; can gravity be applied ?
-            jg .repositionPlayer1
-            je .skipApplyGravityPlayer1
-            add word [y_pos_1], ax
-            jmp .skipApplyGravityPlayer1
-        
-        .repositionPlayer1: ; avoid player going outside of the box (I don't like overflow :))
+        jle .fall1  ; if jumping and still going up, apply jump physic
+        ; apply jump physic
+        clearOldPosition [x_pos_1], [y_pos_1]   
+        mov ax, [gravity]
+        mov cx, [y_pos_1]
+        sub cx, [y_velocity_1]                  
+        mov word [y_pos_1], cx
+        sub word [y_velocity_1], ax
+        setPixelPosition [x_pos_1], [y_pos_1]
+        jmp .endApplyGravityPlayer1
+
+        .fall1:
+            mov ax, [y_pos_1]
+            add ax, SPRITE_HEIGHT
+            cmp ax, WINDOW_DOWN_BORDER ; verify if the player isn't out of border or on the border, if yes :
+            jg .repositionPlayer1                                                                 ;     - reposition the player
+            je .endApplyGravityPlayer1                                                            ;     - skip the gravity
+            ; apply fall physic
             clearOldPosition [x_pos_1], [y_pos_1]
-            mov ax, WINDOW_DOWN_BORDER
-            sub ax, SPRITE_HEIGHT
-            mov word [y_pos_1], ax
+            mov ax, [gravity]
+            mov cx, [y_pos_1]
+            add cx, [y_velocity_1]
+            mov word [y_pos_1], cx
+            add word [y_velocity_1], ax
             mov byte [jumping_1], 0
-            jmp .skipApplyGravityPlayer1
-
-        .jumpLoop1:
-            ; checks if the player is at his jump peak
-            ; - if yes, he ain't jumping anymore
-            ; - if no, his y_pos decreases
-            cmp word [y_velocity_1], JUMP_HEIGHT
-            jge .jmpReset1
-            mov ax, [y_velocity_1]
-            sub word [y_pos_1], ax
-            add word [y_velocity_1], 10
-            jmp .skipApplyGravityPlayer1
-
-        .jmpReset1:
-            ; resets the jump variable to apply gravity
-            mov byte [jumping_1], 0
-            jmp .skipApplyGravityPlayer1
-
-        .skipApplyGravityPlayer1:
             setPixelPosition [x_pos_1], [y_pos_1]
-        
+            jmp .endApplyGravityPlayer1
+
+        .repositionPlayer1: ; reposition the player 
+            clearOldPosition [x_pos_1], [y_pos_1]
+            mov word [y_pos_1], WINDOW_DOWN_BORDER - SPRITE_HEIGHT
+            mov byte [jumping_1], 0
+            setPixelPosition [x_pos_1], [y_pos_1]
+        .endApplyGravityPlayer1:
         ret
 
     applyGravity2:
-        xor ax, ax 
+        xor ax, ax
 
-        ; gravity for player 2
-        clearOldPosition [x_pos_2], [y_pos_2]
-        mov ax, [gravity]
-        cmp byte [jumping_2], 1
-        jne .fall2 ; if jumping, apply jump velocity. if not, jump to fall velocity
+        cmp byte [jumping_2], 0
+        je .fall2
         cmp word [y_velocity_2], 0
-        jle .fall2 
-        jmp .jumpLoop2 ; if the player's jumping and his velocity > 0, then he jumps
-        
-        .fall2: ; falling
-            mov word bx, [y_pos_2] 
-            add word bx, SPRITE_HEIGHT
-            cmp word bx, WINDOW_DOWN_BORDER ; can gravity be applied ?
-            jg .repositionPlayer2
-            je .skipApplyGravityPlayer2
-            add word [y_pos_2], ax
-            jmp .skipApplyGravityPlayer2
-        
-        .repositionPlayer2: ; avoid player going outside of the box (I don't like overflow :))
+        jle .fall2  ; if jumping and still going up, apply jump physic
+        ; apply jump physic
+        clearOldPosition [x_pos_2], [y_pos_2]   
+        mov ax, [gravity]
+        mov cx, [y_pos_2]
+        sub cx, [y_velocity_2]                  
+        mov word [y_pos_2], cx
+        sub word [y_velocity_2], ax
+        setPixelPosition [x_pos_2], [y_pos_2]
+        jmp .endApplyGravityPlayer2
+
+        .fall2:
+            mov ax, [y_pos_2]
+            add ax, SPRITE_HEIGHT
+            cmp ax, WINDOW_DOWN_BORDER ; verify if the player isn't out of border or on the border, if yes :
+            jg .repositionPlayer2                                                                 ;     - reposition the player
+            je .endApplyGravityPlayer2                                                            ;     - skip the gravity
+            ; apply fall physic
             clearOldPosition [x_pos_2], [y_pos_2]
-            mov ax, WINDOW_DOWN_BORDER
-            sub ax, SPRITE_HEIGHT
-            mov word [y_pos_2], ax
+            mov ax, [gravity]
+            mov cx, [y_pos_2]
+            add cx, [y_velocity_2]
+            mov word [y_pos_2], cx
+            add word [y_velocity_2], ax
             mov byte [jumping_2], 0
-            jmp .skipApplyGravityPlayer2
-
-        .jumpLoop2:
-            ; checks if the player is at his jump peak
-            ; - if yes, he ain't jumping anymore
-            ; - if no, his y_pos decreases
-            cmp word [y_velocity_2], JUMP_HEIGHT
-            jge .jmpReset2
-            mov ax, [y_velocity_2]
-            sub word [y_pos_2], ax
-            add word [y_velocity_2], 10
-            jmp .skipApplyGravityPlayer2
-
-        .jmpReset2:
-            ; resets the jump variable to apply gravity
-            mov byte [jumping_2], 0
-            jmp .skipApplyGravityPlayer2
-
-        .skipApplyGravityPlayer2:
             setPixelPosition [x_pos_2], [y_pos_2]
-        
+            jmp .endApplyGravityPlayer2
+
+        .repositionPlayer2: ; reposition the player 
+            clearOldPosition [x_pos_2], [y_pos_2]
+            mov word [y_pos_2], WINDOW_DOWN_BORDER - SPRITE_HEIGHT
+            mov byte [jumping_2], 0
+            setPixelPosition [x_pos_2], [y_pos_2]
+        .endApplyGravityPlayer2:
         ret
+        

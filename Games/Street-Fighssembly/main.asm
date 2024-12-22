@@ -87,6 +87,13 @@ waitLoop:
     loop waitLoop
     ret
 
+resetRegisters:
+    xor ax, ax
+    xor bx, bx
+    xor cx, cx
+    xor dx, dx
+    ret
+
 exitProgram:
     mov ah, 4Ch
     xor al, al
