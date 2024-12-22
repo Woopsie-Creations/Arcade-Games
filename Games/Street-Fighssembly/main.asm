@@ -1,18 +1,29 @@
 org 100h
 
 
-%macro setPixelPosition 3
+%macro setPixelPosition 2
     mov bx, %1  ; x
     mov ax, %2  ; y
-    mov cl, %3  ; color
-    call drawPixel
+    mov si, sprite
+    drawSprite %1, %2
 %endmacro
 
 %macro clearOldPosition 2
-    mov bx, %1  ; x
-    mov ax, %2  ; y
-    mov cl, 00h  ; color
-    call drawPixel
+    mov bx, %1 ; x
+    mov ax, %2 ; y
+    mov si, backgroundSpriteData
+    drawSprite %1, %2
+%endmacro
+
+%macro drawSprite 2
+    mov ax, %2       
+    mov bx, 320            
+    mul bx                 
+    add ax, %1
+    mov di, ax
+
+    mov dx, SPRITE_HEIGHT ; sprite drawing loop
+    call eachLine
 %endmacro
 
 
@@ -22,7 +33,7 @@ section .data
     y_pos_1 dw 30
 
     color_2 db 0x2F
-    x_pos_2 dw 20
+    x_pos_2 dw 100
     y_pos_2 dw 20
 
     %define WINDOW_TOP_BORDER 10
@@ -32,37 +43,36 @@ section .data
 
     delay_waitloop dw 2000
 
+    %define SPRITE_WIDTH 64
+    %define SPRITE_HEIGHT 92
+    backgroundSpriteData db 64 * 92 dup(00h)
+
 section .text
     ; set video mode
     mov ax, 13h
     int 10h
     jmp init
 
-; -----------------------------------------------
-; Set a pixel value.
-;   bx = x position
-;   ax = y position
-;   cx = palette index
-drawPixel:
-    mov dx, 320
-    mul dx
-    add ax, bx
-    mov di, ax
-    mov bx, 0a000h
-    mov es, bx
-    mov [es:di], cl
-    ret
 
 ; -----------------------------------------------
 init:
     call clearScreen
-    setPixelPosition [x_pos_1], [y_pos_1], [color_1]
-    setPixelPosition [x_pos_2], [y_pos_2], [color_2]
+    setPixelPosition [x_pos_1], [y_pos_1]
+    setPixelPosition [x_pos_2], [y_pos_2]
 
 gameLoop:
     call applyGravity1
     call applyGravity2
     jmp readKeyboard
+
+; -------------------------
+eachLine:
+    mov cx, SPRITE_WIDTH
+    rep movsb
+    add di, 320 - SPRITE_WIDTH
+    dec dx
+    jnz eachLine
+    ret
 
 ; ---------------------------------------------------------
 clearScreen:
@@ -85,3 +95,4 @@ exitProgram:
 
 %include "KeyboardInput.inc"
 %include "Physic.inc"
+%include "sprite.inc"

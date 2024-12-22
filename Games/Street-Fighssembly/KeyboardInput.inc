@@ -58,14 +58,14 @@ section .text
 
     ; ------------------------
     up1:
-        cmp word [y_pos_1], WINDOW_TOP_BORDER 
-        jle gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
-        cmp word [y_pos_1], WINDOW_DOWN_BORDER
+        mov ax, [y_pos_1]
+        add ax, SPRITE_HEIGHT
+        cmp ax, WINDOW_DOWN_BORDER
         jl gameLoop ; skip if in the air
         mov byte [jumping_1], 1
         mov word [y_velocity_1], 10
-        setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+        setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
     
     left1:
@@ -73,15 +73,17 @@ section .text
         jle gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         sub word [x_pos_1], 10
-        setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+        setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
     
     right1:
-        cmp word [x_pos_1], WINDOW_RIGHT_BORDER
+        mov ax, [x_pos_1]
+        add ax, SPRITE_WIDTH
+        cmp ax, WINDOW_RIGHT_BORDER
         jge gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         add word [x_pos_1], 10
-        setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+        setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
     
     down1:
@@ -89,18 +91,18 @@ section .text
         je gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         add word [y_pos_1], 10
-        setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+        setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
 
     up2:
-        cmp word [y_pos_2], WINDOW_TOP_BORDER 
-        jle gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
-        cmp word [y_pos_2], WINDOW_DOWN_BORDER
+        mov ax, [y_pos_2]
+        add ax, SPRITE_HEIGHT
+        cmp ax, WINDOW_DOWN_BORDER
         jl gameLoop ; skip if in the air
         mov byte [jumping_2], 1
         mov word [y_velocity_2], 10
-        setPixelPosition [x_pos_2], [y_pos_2], [color_2]
+        setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
     
     left2:
@@ -108,15 +110,17 @@ section .text
         jle gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         sub word [x_pos_2], 10
-        setPixelPosition [x_pos_2], [y_pos_2], [color_2]
+        setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
     
     right2:
-        cmp word [x_pos_2], WINDOW_RIGHT_BORDER
+        mov ax, [x_pos_2]
+        add ax, SPRITE_WIDTH
+        cmp ax, WINDOW_RIGHT_BORDER
         jge gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         add word [x_pos_2], 10
-        setPixelPosition [x_pos_2], [y_pos_2], [color_2]
+        setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
     
     down2:
@@ -124,7 +128,7 @@ section .text
         jge gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         add word [y_pos_2], 10
-        setPixelPosition [x_pos_2], [y_pos_2], [color_2]
+        setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
 
 

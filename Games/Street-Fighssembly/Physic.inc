@@ -4,7 +4,7 @@
 ; --------------------------------------------------
 
 section .data
-    gravity db 1
+    gravity db 10
 
     jumping_1 db 0
     jumping_2 db 0
@@ -14,7 +14,7 @@ section .data
     x_velocity_2 dw 0
     y_velocity_2 dw 0
 
-    %define JUMP_HEIGHT 50
+    %define JUMP_HEIGHT 40
 
 section .text 
     applyGravity1:
@@ -30,18 +30,20 @@ section .text
         jmp .jumpLoop1 ; if the player's jumping and his velocity > 0, then he jumps
         
         .fall1: ; falling
-        cmp word [y_pos_1], WINDOW_DOWN_BORDER ; can gravity be applied ?
-        jg .repositionPlayer1
-        je .skipApplyGravityPlayer1
-        mov byte [jumping_1], 0
-        add word [y_velocity_1], ax
-        mov ax, [y_velocity_1]
-        add word [y_pos_1], ax
-        jmp .skipApplyGravityPlayer1
+            mov word bx, [y_pos_1] 
+            add word bx, SPRITE_HEIGHT
+            cmp word bx, WINDOW_DOWN_BORDER ; can gravity be applied ?
+            jg .repositionPlayer1
+            je .skipApplyGravityPlayer1
+            add word [y_pos_1], ax
+            jmp .skipApplyGravityPlayer1
         
         .repositionPlayer1: ; avoid player going outside of the box (I don't like overflow :))
             clearOldPosition [x_pos_1], [y_pos_1]
-            mov word [y_pos_1], WINDOW_DOWN_BORDER
+            mov ax, WINDOW_DOWN_BORDER
+            sub ax, SPRITE_HEIGHT
+            mov word [y_pos_1], ax
+            mov byte [jumping_1], 0
             jmp .skipApplyGravityPlayer1
 
         .jumpLoop1:
@@ -61,9 +63,10 @@ section .text
             jmp .skipApplyGravityPlayer1
 
         .skipApplyGravityPlayer1:
-            setPixelPosition [x_pos_1], [y_pos_1], [color_1]
+            setPixelPosition [x_pos_1], [y_pos_1]
         
         ret
+
     applyGravity2:
         xor ax, ax 
 
@@ -77,18 +80,20 @@ section .text
         jmp .jumpLoop2 ; if the player's jumping and his velocity > 0, then he jumps
         
         .fall2: ; falling
-        cmp word [y_pos_2], WINDOW_DOWN_BORDER ; can gravity be applied ?
-        jg .repositionPlayer2
-        je .skipApplyGravityPlayer2
-        mov byte [jumping_2], 0
-        add word [y_velocity_2], ax
-        mov ax, [y_velocity_2]
-        add word [y_pos_2], ax
-        jmp .skipApplyGravityPlayer2
+            mov word bx, [y_pos_2] 
+            add word bx, SPRITE_HEIGHT
+            cmp word bx, WINDOW_DOWN_BORDER ; can gravity be applied ?
+            jg .repositionPlayer2
+            je .skipApplyGravityPlayer2
+            add word [y_pos_2], ax
+            jmp .skipApplyGravityPlayer2
         
         .repositionPlayer2: ; avoid player going outside of the box (I don't like overflow :))
             clearOldPosition [x_pos_2], [y_pos_2]
-            mov word [y_pos_2], WINDOW_DOWN_BORDER
+            mov ax, WINDOW_DOWN_BORDER
+            sub ax, SPRITE_HEIGHT
+            mov word [y_pos_2], ax
+            mov byte [jumping_2], 0
             jmp .skipApplyGravityPlayer2
 
         .jumpLoop2:
@@ -108,6 +113,6 @@ section .text
             jmp .skipApplyGravityPlayer2
 
         .skipApplyGravityPlayer2:
-            setPixelPosition [x_pos_2], [y_pos_2], [color_2]
+            setPixelPosition [x_pos_2], [y_pos_2]
         
         ret
