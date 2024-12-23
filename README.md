@@ -29,7 +29,7 @@ To **create or edit games**, you'll need the prerequisites above and:
 You can absolutely try to create some games like ours, though contributions to this repository are limited for now.
 But you can build some on your own:
 
-Clone this repository to your local machine (make sure to be in your Desktop directory):
+Clone this repository to your local machine:
 
 ```bash
 git clone https://github.com/EnzoGuillouche/Assembly-games.git
@@ -54,6 +54,9 @@ brew install nasm
 Install DOSBox:
 
 Download the installer from [DOSBox's official site](https://www.dosbox.com).
+
+For macOS, make sure the DOSBox executable is located in your Desktop directory.
+For Windows, follow the steps given by both installers (DOSBox and NASM).
 
 Navigate to the repository folder:
 
