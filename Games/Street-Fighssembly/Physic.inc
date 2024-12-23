@@ -33,6 +33,7 @@ section .text
         sub cx, [y_velocity_1]                  
         mov word [y_pos_1], cx
         sub word [y_velocity_1], ax
+        setPixelPosition [x_pos_2], [y_pos_2]
         setPixelPosition [x_pos_1], [y_pos_1]
         jmp .endApplyGravityPlayer1
 
@@ -50,6 +51,7 @@ section .text
             mov word [y_pos_1], cx
             add word [y_velocity_1], ax
             mov byte [jumping_1], 0
+            setPixelPosition [x_pos_2], [y_pos_2]
             setPixelPosition [x_pos_1], [y_pos_1]
             jmp .endApplyGravityPlayer1
 
@@ -57,6 +59,7 @@ section .text
             clearOldPosition [x_pos_1], [y_pos_1]
             mov word [y_pos_1], WINDOW_DOWN_BORDER - SPRITE_HEIGHT
             mov byte [jumping_1], 0
+            setPixelPosition [x_pos_2], [y_pos_2]
             setPixelPosition [x_pos_1], [y_pos_1]
         .endApplyGravityPlayer1:
         ret
@@ -75,6 +78,7 @@ section .text
         sub cx, [y_velocity_2]                  
         mov word [y_pos_2], cx
         sub word [y_velocity_2], ax
+        setPixelPosition [x_pos_1], [y_pos_1]
         setPixelPosition [x_pos_2], [y_pos_2]
         jmp .endApplyGravityPlayer2
 
@@ -92,6 +96,7 @@ section .text
             mov word [y_pos_2], cx
             add word [y_velocity_2], ax
             mov byte [jumping_2], 0
+            setPixelPosition [x_pos_1], [y_pos_1]
             setPixelPosition [x_pos_2], [y_pos_2]
             jmp .endApplyGravityPlayer2
 
@@ -99,6 +104,7 @@ section .text
             clearOldPosition [x_pos_2], [y_pos_2]
             mov word [y_pos_2], WINDOW_DOWN_BORDER - SPRITE_HEIGHT
             mov byte [jumping_2], 0
+            setPixelPosition [x_pos_1], [y_pos_1]
             setPixelPosition [x_pos_2], [y_pos_2]
         .endApplyGravityPlayer2:
         ret

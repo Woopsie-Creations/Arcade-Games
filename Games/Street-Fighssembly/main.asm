@@ -11,19 +11,30 @@ org 100h
 %macro clearOldPosition 2
     mov bx, %1 ; x
     mov ax, %2 ; y
-    mov si, backgroundSpriteData
-    drawSprite %1, %2
+    mov si, sprite
+    clearSprite %1, %2
 %endmacro
 
 %macro drawSprite 2
     mov ax, %2       
-    mov bx, 320            
+    mov bx, 320
     mul bx                 
     add ax, %1
     mov di, ax
 
     mov dx, SPRITE_HEIGHT ; sprite drawing loop
     call eachLine
+%endmacro
+
+%macro clearSprite 2
+    mov ax, %2       
+    mov bx, 320
+    mul bx                 
+    add ax, %1
+    mov di, ax
+
+    mov dx, SPRITE_HEIGHT ; sprite drawing loop
+    call clearLine
 %endmacro
 
 
@@ -74,11 +85,45 @@ gameLoop:
 ; -------------------------
 eachLine:
     mov cx, SPRITE_WIDTH
-    rep movsb
-    add di, 320 - SPRITE_WIDTH
-    dec dx
-    jnz eachLine
+
+    .copyPixel:
+        lodsb
+        cmp al, 0x00 ; is the sprite's byte black? (should be transparent then)
+        je .skipPixel ; If yes, skip the byte
+        stosb
+        jmp .nextPixel
+
+    .skipPixel:
+        inc di ; Skip the byte
+
+    .nextPixel:
+        loop .copyPixel
+        add di, 320 - SPRITE_WIDTH 
+        dec dx
+        jnz eachLine
     ret
+
+clearLine:
+    mov cx, SPRITE_WIDTH
+
+    .copyPixel:
+        lodsb
+        cmp al, 0x00 ; is the sprite's byte black? (should be transparent then)
+        je .skipPixel ; If yes, skip the byte
+        mov al, 0x00 ; If not, replace it with 0x00
+        stosb
+        jmp .nextPixel
+
+    .skipPixel:
+        inc di ; Skip the byte
+
+    .nextPixel:
+        loop .copyPixel
+        add di, 320 - SPRITE_WIDTH
+        dec dx
+        jnz clearLine
+    ret
+
 
 ; -------------------
 positionSetup:

@@ -71,6 +71,7 @@ section .text
         jle gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         sub word [x_pos_1], 10
+        setPixelPosition [x_pos_2], [y_pos_2]
         setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
     
@@ -81,6 +82,7 @@ section .text
         jge gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         add word [x_pos_1], 10
+        setPixelPosition [x_pos_2], [y_pos_2]
         setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
     
@@ -89,6 +91,7 @@ section .text
         je gameLoop ; skip if collision
         clearOldPosition [x_pos_1], [y_pos_1]
         add word [y_pos_1], 10
+        setPixelPosition [x_pos_2], [y_pos_2]
         setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
 
@@ -106,6 +109,7 @@ section .text
         jle gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         sub word [x_pos_2], 10
+        setPixelPosition [x_pos_1], [y_pos_1]
         setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
     
@@ -116,6 +120,7 @@ section .text
         jge gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         add word [x_pos_2], 10
+        setPixelPosition [x_pos_1], [y_pos_1]
         setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
     
@@ -124,6 +129,7 @@ section .text
         jge gameLoop ; skip if collision
         clearOldPosition [x_pos_2], [y_pos_2]
         add word [y_pos_2], 10
+        setPixelPosition [x_pos_1], [y_pos_1]
         setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
 
