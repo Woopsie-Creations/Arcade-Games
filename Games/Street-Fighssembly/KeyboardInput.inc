@@ -18,10 +18,6 @@ section .data
 
 section .text
     readKeyboard:
-        mov cx, [delay_waitloop]
-        call waitLoop
-        call waitLoop
-        call waitLoop
         xor cx, cx
         
         ; is key pressed ?
@@ -69,10 +65,7 @@ section .text
     left1:
         cmp word [x_pos_1], WINDOW_LEFT_BORDER
         jle gameLoop ; skip if collision
-        clearOldPosition [x_pos_1], [y_pos_1]
         sub word [x_pos_1], 10
-        setPixelPosition [x_pos_2], [y_pos_2]
-        setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
     
     right1:
@@ -80,19 +73,13 @@ section .text
         add ax, SPRITE_WIDTH
         cmp ax, WINDOW_RIGHT_BORDER
         jge gameLoop ; skip if collision
-        clearOldPosition [x_pos_1], [y_pos_1]
         add word [x_pos_1], 10
-        setPixelPosition [x_pos_2], [y_pos_2]
-        setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
     
     down1:
         cmp word [y_pos_1], WINDOW_DOWN_BORDER
         je gameLoop ; skip if collision
-        clearOldPosition [x_pos_1], [y_pos_1]
         add word [y_pos_1], 10
-        setPixelPosition [x_pos_2], [y_pos_2]
-        setPixelPosition [x_pos_1], [y_pos_1]
         jmp gameLoop
 
     up2:
@@ -107,10 +94,7 @@ section .text
     left2:
         cmp word [x_pos_2], WINDOW_LEFT_BORDER
         jle gameLoop ; skip if collision
-        clearOldPosition [x_pos_2], [y_pos_2]
         sub word [x_pos_2], 10
-        setPixelPosition [x_pos_1], [y_pos_1]
-        setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
     
     right2:
@@ -118,19 +102,13 @@ section .text
         add ax, SPRITE_WIDTH
         cmp ax, WINDOW_RIGHT_BORDER
         jge gameLoop ; skip if collision
-        clearOldPosition [x_pos_2], [y_pos_2]
         add word [x_pos_2], 10
-        setPixelPosition [x_pos_1], [y_pos_1]
-        setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
     
     down2:
         cmp word [y_pos_2], WINDOW_DOWN_BORDER
         jge gameLoop ; skip if collision
-        clearOldPosition [x_pos_2], [y_pos_2]
         add word [y_pos_2], 10
-        setPixelPosition [x_pos_1], [y_pos_1]
-        setPixelPosition [x_pos_2], [y_pos_2]
         jmp gameLoop
 
 

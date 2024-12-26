@@ -1,60 +1,21 @@
 org 100h
 
-
-%macro setPixelPosition 2
-    mov bx, %1  ; x
-    mov ax, %2  ; y
-    mov si, sprite
-    drawSprite %1, %2
-%endmacro
-
-%macro clearOldPosition 2
-    mov bx, %1 ; x
-    mov ax, %2 ; y
-    mov si, sprite
-    clearSprite %1, %2
-%endmacro
-
-%macro drawSprite 2
-    mov ax, %2       
-    mov bx, 320
-    mul bx                 
-    add ax, %1
-    mov di, ax
-
-    mov dx, SPRITE_HEIGHT ; sprite drawing loop
-    call eachLine
-%endmacro
-
-%macro clearSprite 2
-    mov ax, %2       
-    mov bx, 320
-    mul bx                 
-    add ax, %1
-    mov di, ax
-
-    mov dx, SPRITE_HEIGHT ; sprite drawing loop
-    call clearLine
-%endmacro
-
-
 section .data
     ; constant initialization
-    %define WINDOW_TOP_BORDER 10
-    %define WINDOW_LEFT_BORDER 10
-    %define WINDOW_RIGHT_BORDER 310
-    %define WINDOW_DOWN_BORDER 190
+    WINDOW_TOP_BORDER equ 10
+    WINDOW_LEFT_BORDER equ 10
+    WINDOW_RIGHT_BORDER equ 310
+    WINDOW_DOWN_BORDER equ 190
 
-    delay_waitloop dw 2000
+    DELAY_WAITLOOP equ 2000
 
-    %define INIT_X_POS_1 11
-    %define INIT_X_POS_2 240
-    %define INIT_Y_POS_1 100
-    %define INIT_Y_POS_2 100
+    INIT_X_POS_1 equ 20
+    INIT_X_POS_2 equ 240
+    INIT_Y_POS_1 equ 50
+    INIT_Y_POS_2 equ 50
 
-    %define SPRITE_WIDTH 64
-    %define SPRITE_HEIGHT 92
-    backgroundSpriteData db 64 * 92 dup(00h)
+    SPRITE_WIDTH equ 64
+    SPRITE_HEIGHT equ 92
 
 section .bss
     x_pos_1: resw 1
@@ -74,56 +35,12 @@ section .text
 init:
     call clearScreen
     call positionSetup
-    setPixelPosition [x_pos_1], [y_pos_1]
-    setPixelPosition [x_pos_2], [y_pos_2]
 
 gameLoop:
-    call applyGravity1
-    call applyGravity2
+    call applyGravity
+    call setViewport
+    call displayViewport
     jmp readKeyboard
-
-; -------------------------
-eachLine:
-    mov cx, SPRITE_WIDTH
-
-    .copyPixel:
-        lodsb
-        cmp al, 0x00 ; is the sprite's byte black? (should be transparent then)
-        je .skipPixel ; If yes, skip the byte
-        stosb
-        jmp .nextPixel
-
-    .skipPixel:
-        inc di ; Skip the byte
-
-    .nextPixel:
-        loop .copyPixel
-        add di, 320 - SPRITE_WIDTH 
-        dec dx
-        jnz eachLine
-    ret
-
-clearLine:
-    mov cx, SPRITE_WIDTH
-
-    .copyPixel:
-        lodsb
-        cmp al, 0x00 ; is the sprite's byte black? (should be transparent then)
-        je .skipPixel ; If yes, skip the byte
-        mov al, 0x00 ; If not, replace it with 0x00
-        stosb
-        jmp .nextPixel
-
-    .skipPixel:
-        inc di ; Skip the byte
-
-    .nextPixel:
-        loop .copyPixel
-        add di, 320 - SPRITE_WIDTH
-        dec dx
-        jnz clearLine
-    ret
-
 
 ; -------------------
 positionSetup:
@@ -161,4 +78,5 @@ exitProgram:
 
 %include "KeyboardInput.inc"
 %include "Physic.inc"
+%include "Display.inc"
 %include "sprite.inc"
