@@ -1,27 +1,60 @@
-//
-// Assembler program to print "Hello World!"
-// to stdout.
-//
-// X0-X2 - parameters to linux function services
-// X16 - linux function number
-//
-.global _start             // Provide program starting address to linker
+.global _start
 .align 2
 
-// Setup the parameters to print hello world
-// and then call Linux to do it.
+_start:
+    // Set screen resolution using the mailbox interface
+    ldr x0, =mailbox_message  // Address of the message buffer
+    bl mailbox_call           // Send request to GPU
 
-_start: mov X0, #1     // 1 = StdOut
-        adr X1, helloworld // string to print
-        mov X2, #13     // length of our string
-        mov X16, #4     // MacOS write system call
-        svc 0     // Call linux to output the string
+    // Read framebuffer address (GPU returns it in mailbox_message + 20)
+    ldr x1, =mailbox_message + 20
+    ldr x21, [x1]             // Store framebuffer address
 
-// Setup the parameters to exit the program
-// and then call Linux to do it.
+    // Draw a red rectangle
+    mov x0, x21              // Start of framebuffer
+    mov x1, 0x00FF0000       // Red color (ARGB)
+    mov x2, 50000            // Loop counter (number of pixels)
+draw_loop:
+    str w1, [x0], #4         // Store color, move to next pixel
+    subs x2, x2, #1          // Decrement counter
+    b.ne draw_loop
 
-        mov     X0, #0      // Use 0 return code
-        mov     X16, #1     // Service command code 1 terminates this program
-        svc     0           // Call MacOS to terminate the program
+    // Exit
+    mov x8, 93               // syscall exit
+    mov x0, 0
+    svc #0
 
-helloworld:      .ascii  "Hello World!\n"
+// ---------------------------------------------
+// Mailbox Call Function
+// ---------------------------------------------
+mailbox_call:
+    mov x2, #0x3F00B880      // Mailbox Base Register
+    mov x3, #0x80000000      // Channel 8 (Property Interface)
+    
+    // Write to Mailbox Register
+    str x0, [x2, #0]         // Write address to Mailbox0 Write Register
+wait_response:
+    ldr x4, [x2, #0x18]      // Read Mailbox0 Status Register
+    tst x4, #0x40000000      // Check if Mailbox is empty
+    b.ne wait_response       // If empty, keep waiting
+
+    ldr x4, [x2, #0]         // Read Mailbox0 Read Register
+    cmp x4, x3              // Check if response is for us
+    b.ne wait_response       // If not, wait again
+    ret                     // Return to caller
+
+
+mailbox_message:
+    .word 8 * 4             // Total message size
+    .word 0                 // Request/Response code
+    .word 0x00048003        // Tag: Set Physical Display
+    .word 8                 // Value buffer size
+    .word 8                 // Request size
+    .word 800               // Width
+    .word 600               // Height
+    .word 0x00040001        // Tag: Allocate Framebuffer
+    .word 8                 // Value buffer size
+    .word 4                 // Request size
+    .word 16                // Alignment
+    .word 0                 // Framebuffer address (will be updated)
+    .word 0                 // End tag

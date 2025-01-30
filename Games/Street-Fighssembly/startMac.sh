@@ -1,10 +1,12 @@
-as -o Bin/HelloWorld.o main.s
+clear
 
-ld -o Bin/HelloWorld Bin/HelloWorld.o \
+as -o Bin/SF.o main.s
+
+ld -o Bin/SF Bin/SF.o \
    -lSystem \
    -syslibroot `xcrun -sdk macosx --show-sdk-path` \
    -e _start \
    -arch arm64 \
    -macos_version_min 15.0.0
 
-./HelloWorld 
+./Bin/SF 
