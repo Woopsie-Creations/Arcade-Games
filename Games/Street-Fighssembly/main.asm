@@ -6,7 +6,7 @@ section .data
     WINDOW_LEFT_BORDER equ 10
     WINDOW_RIGHT_BORDER equ 310
     WINDOW_DOWN_BORDER equ 190
-
+; feur
     DELAY_WAITLOOP equ 2000
 
     INIT_X_POS_1 equ 20
