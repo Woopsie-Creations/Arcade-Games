@@ -106,6 +106,6 @@ exitProgram:
 
 
 %include "KeyboardInput.inc"
-%include "Physic.inc"
+%include "Physics.inc"
 %include "Display.inc"
 %include "sprite.inc"

@@ -4,8 +4,8 @@ clear
 ROOT_DIR="$(dirname "$(realpath "$0")")"
 ROOT_DIR="$(dirname "$ROOT_DIR")"
 NASM="nasm"  # Assumes NASM is installed globally
-GAME_DIR="$ROOT_DIR/Street-Fighssembly"
-GAME_BIN="$GAME_DIR/bin"
+GAME_DIR="$ROOT_DIR/Pac-ssembly"
+GAME_BIN="$GAME_DIR/Bin"
 DOSBOX_BIN="/usr/bin/dosbox"
 DOSBOX_CONF="$HOME/.dosbox/dosbox-0.74.conf"
 CONF="$ROOT_DIR/DOSBox-Conf"
@@ -14,7 +14,7 @@ CONF="$ROOT_DIR/DOSBox-Conf"
 mkdir -p "$CONF"
 
 # Assemble the game
-"$NASM" "$GAME_DIR/Main.asm" -f bin -o "$GAME_BIN/SF.com"
+"$NASM" "$GAME_DIR/main.asm" -f bin -o "$GAME_BIN/PS.com"
 
 # Generate a new DOSBox config with required settings
 "$DOSBOX_BIN" -c "config -writeconf $CONF/DOSBox.conf" -c "exit"
@@ -30,4 +30,4 @@ rm -f "$DOSBOX_CONF"
 cp "$CONF/DOSBox.conf" "$DOSBOX_CONF"
 
 # Run the game with the explicit config
-"$DOSBOX_BIN" -conf "$CONF/DOSBox.conf" -c "MOUNT c $GAME_BIN" -c "c:" -c "SF.com" -c "exit"
+"$DOSBOX_BIN" -conf "$CONF/DOSBox.conf" -c "MOUNT c $GAME_BIN" -c "c:" -c "PS.com" -c "exit"
