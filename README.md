@@ -1,12 +1,12 @@
 # Arcade Games
 
-Welcome to the Arcade Games repository, dedicated to creating and showcasing games written in **ARM 64-bit Assembly**. These games are developed using **GNU** and executed on the **Raspberry Pi 3 Model B+**, offering a unique, low-level programming experience.
+Welcome to the Arcade Games repository, dedicated to creating and showcasing games written in **ARM 32-bit Assembly**. These games are developed using **GNU** and executed on the **Raspberry Pi 3 Model B+**, offering a unique, low-level programming experience.
 
 This collection features retro-style games that highlight the power and creativity of assembly programming, combining nostalgia with educational content to explore the world of low-level development.
 
 ## 🏮 Introduction
 
-This repository is all about bringing classic retro-style games to life through the raw power of ARM 64-bit Assembly. Every game in this collection runs in a Raspberry Pi environment, allowing you to experience the craftsmanship behind assembly language while enjoying a nostalgic gaming experience.
+This repository is all about bringing classic retro-style games to life through the raw power of ARM 32-bit Assembly. Every game in this collection runs in a Raspberry Pi environment, allowing you to experience the craftsmanship behind assembly language while enjoying a nostalgic gaming experience.
 
 These games serve as an educational journey into low-level programming, demonstrating how assembly can be used to create functional, engaging games with minimal resources. It's an excellent resource for developers interested in learning more about assembly programming, particularly for the ARM architecture and the Raspberry Pi environment.
 
@@ -70,7 +70,7 @@ More games will be added to the repository as development progresses. Stay tuned
 
 **In Progress**:
 
-**Street-Fighssembly**: A retro-style fighting game inspired by classic '90s arcade games, written in ARM 64-bit Assembly.
+**Street-Fighssembly**: A retro-style fighting game inspired by classic '90s arcade games, written in ARM 32-bit Assembly.
 
 ## 📚 Resources
 
