@@ -6,7 +6,7 @@ section .data
     WINDOW_LEFT_BORDER equ 10
     WINDOW_RIGHT_BORDER equ 310
     WINDOW_DOWN_BORDER equ 190
-; feur
+
     DELAY_WAITLOOP equ 2000
 
     INIT_X_POS_1 equ 20
@@ -16,6 +16,8 @@ section .data
 
     SPRITE_WIDTH equ 64
     SPRITE_HEIGHT equ 92
+
+    %define FRAME_RATE 30
 
 section .bss
     x_pos_1: resw 1
@@ -36,11 +38,38 @@ init:
     call clearScreen
     call positionSetup
 
+
 gameLoop:
     call applyGravity
     call setViewport
     call displayViewport
+
+    call waitForNextFrame  ; Delay for consistent frame timing
+
     jmp readKeyboard
+
+; ----------------------------------------------
+waitForNextFrame:
+    push ax
+    push bx
+    push cx
+    push dx
+
+    mov ah, 0x00          ; Get current timer ticks
+    int 0x1A
+    mov bx, dx            ; Store current tick count
+
+    .wait:
+        int 0x1A              ; Get new timer ticks
+        sub dx, bx            ; Check elapsed ticks
+        cmp dx, 32 / FRAME_RATE  ; 18.2 ticks per second / FRAME_RATE
+        jb .wait              ; Loop until enough time passes
+
+        pop dx
+        pop cx
+        pop bx
+        pop ax
+        ret
 
 ; -------------------
 positionSetup:

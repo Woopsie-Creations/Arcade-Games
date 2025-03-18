@@ -39,7 +39,7 @@ section .text
                 cmp al, 0x00
                 je .skipPlaceColor
                 mov byte [viewport+bx], al
-                .skipPlaceColor
+                .skipPlaceColor:
                 inc bx  ; increment to the next pixel of the viewport
                 inc dx  ; increment the number of pixel of the sprite to choose the correct color from the sprite
                 inc cx  ; increment the width position
@@ -71,7 +71,7 @@ section .text
                 cmp al, 0x00
                 je .skipPlaceColor1
                 mov byte [viewport+bx], al
-                .skipPlaceColor1
+                .skipPlaceColor1:
                 inc bx  ; increment to the next pixel of the viewport
                 inc dx  ; increment the number of pixel of the sprite to choose the correct color from the sprite
                 inc cx  ; increment the width position
