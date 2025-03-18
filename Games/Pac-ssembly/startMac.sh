@@ -16,18 +16,5 @@ mkdir -p "$CONF"
 # Assemble the game
 "$NASM" "$GAME_DIR/main.asm" -f bin -o "$GAME_BIN/PS.com"
 
-# Generate a new DOSBox config with required settings
-"$DOSBOX_BIN" -c "config -writeconf $CONF/DOSBox" -c "exit"
-
-# Verify if the config file was actually created
-if [ ! -f "$CONF/DOSBox" ]; then
-    echo "Error: DOSBox config file was not created."
-    exit 1
-fi
-
-# Ensure the correct config file is being used
-rm -f "$DOSBOX_CONF"
-cp "$CONF/DOSBox" "$DOSBOX_CONF"
-
 # Run the game with the explicit config
 "$DOSBOX_BIN" -conf "$CONF/DOSBox" -c "MOUNT c $GAME_BIN" -c "c:" -c "PS.com" -c "exit"
