@@ -71,7 +71,6 @@ section .text
         ret
 ; END CLEAR SCREEN -----------------------------------------------------
     waitLoop:
-        loop waitLoop
         ret
 
     resetRegisters: 
