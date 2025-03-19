@@ -2,6 +2,7 @@ section .bss
     message resw 1
     message_x_pos resb 1
     message_y_pos resb 1
+    message_color resb 1
 
 section .text
     ; -----------------------------------------------
@@ -26,7 +27,7 @@ section .text
         ; Print string
         mov ah, 0x0E
         mov bh, 0x00
-        mov bl, 0x03
+        mov bl, [message_color]
         mov si, [message]
         .printLoop:
             lodsb
@@ -45,6 +46,8 @@ section .text
         mov [message_x_pos], al
         mov al, [welcome_to_message_y_pos]
         mov [message_y_pos], al
+        mov al, 0x03
+        mov [message_color], al
         call printMessage
 
         ; Load second message
@@ -54,6 +57,8 @@ section .text
         mov [message_x_pos], al
         mov al, [arcade_launcher_message_y_pos]
         mov [message_y_pos], al
+        mov al, 0x03
+        mov [message_color], al
         call printMessage
 
         call waitForKeyPress
@@ -68,12 +73,59 @@ section .text
         mov al, [arcade_launcher_message_x_pos]
         mov [message_x_pos], al
         mov al, [arcade_launcher_message_y_pos]
-        sub al, 6
+        sub al, 8 ; Put it to the top
         mov [message_y_pos], al
+        mov al, 0x03
+        mov [message_color], al
         call printMessage
 
-        ; That's where the magic should be displayed
-        call waitForKeyPress ; placeholder
-        ret
+        mov si, arrow_left
+        mov [message], si
+        mov al, [arrow_left_x_pos]
+        mov [message_x_pos], al
+        mov al, [arrow_left_y_pos]
+        mov [message_y_pos], al
+        mov al, 0x0E
+        mov [message_color], al
+        call printMessage
+
+        mov si, arrow_right
+        mov [message], si
+        mov al, [arrow_right_x_pos]
+        mov [message_x_pos], al
+        mov al, [arrow_right_y_pos]
+        mov [message_y_pos], al
+        mov al, 0x0E
+        mov [message_color], al
+        call printMessage
+
+        mov si, [current_game]
+        mov [message], si
+        mov al, [current_game_x_pos]
+        mov [message_x_pos], al
+        mov al, [current_game_y_pos]
+        mov [message_y_pos], al
+        mov al, 0x0F
+        mov [message_color], al
+        call printMessage
+
+        call checkForKeyPress
+
+    ps_game_setup:
+        mov si, ps_game
+        mov al, [ps_game_x_pos]
+        mov bl, [ps_game_y_pos]
+        jmp set_current_game
+    sf_game_setup:
+        mov si, sf_game
+        mov al, [sf_game_x_pos]
+        mov bl, [sf_game_y_pos]
+        jmp set_current_game
+
+    set_current_game:
+        mov [current_game], si
+        mov [current_game_x_pos], al
+        mov [current_game_y_pos], bl
+        jmp mainMenu
 
 %include "input.inc"
