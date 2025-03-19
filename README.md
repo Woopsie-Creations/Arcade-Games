@@ -1,80 +1,122 @@
-# Arcade Games
+# Assembly Games
 
-Welcome to the Arcade Games repository, dedicated to creating and showcasing games written in **ARM 32-bit Assembly**. These games are developed using **GNU** and executed on the **Raspberry Pi 3 Model B+**, offering a unique, low-level programming experience.
+This repository is dedicated to creating games written in **x86 16-bit Assembly**, developed using **NASM** and executed with **DOSBox**.
 
-This collection features retro-style games that highlight the power and creativity of assembly programming, combining nostalgia with educational content to explore the world of low-level development.
+---
 
 ## 🏮 Introduction
 
-This repository is all about bringing classic retro-style games to life through the raw power of ARM 32-bit Assembly. Every game in this collection runs in a Raspberry Pi environment, allowing you to experience the craftsmanship behind assembly language while enjoying a nostalgic gaming experience.
+This repository showcases the power and creativity of Assembly programming by focusing on retro-style games. Each game is designed to run in a DOS environment, offering a nostalgic and educational journey into low-level programming.
 
-These games serve as an educational journey into low-level programming, demonstrating how assembly can be used to create functional, engaging games with minimal resources. It's an excellent resource for developers interested in learning more about assembly programming, particularly for the ARM architecture and the Raspberry Pi environment.
+---
 
 ## 🎛️ Prerequisites
 
-Before you start playing or developing with Assembly Games, ensure that you have the following installed on your system:
+To **play the game**, you'll need:
 
-**To play the games**:
+*NASM (Netwide Assembler)*: A popular assembler for x86 architecture.
 
-- *GNU Assembler (as)*: Required to assemble the game's assembly code and produce executable files.
-- *Raspberry Pi 3 Model B+*: The game is optimized for this model, so ensure you're running this or a similar Raspberry Pi with ARM 64-bit architecture.
+*DOSBox*: An x86 emulator with DOS for running 16-bit applications.
 
-**To create or edit games**:
+To **create or edit games**, you'll need the prerequisites above and:
 
-You’ll need the tools mentioned above along with:
+*A code editor or IDE* for Assembly programming (e.g., VSCode with Assembly extensions).
 
-- **A code editor or IDE for Assembly programming** (e.g., VSCode with assembly extensions or another editor of your choice).
+---
 
 ## 🤝 Could I create my own games?
 
-Absolutely! You can definitely create your own games in the style of those in this repository. While contributions to the repository are limited for now, you’re encouraged to try building your own projects with Assembly programming.
+You can absolutely try to create some games like ours, though contributions to this repository are limited for now.
+But you can build some on your own:
 
-Here’s how you can get started:
+Clone this repository to your local machine:
 
-*Clone the repository to your local machine*:
-
-```sh
+```bash
 git clone https://github.com/EnzoGuillouche/Assembly-games.git
 ```
 
-*Write your Assembly code and compile it*. For example:
+Install NASM:
 
-```sh
-as code.s -o code.o
-ld code.o -o code
+*On Linux*:
+
+```shell
+sudo apt-get install nasm
 ```
 
-*Navigate to the repository folder*:
+*On macOS*:
 
-```sh
+```shell
+brew install nasm
+```
+
+*On Windows*, download the installer from [NASM's official site](https://www.nasm.us).
+
+Install DOSBox:
+
+Download the installer from [DOSBox's official site](https://www.dosbox.com).
+
+For macOS, make sure the DOSBox executable is located in your Desktop directory.
+For Windows, follow the steps given by both installers (DOSBox and NASM).
+
+On *Raspberry Pi*, you just have to type this command to install both NASM and DOSBox:
+
+```shell
+sudo apt install dosbox nasm -y
+```
+
+Navigate to the repository folder:
+
+```bash
 cd assembly-games
 ```
 
+---
+
 ## 🕹️ Usage
 
-To run any of the games in this repository, simply execute the corresponding start file within the game’s directory. The start files automatically compile and run the game on your Raspberry Pi.
+In each game folder, there will be `start` files.
+These files will compile and run the game on DOSBox automatically, you just have to execute the right file depending on your architecture.
 
-*Run the game*:
+*On Linux*:
 
-```sh
+```bash
+./startLin.bash
+```
+
+*On macOS*:
+
+```bash
+./startMac.sh
+```
+
+*On Windows*:
+
+```bash
+./startWinLin.cmd
+```
+
+And *On Raspberry Pi*:
+
+```bash
 ./startPi.sh
 ```
 
-This will start the game, and you can jump straight into the action!
+---
 
 ## 🎮 Games
 
-**Completed Games**:
+### Completed Games
 
-More games will be added to the repository as development progresses. Stay tuned for new releases!
+...
 
-**In Progress**:
+### In Progress
 
-**Street-Fighssembly**: A retro-style fighting game inspired by classic '90s arcade games, written in ARM 32-bit Assembly.
+[**Street Fighssembly**](https://github.com/EnzoGuillouche/Assembly-games/tree/main/Games/Street-Fighssembly): A Street Fighter demake.
 
-## 📚 Resources
+[**Pac-ssembly**](https://github.com/EnzoGuillouche/Assembly-games/tree/main/Games/Pac-ssembly): An arcade Pac-Man.
 
-Official Repository: Access the source code and documentation.
-Raspberry Pi Documentation: Learn about your Raspberry Pi and how to set it up for development.
+---
 
-This repository is all about exploring the world of low-level programming with fun, engaging projects. Whether you’re a seasoned developer or just starting to learn assembly, we hope you enjoy the journey!
+## Acknowledgments
+
+The **NASM and DOSBox communities** for providing essential tools. As well as all the online documentation for Assembly programming language.
