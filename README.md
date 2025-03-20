@@ -92,7 +92,7 @@ These files will compile and run the game on DOSBox automatically, you just have
 *On Windows*:
 
 ```bash
-./startWinLin.cmd
+./startWin.cmd
 ```
 
 And *On Raspberry Pi*:
