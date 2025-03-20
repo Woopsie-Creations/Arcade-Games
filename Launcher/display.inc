@@ -23,6 +23,10 @@ section .data
     sf_game_x_pos db 3
     sf_game_y_pos db 38
 
+    press_enter_message db 'Press  ENTER', 0
+    press_enter_message_x_pos db 6
+    press_enter_message_y_pos db 45
+
 section .bss
     message resw 1
     message_x_pos resb 1
@@ -121,6 +125,16 @@ section .text
         mov al, [arrow_right_y_pos]
         mov [message_y_pos], al
         mov al, 0x0E
+        mov [message_color], al
+        call printMessage
+
+        mov si, press_enter_message
+        mov [message], si
+        mov al, [press_enter_message_x_pos]
+        mov [message_x_pos], al
+        mov al, [press_enter_message_y_pos]
+        mov [message_y_pos], al
+        mov al, 0x0F
         mov [message_color], al
         call printMessage
 
