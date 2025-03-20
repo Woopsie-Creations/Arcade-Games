@@ -28,15 +28,12 @@ section .text:
         mov ah, 00h
         int 16h
         
-        cmp ah, ESC_KEY
-        je exitProgram
         cmp ah, LEFT_ARROW
         je change_current_game
         cmp ah, RIGHT_ARROW
         je change_current_game
         cmp ah, ENTER_KEY
         je choose_current_game
-        ; je execute_game
         jmp checkForKeyPress
 
     change_current_game:
@@ -64,13 +61,6 @@ section .text:
         jmp execute_game
 
     execute_game:
-        ; Execute from assembly hub
-        ; mov ah, 4Bh
-        ; mov al, 0
-        ; lea dx, [program_to_execute]
-        ; mov bx, 0
-        ; int 21h ; Load and execute program
-
         ; Open (or create) the file
         mov ah, 3Ch
         mov cx, 0
@@ -80,7 +70,7 @@ section .text:
         mov [file_handle], ax
 
         ; Write to file
-        mov bx, [file_handle]        
+        mov bx, [file_handle]
         mov ah, 40h ; Write file
         mov cx, program_to_execute_bytes
         mov dx, [program_to_execute]
