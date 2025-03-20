@@ -75,7 +75,7 @@ section .text
         mov [message_x_pos], al
         mov al, [welcome_to_message_y_pos]
         mov [message_y_pos], al
-        mov al, 0x03
+        mov al, 0x2E
         mov [message_color], al
         call printMessage
 
@@ -86,7 +86,7 @@ section .text
         mov [message_x_pos], al
         mov al, [arcade_launcher_message_y_pos]
         mov [message_y_pos], al
-        mov al, 0x03
+        mov al, 0x21
         mov [message_color], al
         call printMessage
 
@@ -104,7 +104,7 @@ section .text
         mov al, [arcade_launcher_message_y_pos]
         sub al, 8 ; Put it to the top
         mov [message_y_pos], al
-        mov al, 0x03
+        mov al, 0x2E
         mov [message_color], al
         call printMessage
 
@@ -114,7 +114,7 @@ section .text
         mov [message_x_pos], al
         mov al, [arrow_left_y_pos]
         mov [message_y_pos], al
-        mov al, 0x0E
+        mov al, 0x2E
         mov [message_color], al
         call printMessage
 
@@ -124,7 +124,7 @@ section .text
         mov [message_x_pos], al
         mov al, [arrow_right_y_pos]
         mov [message_y_pos], al
-        mov al, 0x0E
+        mov al, 0x2E
         mov [message_color], al
         call printMessage
 
@@ -144,7 +144,7 @@ section .text
         mov [message_x_pos], al
         mov al, [current_game_y_pos]
         mov [message_y_pos], al
-        mov al, 0x0F
+        mov al, 0x21
         mov [message_color], al
         call printMessage
 
