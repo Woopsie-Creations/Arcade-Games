@@ -1,3 +1,28 @@
+section .data
+    welcome_to_message db 'Welcome to', 0
+    welcome_to_message_x_pos db 7
+    welcome_to_message_y_pos db 37
+
+    arcade_launcher_message db 'GAME HUB', 0
+    arcade_launcher_message_x_pos db 8
+    arcade_launcher_message_y_pos db 39
+
+    arrow_left db '<', 0
+    arrow_left_x_pos db 0
+    arrow_left_y_pos db 38
+
+    arrow_right db '>', 0
+    arrow_right_x_pos db 23
+    arrow_right_y_pos db 38
+
+    ps_game db 'Pacssembly', 0
+    ps_game_x_pos db 7
+    ps_game_y_pos db 38
+
+    sf_game db 'Street-Fighssembly', 0
+    sf_game_x_pos db 3
+    sf_game_y_pos db 38
+
 section .bss
     message resw 1
     message_x_pos resb 1
