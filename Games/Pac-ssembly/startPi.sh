@@ -10,7 +10,7 @@ DOSBOX_BIN="/usr/bin/dosbox"
 DOSBOX_CONF="$HOME/.dosbox/dosbox-0.74.conf"
 
 # Assemble the game
-"$NASM" "$GAME_DIR/pacman.asm" -f bin -o "$GAME_BIN/PS.com"
+"$NASM" "$GAME_DIR/main.asm" -f bin -o "$GAME_BIN/PS.com"
 
 # Run the game with the explicit config
 "$DOSBOX_BIN" -conf "$CONF/DOSBox.conf" -c "MOUNT c $GAME_BIN" -c "c:" -c "PS.com" -c "exit"
