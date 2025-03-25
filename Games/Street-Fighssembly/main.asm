@@ -14,8 +14,8 @@ section .data
     INIT_Y_POS_1 equ 50
     INIT_Y_POS_2 equ 50
 
-    SPRITE_WIDTH equ 64
-    SPRITE_HEIGHT equ 92
+    SPRITE_WIDTH equ 57
+    SPRITE_HEIGHT equ 106
 
     %define FRAME_RATE 30
 
