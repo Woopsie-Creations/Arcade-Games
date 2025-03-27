@@ -6,7 +6,7 @@ def rgb_to_x86_palette(r, g, b, a):
     """Convert RGBA color to an x86 assembly-friendly indexed color."""
     # Define x86 16-color palette
     palette = {
-        (0, 0, 0): 0x00, # Black
+        (0, 0, 0): 0xFF, # Black
         (0, 0, 170): 0x01, # Blue
         (0, 170, 0): 0x02, # Green
         (0, 170, 170): 0x03, # Cyan
