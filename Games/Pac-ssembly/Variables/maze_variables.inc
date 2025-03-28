@@ -1,0 +1,9 @@
+section .data
+    WALL_WIDTH equ 6
+    WALL_HEIGHT equ 6
+
+    COLUMN_NUMBER equ 28
+    ROW_NUMBER equ 31
+
+    MAZE_X_POS equ (320 - COLUMN_NUMBER * WALL_WIDTH) / 2
+    MAZE_Y_POS equ (200 - ROW_NUMBER * WALL_HEIGHT) / 2

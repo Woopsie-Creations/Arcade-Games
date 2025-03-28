@@ -1,9 +1,9 @@
 section .data
-    item_width dw 10
-    item_height dw 90
+    item_width dw 0
+    item_height dw 0
     
-    item_x_pos dw 20
-    item_y_pos dw 20
+    item_x_pos dw 0
+    item_y_pos dw 0
 
     item_frame_selection dw 0
 

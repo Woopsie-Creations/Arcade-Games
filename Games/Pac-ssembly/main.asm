@@ -17,6 +17,7 @@ section .text
 
     gameLoop:
         call waitForNextFrame
+        call clearScreen
         call pacmanMovement
         call pacmanAnimation
         call displayFrame
@@ -24,17 +25,26 @@ section .text
 
 ; ------------------------------
     waitForNextFrame:
-        cmp dword [clock_save], 0
-        je .initClock
-        .wait:
-            mov ah, 0x00
-            int 0x1A
-            sub edx, [clock_save]
-            cmp edx, 50000 * 33
-            jb .wait
-        .initClock:
-        mov dword [clock_save], edx
+        ; will not stay like this, it works for now by being kind of a 30 fps loop, but it is juts a sleep function, not even dynamic
+        mov dx, 30000
+        mov ah, 0x86
+        int 0x15
         ret
+        ; cmp dword [clock_save], 0
+        ; je .initClock
+        ; .wait:
+        ;     mov ah, 0x00
+        ;     int 0x1A
+        ;     mov ebx, [clock_save]
+        ;     mov eax, edx
+        ;     sub eax, ebx
+        ;     cmp eax, 1
+        ;     jb .wait
+        ; .initClock:
+        ; mov ah, 0x00
+        ; int 0x1A
+        ; mov dword [clock_save], edx
+        ; ret
 
     resetRegisters:
         xor ax, ax
