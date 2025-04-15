@@ -34,7 +34,7 @@ section .text
                 push bx  ; save viewport position of the player into the stack for later
                 mov bx, 0
                 add bx, dx
-                mov al, [sprite+bx]  
+                mov al, [buffer+bx]
                 pop bx  ; retrieve the viewport position of the player to place the correct color in its correct location
                 cmp al, 0x00
                 je .skipPlaceColor
@@ -66,7 +66,7 @@ section .text
                 push bx  ; save viewport position of the player into the stack for later
                 mov bx, 0
                 add bx, dx
-                mov al, [sprite+bx]  
+                mov al, [buffer+bx]
                 pop bx  ; retrieve the viewport position of the player to place the correct color in its correct location
                 cmp al, 0x00
                 je .skipPlaceColor1

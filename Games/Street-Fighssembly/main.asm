@@ -19,6 +19,13 @@ section .data
 
     %define FRAME_RATE 30
 
+    buffer db 6042 dup(0x00)
+    filehandle dw 0
+    filename db "sprite.bin", 0
+
+    open_msg db "Failed to open file!$"
+    read_msg db "Failed to read file!$"
+
 section .bss
     x_pos_1: resw 1
     y_pos_1: resw 1
@@ -32,9 +39,27 @@ section .text
     int 10h
     jmp init
 
-
 ; -----------------------------------------------
 init:
+    ; Open file
+    mov ah, 3Dh
+    mov al, 0
+    mov dx, filename
+    int 21h
+    jc open_failed         ; error handling
+    mov [filehandle], ax
+
+    mov ah, 3Fh
+    mov bx, [filehandle]
+    mov cx, SPRITE_WIDTH * SPRITE_HEIGHT
+    mov dx, buffer
+    int 21h
+    jc read_failed         ; error handling
+
+    mov ah, 3Eh
+    mov bx, [filehandle]
+    int 21h
+
     call clearScreen
     call positionSetup
 
@@ -99,6 +124,22 @@ resetRegisters:
     xor dx, dx
     ret
 
+open_failed:
+    mov dx, open_msg
+    call print_string
+    jmp $
+
+read_failed:
+    mov dx, read_msg
+    call print_string
+    jmp $
+
+; Reusable print_string function using int 21h/ah=09h
+print_string:
+    mov ah, 09h
+    int 21h
+    ret
+
 exitProgram:
     mov ah, 4Ch
     xor al, al
@@ -108,4 +149,3 @@ exitProgram:
 %include "KeyboardInput.inc"
 %include "Physic.inc"
 %include "Display.inc"
-%include "sprite.inc"
