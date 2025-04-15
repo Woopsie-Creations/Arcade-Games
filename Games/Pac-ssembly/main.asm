@@ -6,7 +6,11 @@ org 100h
 section .data
     %define FRAME_RATE 30
 
-    clock_save dd 0
+    ; clock_save dd 0
+
+    memory_block_pos dw 0
+
+    test_var db 0
 
 section .text
     mov ah, 00h     ;--------------------------------
@@ -15,6 +19,7 @@ section .text
 
     call clearScreen
 
+    call testfunc
     gameLoop:
         call waitForNextFrame
         call clearScreen
@@ -45,6 +50,22 @@ section .text
         ; int 0x1A
         ; mov dword [clock_save], edx
         ; ret
+
+    testfunc:
+        call resetRegisters ; yea can be useful, for now i leave him here in case
+        mov bx, 1           ; nb of 16bits sections we want to allocate
+        ; interrupt
+        mov ah, 48h
+        int 21h
+        ; if failed to allocate, exit
+        jc exitProgram
+        ; save the pos of the block allocated
+        mov word [memory_block_pos], ax
+        ; write whatever we want in the memory, by sections of 8bits (don't ask why why not 16, it's made like that so follow :))
+        mov es, ax
+        mov byte [es:0], 0x20
+        ret
+        
 
     resetRegisters:
         xor ax, ax

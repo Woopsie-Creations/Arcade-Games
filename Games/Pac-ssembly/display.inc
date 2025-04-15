@@ -2,7 +2,7 @@ section .text
     displayFrame:
         call printMaze
         call printPacman
-        ; call drawPixel
+        call drawPixel
         ret
 
     displayItem:
@@ -97,12 +97,25 @@ section .text
         drawPixel:
             mov word [item_width], 1
             mov word [item_height], 1
-            mov ax, [pacman_x_pos]
-            add ax, 9
+            mov ax, 2
             mov word [item_x_pos], ax
-            mov ax, [pacman_y_pos]
-            add ax, 6
+            mov ax, 2
             mov word [item_y_pos], ax
-            mov si, pixel
-            call displayItem
+
+            ; yeay now funny part, first get the value we want from the memory block allocated
+            mov es, [memory_block_pos] ; memory_block_pos being the thing used to save the pos in the memory of the memory block
+            mov al, [es:0]
+            mov byte [test_var], al ; then store the color somewhere (i used a variable, but i could use the stack, might also work)
+            ; then set the es register to the correct pos of the video memory block (fixed, it cannot be something else)(or can it?)
+            mov ax, 0xA000
+            mov es, ax
+            ; calculate the precise pos of the pixel we want to draw
+            mov ax, [item_y_pos]
+            mov bx, 320
+            mul bx
+            add ax, [item_x_pos]
+            mov di, ax
+            ; draw it :D
+            mov al, [test_var] ; get the color back
+            mov byte [es:di], al ; draw the pixel, es = memory block pos in the memory (set earlier), di = the pixel offset, al = the color
             ret
