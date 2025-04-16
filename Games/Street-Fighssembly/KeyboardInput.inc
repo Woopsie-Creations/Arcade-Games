@@ -50,74 +50,74 @@ section .text
 
         cmp ah, ESCAPE_KEY
         je exitProgram
-        jmp loadBuffer
+        jmp gameLoop
 
     ; ------------------------
     up1:
-        mov word [fileToLoad1], ryuJump5
+        mov word [player_current_sprite1], ryuJump5
 
         mov ax, [y_pos_1]
         add ax, SPRITE_HEIGHT
         cmp ax, WINDOW_DOWN_BORDER
-        jl loadBuffer ; skip if in the air
+        jl gameLoop ; skip if in the air
         mov byte [jumping_1], 1
         mov word [y_velocity_1], 14
-        jmp loadBuffer
+        jmp gameLoop
     
     left1:
         cmp word [x_pos_1], WINDOW_LEFT_BORDER
-        jle loadBuffer ; skip if collision
+        jle gameLoop ; skip if collision
         sub word [x_pos_1], 10
-        jmp loadBuffer
+        jmp gameLoop
     
     right1:
         mov ax, [x_pos_1]
         add ax, SPRITE_WIDTH
         cmp ax, WINDOW_RIGHT_BORDER
-        jge loadBuffer ; skip if collision
+        jge gameLoop ; skip if collision
         add word [x_pos_1], 10
-        jmp loadBuffer
+        jmp gameLoop
     
     down1:
-        mov word [fileToLoad1], ryuIdle0
+        mov word [player_current_sprite1], ryuIdle0
 
         cmp word [y_pos_1], WINDOW_DOWN_BORDER
-        je loadBuffer ; skip if collision
+        je gameLoop ; skip if collision
         add word [y_pos_1], 10
-        jmp loadBuffer
+        jmp gameLoop
 
     up2:
-        mov word [fileToLoad2], ryuJump5
+        mov word [player_current_sprite2], ryuJump5
 
         mov ax, [y_pos_2]
         add ax, SPRITE_HEIGHT
         cmp ax, WINDOW_DOWN_BORDER
-        jl loadBuffer ; skip if in the air
+        jl gameLoop ; skip if in the air
         mov byte [jumping_2], 1
         mov word [y_velocity_2], 14
-        jmp loadBuffer
+        jmp gameLoop
     
     left2:
         cmp word [x_pos_2], WINDOW_LEFT_BORDER
-        jle loadBuffer ; skip if collision
+        jle gameLoop ; skip if collision
         sub word [x_pos_2], 10
-        jmp loadBuffer
+        jmp gameLoop
     
     right2:
         mov ax, [x_pos_2]
         add ax, SPRITE_WIDTH
         cmp ax, WINDOW_RIGHT_BORDER
-        jge loadBuffer ; skip if collision
+        jge gameLoop ; skip if collision
         add word [x_pos_2], 10
-        jmp loadBuffer
+        jmp gameLoop
     
     down2:
-        mov word [fileToLoad2], ryuIdle0
+        mov word [player_current_sprite2], ryuIdle0
 
         cmp word [y_pos_2], WINDOW_DOWN_BORDER
-        jge loadBuffer ; skip if collision
+        jge gameLoop ; skip if collision
         add word [y_pos_2], 10
-        jmp loadBuffer
+        jmp gameLoop
 
 
     ; ------------------------

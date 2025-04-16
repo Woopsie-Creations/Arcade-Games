@@ -27,7 +27,7 @@ section .bss
     x_pos_2: resw 1
     y_pos_2: resw 1
 
-section .text     
+section .text
     ; set video mode
     mov ax, 13h
     int 10h
@@ -41,15 +41,17 @@ init:
     call clearScreen
 
     ; load inital sprite
-    mov word [fileToLoad1], ryuIdle0 
-    mov word [fileToLoad2], ryuIdle0
-
-    call loadBuffer
+    lea ax, [ryuIdle0]
+    mov [player_current_sprite1], ax
+    lea ax, [ryuIdle0]
+    mov [player_current_sprite2], ax
 
 
 gameLoop:
     call applyGravity
     call setViewport
+    call place_second_player
+    call place_first_player
     call displayViewport
 
     call waitForNextFrame  ; Delay for consistent frame timing

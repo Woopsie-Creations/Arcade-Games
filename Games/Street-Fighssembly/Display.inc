@@ -17,6 +17,11 @@ section .text
             dec bx
             loop clearViewport
 
+    place_second_player:
+        ; Load specific sprite
+        mov dx, [player_current_sprite2]
+        call loadBuffer
+
         ; place second player
         ; -------------------
         ; find the player position from the screen position to the viewport position
@@ -34,7 +39,7 @@ section .text
                 push bx  ; save viewport position of the player into the stack for later
                 mov bx, 0
                 add bx, dx
-                mov al, [buffer1+bx]
+                mov al, [buffer+bx]
                 pop bx  ; retrieve the viewport position of the player to place the correct color in its correct location
                 cmp al, 0x00
                 je .skipPlaceColor
@@ -48,6 +53,13 @@ section .text
             add bx, 300 - SPRITE_WIDTH 
             cmp dx, SPRITE_SIZE
             jne .eachSpriteRow ; continue until we have done each pixels
+        ret
+        
+
+    place_first_player:
+        ; Load specific sprite
+        mov dx, [player_current_sprite1]
+        call loadBuffer
 
         ; place first player, it is placed after to make put it in front of the second player
         ; -------------------
@@ -66,7 +78,7 @@ section .text
                 push bx  ; save viewport position of the player into the stack for later
                 mov bx, 0
                 add bx, dx
-                mov al, [buffer1+bx]
+                mov al, [buffer+bx]
                 pop bx  ; retrieve the viewport position of the player to place the correct color in its correct location
                 cmp al, 0x00
                 je .skipPlaceColor1
