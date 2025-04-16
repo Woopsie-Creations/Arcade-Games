@@ -34,7 +34,7 @@ section .text
                 push bx  ; save viewport position of the player into the stack for later
                 mov bx, 0
                 add bx, dx
-                mov al, [buffer+bx]
+                mov al, [buffer1+bx]
                 pop bx  ; retrieve the viewport position of the player to place the correct color in its correct location
                 cmp al, 0x00
                 je .skipPlaceColor
@@ -46,7 +46,7 @@ section .text
                 cmp cx, SPRITE_WIDTH
                 jne .eachSpriteLine ; if it gets to the end of the line, go to the next line
             add bx, 300 - SPRITE_WIDTH 
-            cmp dx, SPRITE_WIDTH * SPRITE_HEIGHT
+            cmp dx, SPRITE_SIZE
             jne .eachSpriteRow ; continue until we have done each pixels
 
         ; place first player, it is placed after to make put it in front of the second player
@@ -66,7 +66,7 @@ section .text
                 push bx  ; save viewport position of the player into the stack for later
                 mov bx, 0
                 add bx, dx
-                mov al, [buffer+bx]
+                mov al, [buffer1+bx]
                 pop bx  ; retrieve the viewport position of the player to place the correct color in its correct location
                 cmp al, 0x00
                 je .skipPlaceColor1
@@ -78,7 +78,7 @@ section .text
                 cmp cx, SPRITE_WIDTH
                 jne .eachSpriteLine1 ; if it gets to the end of the line, go to the next line
             add bx, 300 - SPRITE_WIDTH 
-            cmp dx, SPRITE_WIDTH * SPRITE_HEIGHT
+            cmp dx, SPRITE_SIZE
             jne .eachSpriteRow1 ; continue until we have done each pixels
         ret
 

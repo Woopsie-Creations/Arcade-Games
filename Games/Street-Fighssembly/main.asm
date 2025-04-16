@@ -16,15 +16,9 @@ section .data
 
     SPRITE_WIDTH equ 57
     SPRITE_HEIGHT equ 106
+    SPRITE_SIZE equ SPRITE_WIDTH * SPRITE_HEIGHT
 
     %define FRAME_RATE 30
-
-    buffer db 6042 dup(0x00)
-    filehandle dw 0
-    filename db "sprite.bin", 0
-
-    open_msg db "Failed to open file!$"
-    read_msg db "Failed to read file!$"
 
 section .bss
     x_pos_1: resw 1
@@ -33,7 +27,7 @@ section .bss
     x_pos_2: resw 1
     y_pos_2: resw 1
 
-section .text
+section .text     
     ; set video mode
     mov ax, 13h
     int 10h
@@ -41,27 +35,16 @@ section .text
 
 ; -----------------------------------------------
 init:
+
     ; Open file
-    mov ah, 3Dh
-    mov al, 0
-    mov dx, filename
-    int 21h
-    jc open_failed         ; error handling
-    mov [filehandle], ax
-
-    mov ah, 3Fh
-    mov bx, [filehandle]
-    mov cx, SPRITE_WIDTH * SPRITE_HEIGHT
-    mov dx, buffer
-    int 21h
-    jc read_failed         ; error handling
-
-    mov ah, 3Eh
-    mov bx, [filehandle]
-    int 21h
-
-    call clearScreen
     call positionSetup
+    call clearScreen
+
+    ; load inital sprite
+    mov word [fileToLoad1], ryuIdle0 
+    mov word [fileToLoad2], ryuIdle0
+
+    call loadBuffer
 
 
 gameLoop:
@@ -124,22 +107,6 @@ resetRegisters:
     xor dx, dx
     ret
 
-open_failed:
-    mov dx, open_msg
-    call print_string
-    jmp $
-
-read_failed:
-    mov dx, read_msg
-    call print_string
-    jmp $
-
-; Reusable print_string function using int 21h/ah=09h
-print_string:
-    mov ah, 09h
-    int 21h
-    ret
-
 exitProgram:
     mov ah, 4Ch
     xor al, al
@@ -148,4 +115,5 @@ exitProgram:
 
 %include "KeyboardInput.inc"
 %include "Physic.inc"
+%include "loadFromFile.inc"
 %include "Display.inc"

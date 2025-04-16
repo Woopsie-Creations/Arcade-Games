@@ -10,7 +10,8 @@ DOSBOX_BIN="/Users/$USER/Desktop/dosbox.app/Contents/MacOS/DOSBox"
 DOSBOX_CONF="/Users/$USER/Library/Preferences/DOSBox 0.74-3-3 Preferences"
 
 # Assemble the sprites
-"$NASM" "$GAME_DIR/sprite.asm" -f bin -o "$GAME_BIN/sprite.bin"
+"$NASM" "$GAME_DIR/sprite.asm" -f bin -o "$GAME_BIN/ryuIdle0.bin"
+"$NASM" "$GAME_DIR/ryu_jump_5.asm" -f bin -o "$GAME_BIN/ryuJump5.bin"
 
 # Assemble the game
 "$NASM" "$GAME_DIR/main.asm" -f bin -o "$GAME_BIN/SF.com"

@@ -66,7 +66,7 @@ def process_images_in_folder(folder_path):
     for filename in os.listdir(folder_path):
         if filename.lower().endswith(".png"):
             image_path = os.path.join(folder_path, filename)
-            output_file = os.path.join(folder_path, f"{os.path.splitext(filename)[0]}.inc")
+            output_file = os.path.join(folder_path, f"{os.path.splitext(filename)[0]}.asm")
             png_to_asm_variable(image_path, output_file)
 
 if __name__ == "__main__":
