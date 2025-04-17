@@ -1,11 +1,63 @@
 section .text
+    initViewport:
+        mov bx, 4000        ; nb of 16bytes sections we want to allocate
+        ; interrupt
+        mov ah, 48h
+        int 21h
+        ; if failed to allocate, exit
+        jc exitProgram
+        ; save the pos of the block allocated
+        mov word [viewport_memory_block_pos], ax
+        ret
+
     displayFrame:
+        call clearViewport
         call printMaze
         call printPacman
-        call drawPixel
+        ; call drawPixel
+        call displayViewport
+        ret
+
+    clearViewport:
+        ; "select" the memory block allocated for the viewport
+        mov ax, [viewport_memory_block_pos]
+        mov es, ax
+        ; set the position to the first pixel
+        mov di, 0
+        .clearEachPixels:
+            ; set the pixel selected to black
+            mov byte [es:di], 0x00
+            ; loop until it has done every pixels
+            inc di
+            cmp di, SCREEN_HEIGHT * SCREEN_WIDTH
+            jne .clearEachPixels
+        ret
+
+    displayViewport:
+        ; set the position to the first pixel
+        mov di, 0
+        .eachPixel:
+            ; go to the memory block for the viewport to then take the colour of the selected pixel of the viewport
+            mov ax, [viewport_memory_block_pos]
+            mov es, ax
+            xor ax, ax  ; clear the register ax because we will only use the lower part (al) for the colour
+            mov al, [es:di]
+            push ax     ; then save the colour
+            ; then go the memory block for the screen, retrieve the colour and place it (same pixel position as the viewport because they have the same size)
+            mov ax, 0xA000
+            mov es, ax
+            pop ax
+            mov byte [es:di], al
+            ; loop until it has done every pixels
+            inc di
+            cmp di, SCREEN_HEIGHT * SCREEN_WIDTH
+            jne .eachPixel
         ret
 
     displayItem:
+        ; "select" the memory block allocated for the viewport
+        mov ax, [viewport_memory_block_pos]
+        mov es, ax
         ; calculate the position of the item
         mov ax, [item_y_pos]
         mov bx, 320
@@ -14,30 +66,28 @@ section .text
         mov di, ax
         ; draw the item
         mov dx, [item_height]
-        .eachRow:
+        .eachItemRow:
             mov cx, [item_width]
-            .eachLine:
-                lodsb
-                cmp al, 0
-                je .skipDraw
-                stosb
-                jmp .nextPixel
-                .skipDraw:
-                add di, 1
-                .nextPixel:
-                loop .eachLine
-            add di, 320
+            .eachItemColumn:
+                xor ax, ax
+                ; get the colour of the sprite at said position in the memory by the register si
+                mov al, [si]
+                cmp al, 0x00
+                je .skipTransparent      ; skip the colour placement if transparent
+                mov byte [es:di], al     ; place the pixel on the viewport
+                .skipTransparent:
+                ; go to the next pixel
+                add si, 1
+                inc di
+                ; if it hasn't reached the end of the line, loop
+                dec cx
+                jnz .eachItemColumn
+            ; go to the next row
+            add di, SCREEN_WIDTH
             sub di, [item_width]
+            ; if it hasn't reached the last row, loop
             dec dx
-            jnz .eachRow
-        ret
-
-    clearScreen:
-        mov ax, 0xA000
-        mov es, ax
-        mov di, 0
-        mov cx, 320*200
-        rep stosb
+            jnz .eachItemRow
         ret
 
     printPacman:
@@ -94,28 +144,11 @@ section .text
             jne .eachMazeRow
         ret
 
+        ; testing purpose
         drawPixel:
             mov word [item_width], 1
             mov word [item_height], 1
             mov ax, 2
             mov word [item_x_pos], ax
             mov ax, 2
-            mov word [item_y_pos], ax
-
-            ; yeay now funny part, first get the value we want from the memory block allocated
-            mov es, [memory_block_pos] ; memory_block_pos being the thing used to save the pos in the memory of the memory block
-            mov al, [es:0]
-            mov byte [test_var], al ; then store the color somewhere (i used a variable, but i could use the stack, might also work)
-            ; then set the es register to the correct pos of the video memory block (fixed, it cannot be something else)(or can it?)
-            mov ax, 0xA000
-            mov es, ax
-            ; calculate the precise pos of the pixel we want to draw
-            mov ax, [item_y_pos]
-            mov bx, 320
-            mul bx
-            add ax, [item_x_pos]
-            mov di, ax
-            ; draw it :D
-            mov al, [test_var] ; get the color back
-            mov byte [es:di], al ; draw the pixel, es = memory block pos in the memory (set earlier), di = the pixel offset, al = the color
             ret

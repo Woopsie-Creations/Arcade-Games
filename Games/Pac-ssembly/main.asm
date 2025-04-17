@@ -6,23 +6,16 @@ org 100h
 section .data
     %define FRAME_RATE 30
 
-    ; clock_save dd 0
-
-    memory_block_pos dw 0
-
-    test_var db 0
-
 section .text
     mov ah, 00h     ;--------------------------------
     mov al, 13h     ; set screen 320x200 256colours
     int 10h         ;--------------------------------
 
     call clearScreen
+    call initViewport
 
-    call testfunc
     gameLoop:
         call waitForNextFrame
-        call clearScreen
         call pacmanMovement
         call pacmanAnimation
         call displayFrame
@@ -31,41 +24,18 @@ section .text
 ; ------------------------------
     waitForNextFrame:
         ; will not stay like this, it works for now by being kind of a 30 fps loop, but it is juts a sleep function, not even dynamic
-        mov dx, 30000
+        mov dx, 10000
         mov ah, 0x86
         int 0x15
         ret
-        ; cmp dword [clock_save], 0
-        ; je .initClock
-        ; .wait:
-        ;     mov ah, 0x00
-        ;     int 0x1A
-        ;     mov ebx, [clock_save]
-        ;     mov eax, edx
-        ;     sub eax, ebx
-        ;     cmp eax, 1
-        ;     jb .wait
-        ; .initClock:
-        ; mov ah, 0x00
-        ; int 0x1A
-        ; mov dword [clock_save], edx
-        ; ret
 
-    testfunc:
-        call resetRegisters ; yea can be useful, for now i leave him here in case
-        mov bx, 1           ; nb of 16bits sections we want to allocate
-        ; interrupt
-        mov ah, 48h
-        int 21h
-        ; if failed to allocate, exit
-        jc exitProgram
-        ; save the pos of the block allocated
-        mov word [memory_block_pos], ax
-        ; write whatever we want in the memory, by sections of 8bits (don't ask why why not 16, it's made like that so follow :))
+    clearScreen:
+        mov ax, 0xA000
         mov es, ax
-        mov byte [es:0], 0x20
+        mov di, 0
+        mov cx, 320*200
+        rep stosb
         ret
-        
 
     resetRegisters:
         xor ax, ax
@@ -78,6 +48,16 @@ section .text
         mov ah, 4Ch
         xor al, al
         int 21h
+
+    ; deallocate the memory used for the viewport (so it's more clean)
+    deallocationViewport:
+        mov ax, [viewport_memory_block_pos]
+        mov es, ax
+        xor ax, ax
+        mov ah, 49h
+        int 21h
+        jc gameLoop ; return to the gameloop in case of failure (just to verify for now, will probably change)
+        ret
 
 %include "display.inc"
 %include "key_input.inc"

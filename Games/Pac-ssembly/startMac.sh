@@ -12,6 +12,6 @@ DOSBOX_BIN="/Users/$USER/Documents/dosbox.app/Contents/MacOS/DOSBox"
 "$NASM" "$GAME_DIR/main.asm" -f bin -o "$GAME_BIN/PS.com"
 
 # Run the game with the explicit config
-"$DOSBOX_BIN" -c "MOUNT c $GAME_BIN" -c "c:" -c "PS.com" -c "exit"
+"$DOSBOX_BIN" -c "MOUNT c $GAME_BIN" -c "c:" -c "loadhigh PS.com" -c "exit"
 
 
