@@ -1,8 +1,4 @@
 section .data
-    ; Sprite files (paths)
-    ryuIdle0 db "ryuIdle0.bin", 0
-    ryuJump5 db "ryuJump5.bin", 0
-
     ; Debug error messages
     open_msg db "Failed to open file!$"
     read_msg db "Failed to read file!$"
@@ -10,9 +6,6 @@ section .data
 section .bss
     buffer resb SPRITE_SIZE
     filehandle resw 1
-    ; For both players
-    player_current_sprite1: resw 1
-    player_current_sprite2: resw 1
 
 section .text
     loadBuffer:

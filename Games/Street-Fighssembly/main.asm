@@ -118,4 +118,5 @@ exitProgram:
 %include "KeyboardInput.inc"
 %include "Physic.inc"
 %include "loadFromFile.inc"
+%include "animations.inc"
 %include "Display.inc"
