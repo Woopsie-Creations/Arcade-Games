@@ -17,4 +17,4 @@ DOSBOX_CONF="/Users/$USER/Library/Preferences/DOSBox 0.74-3-3 Preferences"
 "$NASM" "$GAME_DIR/main.asm" -f bin -o "$GAME_BIN/SF.com"
 
 # Run the game with the explicit config
-"$DOSBOX_BIN" -c "MOUNT c $GAME_BIN" -c "c:" -c "SF.com" -c "exit"
+"$DOSBOX_BIN" -c "MOUNT c $GAME_BIN" -c "c:" -c "loadhigh SF.com" -c "exit"

@@ -33,23 +33,23 @@ section .text
         je exitProgram
 
         ; first player
-        cmp ah, LEFT_ARROW
+        cmp ah, A_KEY
         je left1
-        cmp ah, RIGHT_ARROW
+        cmp ah, D_KEY
         je right1
-        cmp ah, UP_ARROW 
+        cmp ah, W_KEY 
         je up1
-        cmp ah, DOWN_ARROW
+        cmp ah, S_KEY
         je down1
 
         ; second player
-        cmp ah, A_KEY
+        cmp ah, LEFT_ARROW
         je left2
-        cmp ah, D_KEY
+        cmp ah, RIGHT_ARROW
         je right2
-        cmp ah, W_KEY 
+        cmp ah, UP_ARROW 
         je up2
-        cmp ah, S_KEY
+        cmp ah, DOWN_ARROW
         je down2
 
         jmp animatePlayers
