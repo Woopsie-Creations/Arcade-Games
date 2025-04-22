@@ -43,7 +43,7 @@ init:
     ; load inital sprite
     lea ax, [ryuIdle0]
     mov [player_current_sprite1], ax
-    lea ax, [ryuIdle0]
+    lea ax, [ryuIdleLeft0]
     mov [player_current_sprite2], ax
 
 

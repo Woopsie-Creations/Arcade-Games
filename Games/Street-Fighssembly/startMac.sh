@@ -10,9 +10,12 @@ DOSBOX_BIN="/Users/$USER/Desktop/dosbox.app/Contents/MacOS/DOSBox"
 DOSBOX_CONF="/Users/$USER/Library/Preferences/DOSBox 0.74-3-3 Preferences"
 
 # Assemble the .asm sprites
+rm -rf "$GAME_BIN/Sprites/"*
+rm -rf "$GAME_BIN/Sprites/".* 2>/dev/null
+
 find "$GAME_DIR/Sprites" -type f -name '*.asm' | while read -r asm_file; do
     filename=$(basename "$asm_file" .asm)
-    output_file="$GAME_BIN/${filename}.bin"
+    output_file="$GAME_BIN/Sprites/${filename}.bin"
     "$NASM" "$asm_file" -f bin -o "$output_file"
 done
 
