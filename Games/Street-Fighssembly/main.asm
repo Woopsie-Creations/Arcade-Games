@@ -4,7 +4,7 @@ section .data
     ; constant initialization
     WINDOW_TOP_BORDER equ 10
     WINDOW_LEFT_BORDER equ 10
-    WINDOW_RIGHT_BORDER equ 310
+    WINDOW_RIGHT_BORDER equ 307
     WINDOW_DOWN_BORDER equ 190
 
     DELAY_WAITLOOP equ 2000
@@ -44,8 +44,7 @@ init:
     lea ax, [ryuIdle0]
     mov [player_current_sprite1], ax
     lea ax, [ryuIdleLeft0]
-    mov [player_current_sprite2], ax
-
+    mov [player_current_sprite2], ax 
 
 gameLoop:
     call applyGravity

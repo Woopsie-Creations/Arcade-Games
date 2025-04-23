@@ -2,8 +2,14 @@ section .data
     ; Sprite files (paths)
     ryuIdle0 db "Sprites/Idle0.bin", 0
     ryuIdleLeft0 db "Sprites/LIdle0.bin", 0
+
     ryuJump5 db "Sprites/Jump5.bin", 0
     ryuJumpLeft5 db "Sprites/LJump5.bin", 0
+    ryuFall5 db "Sprites/Jump5.bin", 0
+    ryuFallLeft5 db "Sprites/LJump5.bin", 0
+
+    ryuCrouch db "Sprites/Crouch.bin", 0
+    ryuCrouchLeft db "Sprites/LCrouch.bin", 0
 
 section .bss
     ; For both players
@@ -44,10 +50,14 @@ section .text
             je .jumping
 
             ; Default: fall
-            mov word [player_current_sprite1], ryuJump5
+            mov word [player_current_sprite1], ryuFall5
             ret
         .jumping:
             mov word [player_current_sprite1], ryuJump5
+            ret
+        .crouch:
+            ; Default crouch:
+            mov word [player_current_sprite1], ryuCrouch
             ret
             
         .left:
@@ -70,11 +80,15 @@ section .text
             je .leftJumping
 
             ; Default: fall
+            mov word [player_current_sprite1], ryuFallLeft5
+            ret
+        .leftJumping:
             mov word [player_current_sprite1], ryuJumpLeft5
             ret
-            .leftJumping:
-                mov word [player_current_sprite1], ryuJumpLeft5
-                ret
+        .leftCrouch:
+            ; Default crouch
+            mov word [player_current_sprite1], ryuCrouchLeft
+            ret
     
     animatePlayer2:
         ; Should be left sprite?
@@ -103,10 +117,14 @@ section .text
             je .jumping
 
             ; Default: fall
-            mov word [player_current_sprite2], ryuJump5
+            mov word [player_current_sprite2], ryuFall5
             ret
         .jumping:
             mov word [player_current_sprite2], ryuJump5
+            ret
+        .crouch:
+            ; Default crouch:
+            mov word [player_current_sprite2], ryuCrouch
             ret
             
         .left:
@@ -129,8 +147,12 @@ section .text
             je .leftJumping
 
             ; Default: fall
+            mov word [player_current_sprite2], ryuFallLeft5
+            ret
+        .leftJumping:
             mov word [player_current_sprite2], ryuJumpLeft5
             ret
-            .leftJumping:
-                mov word [player_current_sprite2], ryuJumpLeft5
-                ret
+        .leftCrouch:
+            ; Default crouch
+            mov word [player_current_sprite2], ryuCrouchLeft
+            ret
