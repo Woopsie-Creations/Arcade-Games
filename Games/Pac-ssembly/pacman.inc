@@ -1,154 +1,73 @@
+%macro colTest 6
+    %6:
+        mov ax, %1
+        sub ax, %4
+        cmp word %2, -2
+        jne .testOtherSide
+        add ax, 2
+        jmp .endCol
+        .testOtherSide:
+        cmp word %2, 2
+        jne .sideCol
+        add ax, 9
+        jmp .endCol
+        .sideCol:
+        cmp byte %3, 1
+        je .firstSideCol
+        add ax, 5
+        .firstSideCol:
+        add ax, 3
+        .endCol:
+        mov bx, %5
+        xor dx, dx
+        div bx
+%endmacro
+
+%macro colVerifier 1
+    cmp al, 35
+    je %1
+    cmp al, 36
+    je %1
+    cmp al, 37
+    je %1
+    jmp .skipMovement
+%endmacro
+
 section .text
     pacmanMovement:
-        cmp byte [pacman_direction], 0
-        je .goUp
-        cmp byte [pacman_direction], 1
-        je .goRight
-        cmp byte [pacman_direction], 2
-        je .goDown
-        cmp byte [pacman_direction], 3
-        je .goLeft
-        .goUp:
-            mov ax, [pacman_y_pos]
-            sub ax, MAZE_Y_POS
-            add ax, WALL_HEIGHT / 2 - 1
-            mov bx, WALL_HEIGHT
-            xor dx, dx
-            div bx
-            mov bx, COLUMN_NUMBER
-            xor dx, dx
-            mul bx
-            push ax
+        colTest [pacman_y_pos], [pacman_y_speed], [col_test_nb], MAZE_Y_POS, WALL_HEIGHT, colY
+        mov bx, COLUMN_NUMBER
+        xor dx, dx
+        mul bx
+        push ax
 
-            mov ax, [pacman_x_pos]
-            sub ax, MAZE_X_POS
-            add ax, PACMAN_WIDTH / 2
-            mov bx, WALL_WIDTH
-            xor dx, dx
-            div bx
-            mov bx, ax
-            pop ax
+        colTest [pacman_x_pos], [pacman_x_speed], [col_test_nb], MAZE_X_POS, WALL_WIDTH, colX
+        mov bx, ax
+        pop ax
 
-            add bx, ax
-            shl bx, 1
-            mov ax, [maze+bx]
-            cmp ax, 35
-            je .moveUp
-            cmp ax, 36
-            je .moveUp
-            cmp ax, 37
-            je .moveUp
-            jmp .endMovement
-            .moveUp:
-            sub word [pacman_y_pos], 2
-            ret
-        .goRight:
-            mov ax, [pacman_y_pos]
-            sub ax, MAZE_Y_POS
-            add ax, PACMAN_HEIGHT / 2
-            mov bx, WALL_HEIGHT
-            xor dx, dx
-            div bx
-            mov bx, COLUMN_NUMBER
-            xor dx, dx
-            mul bx
-            push ax
+        add bx, ax
+        mov al, [maze+bx]
+        cmp byte [col_test_nb], 1
+        jne .secondColTest
+        mov byte [col_test_nb], 2
+        colVerifier pacmanMovement
+        .secondColTest:
+        mov byte [col_test_nb], 1
+        colVerifier .doMovement
 
-            mov ax, [pacman_x_pos]
-            sub ax, MAZE_X_POS
-            add ax, PACMAN_WIDTH / 2 + WALL_WIDTH / 2
-            mov bx, WALL_WIDTH
-            xor dx, dx
-            div bx
-            mov bx, ax
-            pop ax
-
-            add bx, ax
-            shl bx, 1
-            mov ax, [maze+bx]
-            cmp ax, 35
-            je .moveRight
-            cmp ax, 36
-            je .moveRight
-            cmp ax, 37
-            je .moveRight
-            jmp .endMovement
-            .moveRight:
-            add word [pacman_x_pos], 2
-            ret
-        .goDown:
-            mov ax, [pacman_y_pos]
-            sub ax, MAZE_Y_POS
-            add ax, PACMAN_HEIGHT / 2 + WALL_HEIGHT / 2
-            mov bx, WALL_HEIGHT
-            xor dx, dx
-            div bx
-            mov bx, COLUMN_NUMBER
-            xor dx, dx
-            mul bx
-            push ax
-
-            mov ax, [pacman_x_pos]
-            sub ax, MAZE_X_POS
-            add ax, PACMAN_WIDTH / 2
-            mov bx, WALL_WIDTH
-            xor dx, dx
-            div bx
-            mov bx, ax
-            pop ax
-
-            add bx, ax
-            shl bx, 1
-            mov ax, [maze+bx]
-            cmp ax, 35
-            je .moveDown
-            cmp ax, 36
-            je .moveDown
-            cmp ax, 37
-            je .moveDown
-            jmp .endMovement
-            .moveDown:
-            add word [pacman_y_pos], 2
-            ret
-        .goLeft:
-            mov ax, [pacman_y_pos]
-            sub ax, MAZE_Y_POS
-            add ax, PACMAN_HEIGHT / 2
-            mov bx, WALL_HEIGHT
-            xor dx, dx
-            div bx
-            mov bx, COLUMN_NUMBER
-            xor dx, dx
-            mul bx
-            push ax
-
-            mov ax, [pacman_x_pos]
-            sub ax, MAZE_X_POS
-            add ax, WALL_WIDTH / 2 - 1
-            mov bx, WALL_WIDTH
-            xor dx, dx
-            div bx
-            mov bx, ax
-            pop ax
-
-            add bx, ax
-            shl bx, 1
-            mov ax, [maze+bx]
-            cmp ax, 35
-            je .moveLeft
-            cmp ax, 36
-            je .moveLeft
-            cmp ax, 37
-            je .moveLeft
-            jmp .endMovement
-            .moveLeft:
-            sub word [pacman_x_pos], 2
-            ret
-        .endMovement:
+        .doMovement:
+        inc byte [pacman_animation_frame]
+        mov ax, [pacman_x_speed]
+        add word [pacman_x_pos], ax
+        mov ax, [pacman_y_speed]
+        add word [pacman_y_pos], ax
+        ret
+        .skipMovement:
+        mov byte [col_test_nb], 1
+        mov byte [pacman_animation_frame], 8
         ret
 
     pacmanAnimation:
-        inc byte [pacman_animation_frame]
         cmp byte [pacman_animation_frame], 2
         je .pacmanFrame1
         cmp byte [pacman_animation_frame], 4

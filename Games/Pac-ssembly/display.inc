@@ -122,7 +122,8 @@ section .text
             mov dx, 0
             .eachMazeColumn:
                 push dx
-                mov ax, [bx]
+                xor ax, ax
+                mov al, [bx]
                 push bx
                 mov bx, WALL_WIDTH * WALL_HEIGHT
                 mul bx
@@ -132,7 +133,7 @@ section .text
                 add word [item_x_pos], WALL_WIDTH
                 pop bx
                 pop dx
-                add bx, 2
+                inc bx
                 inc dx
                 cmp dx, COLUMN_NUMBER
                 jne .eachMazeColumn

@@ -40,6 +40,8 @@ section .text
         cmp byte [pacman_direction], 0
         je gameLoop
         mov byte [pacman_direction], 0
+        mov word [pacman_y_speed], -2
+        mov word [pacman_x_speed], 0
         mov byte [item+0], 1
         mov byte [pacman_animation_frame], 0
         jmp gameLoop
@@ -48,6 +50,8 @@ section .text
         cmp byte [pacman_direction], 1
         je gameLoop
         mov byte [pacman_direction], 1
+        mov word [pacman_x_speed], 2
+        mov word [pacman_y_speed], 0
         mov byte [item+0], 3
         mov byte [pacman_animation_frame], 0
         jmp gameLoop
@@ -56,6 +60,8 @@ section .text
         cmp byte [pacman_direction], 2
         je gameLoop
         mov byte [pacman_direction], 2
+        mov word [pacman_y_speed], 2
+        mov word [pacman_x_speed], 0
         mov byte [item+0], 5
         mov byte [pacman_animation_frame], 0
         jmp gameLoop
@@ -64,6 +70,8 @@ section .text
         cmp byte [pacman_direction], 3
         je gameLoop
         mov byte [pacman_direction], 3
+        mov word [pacman_x_speed], -2
+        mov word [pacman_y_speed], 0
         mov byte [item+0], 7
         mov byte [pacman_animation_frame], 0
         jmp gameLoop
