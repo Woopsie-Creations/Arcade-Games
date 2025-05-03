@@ -22,6 +22,56 @@ org 100h
         loop .to_ascii_loop
 %endmacro
 
+%macro updateScore 1
+    ; increment number in ax
+    ; if number too big:
+    ;   - dx = hundred thousand digits 
+    ;   - cx = ten thousand digits 
+    ; else dx AND cx should be = 0
+    mov ax, %1
+    cmp dx, 1
+    jae .hundredthousands
+    cmp cx, 1
+    jae .tenthousands
+    cmp ax, 100
+    jb .tens
+    cmp ax, 1000
+    jb .hundreds
+    cmp ax, 10000
+    jb .thousands
+
+    .hundredthousands:
+        inc byte [current_score]
+        dec dx
+        cmp dx, 1
+        jae .hundredthousands
+
+    .tenthousands:
+        inc byte [current_score+1]
+        dec cx
+        cmp cx, 1
+        jae .tenthousands
+
+    .thousands:
+        inc byte [current_score+2]
+        sub ax, 1000
+        cmp ax, 1000
+        jae .thousands
+
+    .hundreds:
+        inc byte [current_score+3]
+        sub ax, 100
+        cmp ax, 100
+        jae .hundreds
+
+    .tens:
+        inc byte [current_score+4]
+        sub ax, 10
+        cmp ax, 0
+        jne .tens
+    .end:
+%endmacro
+
 section .data
     current_score times 6 db 0
     high_score times 6 db 0
@@ -32,6 +82,10 @@ section .bss
     
 section .text
     start:
+        mov dx, 6
+        mov cx, 9
+        updateScore 6990
+        
         ; get high_score from file
         call getHighScore
         ; then compare it with current_score
