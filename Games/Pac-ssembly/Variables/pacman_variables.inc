@@ -10,6 +10,9 @@ section .data
     pacman_x_speed dw 2
     pacman_y_speed dw 0
 
+    pacman_x_speed_buffer dw 0
+    pacman_y_speed_buffer dw 0
+
     col_test_nb db 1
 
     pacman_animation_frame db 0

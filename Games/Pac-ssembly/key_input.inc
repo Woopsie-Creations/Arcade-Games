@@ -1,3 +1,12 @@
+%macro applyKeyPress 4
+    cmp byte [%1], %2
+    je gameLoop
+
+    mov word [pacman_x_speed_buffer], %3
+    mov word [pacman_y_speed_buffer], %4
+    jmp gameLoop
+%endmacro
+
 section .data
     %define LEFT_ARROW 4Bh
     %define RIGHT_ARROW 4Dh
@@ -13,8 +22,6 @@ section .data
 
 section .text
     readKeyboard:
-        xor cx, cx
-        
         ; is key pressed ?
         mov ah, 01h 
         int 16h
@@ -37,41 +44,21 @@ section .text
         jmp gameLoop
 
     upKey:
-        cmp byte [pacman_direction], 0
-        je gameLoop
-        mov byte [pacman_direction], 0
-        mov word [pacman_y_speed], -2
-        mov word [pacman_x_speed], 0
+        applyKeyPress pacman_y_speed, -2, 0, -2
         mov byte [item+0], 1
         mov byte [pacman_animation_frame], 0
-        jmp gameLoop
 
     rightKey:
-        cmp byte [pacman_direction], 1
-        je gameLoop
-        mov byte [pacman_direction], 1
-        mov word [pacman_x_speed], 2
-        mov word [pacman_y_speed], 0
+        applyKeyPress pacman_x_speed, 2, 2, 0
         mov byte [item+0], 3
         mov byte [pacman_animation_frame], 0
-        jmp gameLoop
 
     downKey:
-        cmp byte [pacman_direction], 2
-        je gameLoop
-        mov byte [pacman_direction], 2
-        mov word [pacman_y_speed], 2
-        mov word [pacman_x_speed], 0
+        applyKeyPress pacman_y_speed, 2, 0, 2
         mov byte [item+0], 5
         mov byte [pacman_animation_frame], 0
-        jmp gameLoop
 
     leftKey:
-        cmp byte [pacman_direction], 3
-        je gameLoop
-        mov byte [pacman_direction], 3
-        mov word [pacman_x_speed], -2
-        mov word [pacman_y_speed], 0
+        applyKeyPress pacman_x_speed, -2, -2, 0
         mov byte [item+0], 7
         mov byte [pacman_animation_frame], 0
-        jmp gameLoop

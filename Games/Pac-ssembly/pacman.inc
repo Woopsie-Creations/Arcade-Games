@@ -24,6 +24,10 @@
 %endmacro
 
 %macro colVerifier 1
+    cmp al, 32
+    je .tunnelTeleport
+    cmp al, 33
+    je .tunnelTeleport
     cmp al, 35
     je %1
     cmp al, 36
@@ -35,13 +39,18 @@
 
 section .text
     pacmanMovement:
-        colTest [pacman_y_pos], [pacman_y_speed], [col_test_nb], MAZE_Y_POS, WALL_HEIGHT, colY
+        mov dx, [pacman_x_speed_buffer]
+        push dx
+        mov dx, [pacman_y_speed_buffer]
+        .collisionTest:
+        colTest [pacman_y_pos], dx, [col_test_nb], MAZE_Y_POS, WALL_HEIGHT, colY
         mov bx, COLUMN_NUMBER
         xor dx, dx
         mul bx
         push ax
 
-        colTest [pacman_x_pos], [pacman_x_speed], [col_test_nb], MAZE_X_POS, WALL_WIDTH, colX
+        pop dx
+        colTest [pacman_x_pos], dx, [col_test_nb], MAZE_X_POS, WALL_WIDTH, colX
         mov bx, ax
         pop ax
 
@@ -56,16 +65,24 @@ section .text
         colVerifier .doMovement
 
         .doMovement:
-        inc byte [pacman_animation_frame]
-        mov ax, [pacman_x_speed]
-        add word [pacman_x_pos], ax
-        mov ax, [pacman_y_speed]
-        add word [pacman_y_pos], ax
-        ret
+            inc byte [pacman_animation_frame]
+            mov ax, [pacman_x_speed]
+            add word [pacman_x_pos], ax
+            mov ax, [pacman_y_speed]
+            add word [pacman_y_pos], ax
+            ret
         .skipMovement:
-        mov byte [col_test_nb], 1
-        mov byte [pacman_animation_frame], 8
-        ret
+            mov byte [col_test_nb], 1
+            mov byte [pacman_animation_frame], 8
+            ret
+        .tunnelTeleport:
+            cmp word [pacman_x_speed], -2
+            je .tpToRight
+            sub word [pacman_x_pos], WALL_WIDTH * 25
+            ret
+            .tpToRight:
+            add word [pacman_x_pos], WALL_WIDTH * 25
+            ret
 
     pacmanAnimation:
         cmp byte [pacman_animation_frame], 2
@@ -87,13 +104,13 @@ section .text
             mov byte [item+0], 0
             ret
         .pacmanFrame4:
-            cmp byte [pacman_direction], 0
+            cmp word [pacman_y_speed], -2
             je .firstFrameUp
-            cmp byte [pacman_direction], 1
+            cmp word [pacman_x_speed], 2
             je .firstFrameRight
-            cmp byte [pacman_direction], 2
+            cmp word [pacman_y_speed], 2
             je .firstFrameDown
-            cmp byte [pacman_direction], 3
+            cmp word [pacman_x_speed], -2
             je .firstFrameLeft
             .firstFrameUp:
                 mov byte [item+0], 1
