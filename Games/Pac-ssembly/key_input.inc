@@ -2,8 +2,8 @@
     cmp byte [%1], %2
     je gameLoop
 
-    mov word [pacman_x_speed_buffer], %3
-    mov word [pacman_y_speed_buffer], %4
+    mov word [pacman_x_speed], %3
+    mov word [pacman_y_speed], %4
     jmp gameLoop
 %endmacro
 

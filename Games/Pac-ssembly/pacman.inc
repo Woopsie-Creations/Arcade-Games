@@ -39,18 +39,13 @@
 
 section .text
     pacmanMovement:
-        mov dx, [pacman_x_speed_buffer]
-        push dx
-        mov dx, [pacman_y_speed_buffer]
-        .collisionTest:
-        colTest [pacman_y_pos], dx, [col_test_nb], MAZE_Y_POS, WALL_HEIGHT, colY
+        colTest [pacman_y_pos], [pacman_y_speed], [col_test_nb], MAZE_Y_POS, WALL_HEIGHT, colY
         mov bx, COLUMN_NUMBER
         xor dx, dx
         mul bx
         push ax
 
-        pop dx
-        colTest [pacman_x_pos], dx, [col_test_nb], MAZE_X_POS, WALL_WIDTH, colX
+        colTest [pacman_x_pos], [pacman_x_speed], [col_test_nb], MAZE_X_POS, WALL_WIDTH, colX
         mov bx, ax
         pop ax
 
