@@ -13,6 +13,7 @@ section .text
     displayFrame:
         call clearViewport
         call printMaze
+        call printGhosts
         call printPacman
         ; call drawPixel
         call displayViewport
@@ -106,6 +107,41 @@ section .text
         add si, ax
     
         call displayItem
+        ret
+
+    printGhosts:
+        mov cx, 4 ; 4 ghosts
+        .eachGhost:
+            ; manipulate cx (-1 and *2) to have a word index
+            mov bx, cx
+            dec bx
+            shl bx, 1
+
+            ; set size and coordinates
+            mov word [item_width], GHOST_WIDTH
+            mov word [item_height], GHOST_HEIGHT
+            mov ax, [ghost_x_pos+bx]
+            mov word [item_x_pos], ax
+            mov ax, [ghost_y_pos+bx]
+            mov word [item_y_pos], ax
+            ; choose animation frame
+            push bx ; save word index
+            mov bx, cx ; get byte index
+            inc bx
+            mov al, [item+bx]
+            xor ah, ah ; make sure we read only 1 byte of item
+
+            mov bx, GHOST_WIDTH * GHOST_HEIGHT
+            mul bx
+            pop bx ; get back word index
+
+            mov si, [ghost_sprite+bx]
+            add si, ax
+
+            push cx
+            call displayItem
+            pop cx
+            loop .eachGhost
         ret
 
     printMaze:

@@ -16,7 +16,7 @@ section .data
 
     item db 3 ; Pacman
          db 0 ; Scared ghosts
-         db 0 ; Blinky
-         db 0 ; Pinky
+         db 7 ; Blinky
+         db 5 ; Pinky
          db 0 ; Inky
          db 0 ; Clyde
