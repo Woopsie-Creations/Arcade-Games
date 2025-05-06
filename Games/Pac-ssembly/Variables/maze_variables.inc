@@ -6,4 +6,4 @@ section .data
     ROW_NUMBER equ 31
 
     MAZE_X_POS equ (320 - COLUMN_NUMBER * WALL_WIDTH) / 2
-    MAZE_Y_POS equ (200 - ROW_NUMBER * WALL_HEIGHT) / 2
+    MAZE_Y_POS equ 0

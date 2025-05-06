@@ -2,3 +2,4 @@
 %include "Variables/pacman_variables.inc"
 %include "Variables/ghost_variables.inc"
 %include "Variables/maze_variables.inc"
+%include "Variables/ui_variables.inc"

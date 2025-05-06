@@ -15,6 +15,7 @@ section .text
         call printMaze
         call printGhosts
         call printPacman
+        call printUI
         ; call drawPixel
         call displayViewport
         ret
@@ -180,6 +181,116 @@ section .text
             cmp dx, ROW_NUMBER
             jne .eachMazeRow
         ret
+
+    printUI:
+        gameTitle:
+            mov word [item_width], TITLE_WIDTH
+            mov word [item_height], TITLE_HEIGHT
+            mov word [item_x_pos], TITLE_X_POS
+            mov word [item_y_pos], TITLE_Y_POS
+            mov si, topleft
+            call displayItem
+        team:
+            mov word [item_width], TEAM_WIDTH
+            mov word [item_height], TEAM_HEIGHT
+            mov word [item_x_pos], TEAM_X_POS
+            mov word [item_y_pos], TEAM_Y_POS
+            mov si, topright
+            call displayItem
+        pressArrows:
+            mov word [item_width], PRESS_ARROWS_TEXT_WIDTH
+            mov word [item_height], PRESS_ARROWS_TEXT_HEIGHT
+            mov word [item_x_pos], PRESS_ARROWS_X_POS
+            mov word [item_y_pos], PRESS_ARROWS_Y_POS
+            call textPress
+            arrows:
+                mov word [item_width], PRESS_ARROWS_WIDTH
+                mov word [item_height], PRESS_ARROWS_HEIGHT
+                mov word [item_x_pos], PRESS_ARROWS_X_POS + 1
+                mov word [item_y_pos], PRESS_ARROWS_Y_POS + PRESS_ARROWS_TEXT_HEIGHT + 4
+                mov si, bottomleft
+                call displayItem
+        pressEnter:
+            mov word [item_width], PRESS_ENTER_TEXT_WIDTH
+            mov word [item_height], PRESS_ENTER_TEXT_HEIGHT
+            mov word [item_x_pos], PRESS_ENTER_X_POS
+            mov word [item_y_pos], PRESS_ENTER_Y_POS
+            call textPress
+            enterText:
+                mov word [item_width], PRESS_ENTER_WIDTH
+                mov word [item_height], PRESS_ENTER_HEIGHT
+                mov word [item_x_pos], PRESS_ENTER_X_POS
+                mov word [item_y_pos], PRESS_ENTER_Y_POS + PRESS_ENTER_TEXT_HEIGHT + 4
+                mov cx, 5
+                .eachLetter:
+                    push cx
+                    cmp cx, 5
+                    je .letterE
+                    cmp cx, 4
+                    je .letterN
+                    cmp cx, 3
+                    je .letterT
+                    cmp cx, 2
+                    je .letterE
+                    cmp cx, 1
+                    je .letterR
+                    .letterE:
+                        mov si, fontE
+                        call displayItem
+                        jmp .endLetter
+                    .letterN:
+                        mov si, fontN
+                        call displayItem
+                        jmp .endLetter
+                    .letterT:
+                        mov si, fontT
+                        call displayItem
+                        jmp .endLetter
+                    .letterR:
+                        mov si, fontR
+                        call displayItem
+                        jmp .endLetter
+                    .endLetter:
+                        add word [item_x_pos], PRESS_ARROWS_TEXT_WIDTH + 1
+                        pop cx
+                        dec cx
+                        jnz .eachLetter
+        ret
+
+        textPress:
+            mov cx, 5
+            .eachLetter:
+                push cx
+                cmp cx, 5
+                je .letterP
+                cmp cx, 4
+                je .letterR
+                cmp cx, 3
+                je .letterE
+                cmp cx, 2
+                jle .letterS
+                .letterP:
+                    mov si, fontP
+                    call displayItem
+                    jmp .endLetter
+                .letterR:
+                    mov si, fontR
+                    call displayItem
+                    jmp .endLetter
+                .letterE:
+                    mov si, fontE
+                    call displayItem
+                    jmp .endLetter
+                .letterS:
+                    mov si, fontS
+                    call displayItem
+                    jmp .endLetter
+                .endLetter:
+                    add word [item_x_pos], PRESS_ARROWS_TEXT_WIDTH + 1
+                    pop cx
+                    dec cx
+                    jnz .eachLetter
+            ret
 
         ; testing purpose
         drawPixel:
