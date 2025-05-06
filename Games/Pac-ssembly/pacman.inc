@@ -99,6 +99,7 @@ section .text
             mov byte [pacman_animation_frame], 8
             ret
         .tunnelTeleport:
+            inc byte [pacman_animation_frame]
             cmp word [pacman_x_speed], -2
             je .tpToRight
             sub word [pacman_x_pos], WALL_WIDTH * 25
