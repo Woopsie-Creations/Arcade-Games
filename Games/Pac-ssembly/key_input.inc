@@ -44,21 +44,21 @@ section .text
         jmp gameLoop
 
     upKey:
-        applyKeyPress pacman_y_speed, -2, 0, -2
         mov byte [item+0], 1
         mov byte [pacman_animation_frame], 0
+        applyKeyPress pacman_y_speed, -2, 0, -2
 
     rightKey:
-        applyKeyPress pacman_x_speed, 2, 2, 0
         mov byte [item+0], 3
         mov byte [pacman_animation_frame], 0
+        applyKeyPress pacman_x_speed, 2, 2, 0
 
     downKey:
-        applyKeyPress pacman_y_speed, 2, 0, 2
         mov byte [item+0], 5
         mov byte [pacman_animation_frame], 0
+        applyKeyPress pacman_y_speed, 2, 0, 2
 
     leftKey:
-        applyKeyPress pacman_x_speed, -2, -2, 0
         mov byte [item+0], 7
         mov byte [pacman_animation_frame], 0
+        applyKeyPress pacman_x_speed, -2, -2, 0

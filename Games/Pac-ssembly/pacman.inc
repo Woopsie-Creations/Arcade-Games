@@ -37,6 +37,34 @@
     jmp .skipMovement
 %endmacro
 
+%macro pacmanAnimationSide 2
+    %1:
+        cmp byte [pacman_animation_frame], 2
+        je .pacmanFrame1
+        cmp byte [pacman_animation_frame], 4
+        je .pacmanFrame2
+        cmp byte [pacman_animation_frame], 6
+        je .pacmanFrame3
+        cmp byte [pacman_animation_frame], 8
+        je .pacmanFrame4
+        ret
+        .pacmanFrame1:
+            inc byte [item+0]
+            ret
+        .pacmanFrame2:
+            dec byte [item+0]
+            ret
+        .pacmanFrame3:
+            mov byte [item+0], 0
+            ret
+        .pacmanFrame4:
+            mov byte [item+0], %2
+            jmp .endAnimation
+        .endAnimation:
+        mov byte [pacman_animation_frame], 0
+        ret
+%endmacro
+
 section .text
     pacmanMovement:
         colTest [pacman_y_pos], [pacman_y_speed], [col_test_nb], MAZE_Y_POS, WALL_HEIGHT, colY
@@ -80,45 +108,15 @@ section .text
             ret
 
     pacmanAnimation:
-        cmp byte [pacman_animation_frame], 2
-        je .pacmanFrame1
-        cmp byte [pacman_animation_frame], 4
-        je .pacmanFrame2
-        cmp byte [pacman_animation_frame], 6
-        je .pacmanFrame3
-        cmp byte [pacman_animation_frame], 8
-        je .pacmanFrame4
-        ret
-        .pacmanFrame1:
-            inc byte [item+0]
-            ret
-        .pacmanFrame2:
-            dec byte [item+0]
-            ret
-        .pacmanFrame3:
-            mov byte [item+0], 0
-            ret
-        .pacmanFrame4:
-            cmp word [pacman_y_speed], -2
-            je .firstFrameUp
-            cmp word [pacman_x_speed], 2
-            je .firstFrameRight
-            cmp word [pacman_y_speed], 2
-            je .firstFrameDown
-            cmp word [pacman_x_speed], -2
-            je .firstFrameLeft
-            .firstFrameUp:
-                mov byte [item+0], 1
-                jmp .endAnimation
-            .firstFrameRight:
-                mov byte [item+0], 3
-                jmp .endAnimation
-            .firstFrameDown:
-                mov byte [item+0], 5
-                jmp .endAnimation
-            .firstFrameLeft:
-                mov byte [item+0], 7
-                jmp .endAnimation
-            .endAnimation:
-            mov byte [pacman_animation_frame], 0
-            ret
+        cmp word [pacman_y_speed], -2
+        je animationUp
+        cmp word [pacman_x_speed], 2
+        je animationRight
+        cmp word [pacman_y_speed], 2
+        je animationDown
+        cmp word [pacman_x_speed], -2
+        je animationLeft
+            pacmanAnimationSide animationUp, 1
+            pacmanAnimationSide animationRight, 3
+            pacmanAnimationSide animationDown, 5
+            pacmanAnimationSide animationLeft, 7
