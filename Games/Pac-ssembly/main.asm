@@ -14,11 +14,15 @@ section .text
     call clearScreen
     call initViewport
 
+    call initTimer
+
     gameLoop:
         call waitForNextFrame
         call pacmanMovement
         call pacmanAnimation
         call displayFrame
+        call ghostBehavior
+        call ghostAnimation
         jmp readKeyboard
 
 ; ------------------------------
@@ -63,7 +67,8 @@ section .text
 %include "display.inc"
 %include "key_input.inc"
 %include "pacman.inc"
-
+%include "ghosts.inc"
+%include "timer.inc"
 
 
 
