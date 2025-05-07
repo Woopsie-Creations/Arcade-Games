@@ -4,7 +4,7 @@ section .data
 
     pacman_direction db 1
 
-    pacman_x_pos dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 7
+    pacman_x_pos dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 5
     pacman_y_pos dw MAZE_Y_POS + WALL_HEIGHT * 23 - 3
 
     pacman_x_speed dw 2
