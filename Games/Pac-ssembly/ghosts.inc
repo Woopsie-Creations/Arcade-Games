@@ -54,34 +54,24 @@
         jnz eachGhostAnimation
         ret
         .ghostFrame1:
-            inc bx
-            inc bx
-            mov byte [item+bx], %2
+            mov byte [item+bx+2], %2
             dec cx
             jnz eachGhostAnimation
             ret
         .ghostFrame2:
-            inc bx
-            inc bx
-            mov byte [item+bx], %2
+            mov byte [item+bx+2], %2
             dec cx
             jnz eachGhostAnimation
             ret
         .ghostFrame3:
-            inc bx
-            inc bx
-            mov byte [item+bx], %2
+            mov byte [item+bx+2], %2
             dec cx
             jnz eachGhostAnimation
             ret
         .ghostFrame4:
-            inc bx
-            inc bx
-            mov byte [item+bx], %2
+            mov byte [item+bx+2], %2
             jmp .endAnimation
         .endAnimation:
-            dec bx
-            dec bx
             mov byte [ghost_animation_frame+bx], 0
             dec cx
             jnz eachGhostAnimation
@@ -91,15 +81,16 @@
 section .data
     cage_amount_of_ghosts db 3
 
-    ghost_waiting_in_cage db 0
-                          db 1
-                          db 1
-                          db 1
+    ghost_waiting_in_cage db 0 ; Blinky
+                          db 1 ; Pinky
+                          db 1 ; Inky
+                          db 1 ; Clyde
 
 section .text
     ghostBehavior:
         call checkTimer ; for cage behavior
 
+        call ghostPattern
         call ghostMovement
         ret
     
@@ -182,24 +173,21 @@ section .text
             mov bx, cx
             push cx
             dec bx ; byte index
-            mov ax, bx
-            shl ax, 1 ; word index
             cmp byte [ghost_waiting_in_cage+bx], 0
             je .skipGhost
             
             push bx
-            mov bx, ax ; now word index into bx
-
-            mov dx, MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 6
+            shl bx, 1
 
             ; move
-            cmp word [ghost_x_pos+bx], dx
+            cmp word [ghost_x_pos+bx], MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 6
             je .checkY
             jl .moveXRight
             jg .moveXLeft
 
             .moveXRight:
                 add word [ghost_x_pos+bx], 1
+
                 pop bx
                 add bx, 2 ; get accurate item index
                 mov byte [item+bx], 2
@@ -210,6 +198,7 @@ section .text
                 
             .moveXLeft:
                 add word [ghost_x_pos+bx], -1
+
                 pop bx
                 add bx, 2 ; get accurate item index
                 mov byte [item+bx], 6
@@ -219,33 +208,37 @@ section .text
                 jmp .continueLoop
                 
             .checkY:
-                mov ax, MAZE_Y_POS + WALL_HEIGHT * 11 - 3
-                cmp word [ghost_y_pos+bx], ax
-                je .outOfCage
+                ; mov ax, MAZE_Y_POS + WALL_HEIGHT * 11 - 3
+                ; cmp word [ghost_y_pos+bx], ax
+                ; je .outOfCage
 
-                sub word [ghost_y_pos+bx], 1
-                pop bx
-                add bx, 2 ; get accurate item index
-                mov byte [item+bx], 0
+                ; sub word [ghost_y_pos+bx], 1
+
+                ; pop bx
+                ; add bx, 2 ; get accurate item index
+                ; mov byte [item+bx], 0
                 
-                pop cx
-                mov cx, 1
-                jmp .continueLoop
+                ; pop cx
+                ; mov cx, 1
+                ; jmp .continueLoop
+
+                mov word [ghost_y_speed+bx], -2
 
             .outOfCage:
                 ; here is the next pattern (for now placeholder: going to the right)
-                mov word [ghost_y_speed+bx], 0
-                mov word [ghost_x_speed+bx], 2
+                ; mov word [ghost_y_speed+bx], 0
+                ; mov word [ghost_x_speed+bx], 2
+
                 pop bx
                 add bx, 2 ; get accurate item index
-                mov byte [item+bx], 2
+                mov byte [item+bx], 0
                 sub bx, 2 ; re-get normal index
 
                 mov byte [ghost_waiting_in_cage+bx], 0
                 dec byte [cage_amount_of_ghosts]
 
                 cmp byte [cage_amount_of_ghosts], 0
-                je .skipGhost
+                je .skipGhost ; no need to redo a timer if there's no more ghost
 
                 ; Schedule next run
                 mov ax, [expected_time]
@@ -255,6 +248,10 @@ section .text
                 mov dx, [expected_time+2]
                 adc dx, [interval_ticks+2]
                 mov [expected_time+2], dx
+
+                pop cx
+                mov cx, 1
+                jmp .continueLoop
             
             .skipGhost:
                 pop cx
@@ -284,3 +281,5 @@ section .text
                 ghostAnimationSide ghost_animationDown, 4
                 ghostAnimationSide ghost_animationLeft, 6
             ret
+
+%include "ghostPattern.inc"
