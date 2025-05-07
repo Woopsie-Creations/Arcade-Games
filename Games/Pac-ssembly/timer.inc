@@ -72,5 +72,4 @@ section .text
         
         call moveGhostsOutOfCage
         .earlyExit:
-            call ghostMovement
         ret

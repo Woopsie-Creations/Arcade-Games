@@ -98,8 +98,7 @@ section .data
 
 section .text
     ghostBehavior:
-        cmp byte [cage_amount_of_ghosts], 0
-        jg checkTimer
+        call checkTimer ; for cage behavior
 
         call ghostMovement
         ret
@@ -175,6 +174,9 @@ section .text
                 ret
 
     moveGhostsOutOfCage:
+        cmp byte [cage_amount_of_ghosts], 0
+        je .earlyExit
+
         mov cx, 4 ; 4 ghosts
         .eachGhost:
             mov bx, cx
@@ -184,9 +186,10 @@ section .text
             shl ax, 1 ; word index
             cmp byte [ghost_waiting_in_cage+bx], 0
             je .skipGhost
-
+            
             push bx
             mov bx, ax ; now word index into bx
+
             mov dx, MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 6
 
             ; move
@@ -196,45 +199,53 @@ section .text
             jg .moveXLeft
 
             .moveXRight:
-                mov word [ghost_x_pos+bx], dx
-                ; mov word [ghost_x_speed+bx], 1
+                add word [ghost_x_pos+bx], 1
                 pop bx
+                add bx, 2 ; get accurate item index
+                mov byte [item+bx], 2
+                
                 pop cx
-                call ghostMovement
                 mov cx, 1
                 jmp .continueLoop
-
+                
             .moveXLeft:
-                mov word [ghost_x_pos+bx], dx
-                ; mov word [ghost_x_speed+bx], -1
+                add word [ghost_x_pos+bx], -1
                 pop bx
+                add bx, 2 ; get accurate item index
+                mov byte [item+bx], 6
+                
                 pop cx
-                call ghostMovement
                 mov cx, 1
                 jmp .continueLoop
-
+                
             .checkY:
                 mov ax, MAZE_Y_POS + WALL_HEIGHT * 11 - 3
                 cmp word [ghost_y_pos+bx], ax
                 je .outOfCage
 
-                mov word [ghost_y_pos+bx], ax
-                ; mov word [ghost_y_speed+bx], -1
-                mov word [ghost_x_speed+bx], 0
-                
+                sub word [ghost_y_pos+bx], 1
                 pop bx
+                add bx, 2 ; get accurate item index
+                mov byte [item+bx], 0
+                
                 pop cx
-                call ghostMovement
                 mov cx, 1
                 jmp .continueLoop
 
             .outOfCage:
+                ; here is the next pattern (for now placeholder: going to the right)
                 mov word [ghost_y_speed+bx], 0
-                mov word [ghost_x_speed+bx], 1
-
+                mov word [ghost_x_speed+bx], 2
                 pop bx
+                add bx, 2 ; get accurate item index
+                mov byte [item+bx], 2
+                sub bx, 2 ; re-get normal index
+
                 mov byte [ghost_waiting_in_cage+bx], 0
                 dec byte [cage_amount_of_ghosts]
+
+                cmp byte [cage_amount_of_ghosts], 0
+                je .skipGhost
 
                 ; Schedule next run
                 mov ax, [expected_time]
@@ -250,6 +261,7 @@ section .text
             .continueLoop:
                 dec cx
                 jnz .eachGhost
+            .earlyExit:
             ret
     
     ghostAnimation:
