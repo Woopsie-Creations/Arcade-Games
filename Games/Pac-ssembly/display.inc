@@ -185,15 +185,24 @@ section .text
         team:
             mov si, topright
             displayItem TEAM_Y_POS, TEAM_X_POS, TEAM_HEIGHT, TEAM_WIDTH
+        printScore:
+            mov si, scoreTitle
+            displayItem SCORE_Y_POS, SCORE_X_POS, SCORE_TITLE_HEIGHT, SCORE_TITLE_WIDTH
+        printFruit:
+            mov si, fruitTitle
+            displayItem FRUIT_Y_POS, FRUIT_X_POS, FRUIT_TITLE_HEIGHT, FRUIT_TITLE_WIDTH
+        printLevel:
+            mov si, levelTitle
+            displayItem LEVEL_Y_POS, LEVEL_X_POS, LEVEL_TITLE_HEIGHT, LEVEL_TITLE_WIDTH
         pressArrows:
-            textDisplay pressText, 5, PRESS_ARROWS_Y_POS, PRESS_ARROWS_X_POS, PRESS_ARROWS_TEXT_HEIGHT, PRESS_ARROWS_TEXT_WIDTH
+            textDisplay pressText, 5, PRESS_ARROWS_Y_POS, PRESS_ARROWS_X_POS, FONT_HEIGHT, FONT_WIDTH
             arrows:
                 mov si, bottomleft
-                displayItem PRESS_ARROWS_Y_POS + PRESS_ARROWS_TEXT_HEIGHT + 4, PRESS_ARROWS_X_POS + 1, PRESS_ARROWS_HEIGHT, PRESS_ARROWS_WIDTH
+                displayItem PRESS_ARROWS_Y_POS + FONT_HEIGHT + 4, PRESS_ARROWS_X_POS + 1, PRESS_ARROWS_HEIGHT, PRESS_ARROWS_WIDTH
         pressEnter:
-            textDisplay pressText, 5, PRESS_ENTER_Y_POS, PRESS_ENTER_X_POS, PRESS_ENTER_TEXT_HEIGHT, PRESS_ENTER_TEXT_WIDTH
+            textDisplay pressText, 5, PRESS_ENTER_Y_POS, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
             displayEnterText:
-                textDisplay enterText, 5, PRESS_ENTER_Y_POS + PRESS_ENTER_TEXT_HEIGHT + 4, PRESS_ENTER_X_POS, PRESS_ENTER_HEIGHT, PRESS_ENTER_WIDTH
+                textDisplay enterText, 5, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
         ret
 
         ; ; testing purpose
