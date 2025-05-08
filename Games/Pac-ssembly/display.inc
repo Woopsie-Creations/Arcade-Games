@@ -1,3 +1,53 @@
+%macro displayItem  4
+    mov ax, [viewport_memory_block_pos]
+    mov es, ax
+    ; calculate the position of the item
+    mov ax, %1 ;[item_y_pos]
+    mov bx, 320
+    mul bx
+    add ax, %2 ;[item_x_pos]
+    mov di, ax
+    ; draw the item
+    mov dx, %3 ;[item_height]
+    .eachItemRow:
+        mov cx, %4 ;[item_width]
+        .eachItemColumn:
+            xor ax, ax
+            ; get the colour of the sprite at said position in the memory by the register si
+            mov al, [si]
+            cmp al, 0x00
+            je .skipTransparent      ; skip the colour placement if transparent
+            mov byte [es:di], al     ; place the pixel on the viewport
+            .skipTransparent:
+            ; go to the next pixel
+            add si, 1
+            inc di
+            ; if it hasn't reached the end of the line, loop
+            dec cx
+            jnz .eachItemColumn
+        ; go to the next row
+        add di, SCREEN_WIDTH
+        sub di, %4 ;[item_width]
+        ; if it hasn't reached the last row, loop
+        dec dx
+        jnz .eachItemRow
+%endmacro
+
+%macro textDisplay 6
+    mov word [letter_x_pos], %4
+    mov word [letter_y_pos], %3
+    mov bx, 0
+        .eachLetter:
+        mov si, [%1+bx]
+        push bx
+        displayItem [letter_y_pos], [letter_x_pos], %5, %6
+        pop bx
+        add word [letter_x_pos], %6 + 1
+        add bx, 2
+        cmp bx, %2 * 2
+        jne .eachLetter
+%endmacro
+
 section .text
     initViewport:
         mov bx, 4000        ; nb of 16bytes sections we want to allocate
@@ -56,50 +106,7 @@ section .text
             jne .eachPixel
         ret
 
-    displayItem:
-        ; "select" the memory block allocated for the viewport
-        mov ax, [viewport_memory_block_pos]
-        mov es, ax
-        ; calculate the position of the item
-        mov ax, [item_y_pos]
-        mov bx, 320
-        mul bx
-        add ax, [item_x_pos]
-        mov di, ax
-        ; draw the item
-        mov dx, [item_height]
-        .eachItemRow:
-            mov cx, [item_width]
-            .eachItemColumn:
-                xor ax, ax
-                ; get the colour of the sprite at said position in the memory by the register si
-                mov al, [si]
-                cmp al, 0x00
-                je .skipTransparent      ; skip the colour placement if transparent
-                mov byte [es:di], al     ; place the pixel on the viewport
-                .skipTransparent:
-                ; go to the next pixel
-                add si, 1
-                inc di
-                ; if it hasn't reached the end of the line, loop
-                dec cx
-                jnz .eachItemColumn
-            ; go to the next row
-            add di, SCREEN_WIDTH
-            sub di, [item_width]
-            ; if it hasn't reached the last row, loop
-            dec dx
-            jnz .eachItemRow
-        ret
-
     printPacman:
-        ; set size and coordinates
-        mov word [item_width], PACMAN_WIDTH
-        mov word [item_height], PACMAN_HEIGHT
-        mov ax, [pacman_x_pos]
-        mov word [item_x_pos], ax
-        mov ax, [pacman_y_pos]
-        mov word [item_y_pos], ax
         ; choose animation frame
         mov ax, [item+0]
         mov bx, PACMAN_WIDTH * PACMAN_HEIGHT
@@ -107,26 +114,13 @@ section .text
         mov si, pacman
         add si, ax
     
-        call displayItem
+        displayItem [pacman_y_pos], [pacman_x_pos], PACMAN_HEIGHT, PACMAN_WIDTH
         ret
 
     printGhosts:
         mov cx, 4 ; 4 ghosts
         .eachGhost:
-            ; manipulate cx (-1 and *2) to have a word index
-            mov bx, cx
-            dec bx
-            shl bx, 1
-
-            ; set size and coordinates
-            mov word [item_width], GHOST_WIDTH
-            mov word [item_height], GHOST_HEIGHT
-            mov ax, [ghost_x_pos+bx]
-            mov word [item_x_pos], ax
-            mov ax, [ghost_y_pos+bx]
-            mov word [item_y_pos], ax
             ; choose animation frame
-            push bx ; save word index
             mov bx, cx ; get byte index
             inc bx
             mov al, [item+bx]
@@ -134,23 +128,25 @@ section .text
 
             mov bx, GHOST_WIDTH * GHOST_HEIGHT
             mul bx
-            pop bx ; get back word index
+            
+            mov bx, cx
+            dec bx
+            shl bx, 1
 
             mov si, [ghost_sprite+bx]
             add si, ax
 
+            mov di, bx
             push cx
-            call displayItem
+            displayItem [ghost_y_pos+di], [ghost_x_pos+di], GHOST_HEIGHT, GHOST_WIDTH
             pop cx
             loop .eachGhost
         ret
 
     printMaze:
-        ; set size and coordinates
-        mov word [item_width], WALL_WIDTH
-        mov word [item_height], WALL_HEIGHT
-        mov word [item_x_pos], MAZE_X_POS
-        mov word [item_y_pos], MAZE_Y_POS
+        ; init coordinates
+        mov word [wall_x_pos], MAZE_X_POS
+        mov word [wall_y_pos], MAZE_Y_POS
         ; draw maze
         mov bx, maze
         mov dx, 0
@@ -166,16 +162,16 @@ section .text
                 mul bx
                 mov si, walls
                 add si, ax
-                call displayItem
-                add word [item_x_pos], WALL_WIDTH
+                displayItem [wall_y_pos], [wall_x_pos], WALL_HEIGHT, WALL_WIDTH
+                add word [wall_x_pos], WALL_WIDTH
                 pop bx
                 pop dx
                 inc bx
                 inc dx
                 cmp dx, COLUMN_NUMBER
                 jne .eachMazeColumn
-            add word [item_y_pos], WALL_HEIGHT
-            mov word [item_x_pos], MAZE_X_POS
+            add word [wall_y_pos], WALL_HEIGHT
+            mov word [wall_x_pos], MAZE_X_POS
             pop dx
             inc dx
             cmp dx, ROW_NUMBER
@@ -184,119 +180,27 @@ section .text
 
     printUI:
         gameTitle:
-            mov word [item_width], TITLE_WIDTH
-            mov word [item_height], TITLE_HEIGHT
-            mov word [item_x_pos], TITLE_X_POS
-            mov word [item_y_pos], TITLE_Y_POS
             mov si, topleft
-            call displayItem
+            displayItem TITLE_Y_POS, TITLE_X_POS, TITLE_HEIGHT, TITLE_WIDTH
         team:
-            mov word [item_width], TEAM_WIDTH
-            mov word [item_height], TEAM_HEIGHT
-            mov word [item_x_pos], TEAM_X_POS
-            mov word [item_y_pos], TEAM_Y_POS
             mov si, topright
-            call displayItem
+            displayItem TEAM_Y_POS, TEAM_X_POS, TEAM_HEIGHT, TEAM_WIDTH
         pressArrows:
-            mov word [item_width], PRESS_ARROWS_TEXT_WIDTH
-            mov word [item_height], PRESS_ARROWS_TEXT_HEIGHT
-            mov word [item_x_pos], PRESS_ARROWS_X_POS
-            mov word [item_y_pos], PRESS_ARROWS_Y_POS
-            call textPress
+            textDisplay pressText, 5, PRESS_ARROWS_Y_POS, PRESS_ARROWS_X_POS, PRESS_ARROWS_TEXT_HEIGHT, PRESS_ARROWS_TEXT_WIDTH
             arrows:
-                mov word [item_width], PRESS_ARROWS_WIDTH
-                mov word [item_height], PRESS_ARROWS_HEIGHT
-                mov word [item_x_pos], PRESS_ARROWS_X_POS + 1
-                mov word [item_y_pos], PRESS_ARROWS_Y_POS + PRESS_ARROWS_TEXT_HEIGHT + 4
                 mov si, bottomleft
-                call displayItem
+                displayItem PRESS_ARROWS_Y_POS + PRESS_ARROWS_TEXT_HEIGHT + 4, PRESS_ARROWS_X_POS + 1, PRESS_ARROWS_HEIGHT, PRESS_ARROWS_WIDTH
         pressEnter:
-            mov word [item_width], PRESS_ENTER_TEXT_WIDTH
-            mov word [item_height], PRESS_ENTER_TEXT_HEIGHT
-            mov word [item_x_pos], PRESS_ENTER_X_POS
-            mov word [item_y_pos], PRESS_ENTER_Y_POS
-            call textPress
-            enterText:
-                mov word [item_width], PRESS_ENTER_WIDTH
-                mov word [item_height], PRESS_ENTER_HEIGHT
-                mov word [item_x_pos], PRESS_ENTER_X_POS
-                mov word [item_y_pos], PRESS_ENTER_Y_POS + PRESS_ENTER_TEXT_HEIGHT + 4
-                mov cx, 5
-                .eachLetter:
-                    push cx
-                    cmp cx, 5
-                    je .letterE
-                    cmp cx, 4
-                    je .letterN
-                    cmp cx, 3
-                    je .letterT
-                    cmp cx, 2
-                    je .letterE
-                    cmp cx, 1
-                    je .letterR
-                    .letterE:
-                        mov si, fontE
-                        call displayItem
-                        jmp .endLetter
-                    .letterN:
-                        mov si, fontN
-                        call displayItem
-                        jmp .endLetter
-                    .letterT:
-                        mov si, fontT
-                        call displayItem
-                        jmp .endLetter
-                    .letterR:
-                        mov si, fontR
-                        call displayItem
-                        jmp .endLetter
-                    .endLetter:
-                        add word [item_x_pos], PRESS_ARROWS_TEXT_WIDTH + 1
-                        pop cx
-                        dec cx
-                        jnz .eachLetter
+            textDisplay pressText, 5, PRESS_ENTER_Y_POS, PRESS_ENTER_X_POS, PRESS_ENTER_TEXT_HEIGHT, PRESS_ENTER_TEXT_WIDTH
+            displayEnterText:
+                textDisplay enterText, 5, PRESS_ENTER_Y_POS + PRESS_ENTER_TEXT_HEIGHT + 4, PRESS_ENTER_X_POS, PRESS_ENTER_HEIGHT, PRESS_ENTER_WIDTH
         ret
 
-        textPress:
-            mov cx, 5
-            .eachLetter:
-                push cx
-                cmp cx, 5
-                je .letterP
-                cmp cx, 4
-                je .letterR
-                cmp cx, 3
-                je .letterE
-                cmp cx, 2
-                jle .letterS
-                .letterP:
-                    mov si, fontP
-                    call displayItem
-                    jmp .endLetter
-                .letterR:
-                    mov si, fontR
-                    call displayItem
-                    jmp .endLetter
-                .letterE:
-                    mov si, fontE
-                    call displayItem
-                    jmp .endLetter
-                .letterS:
-                    mov si, fontS
-                    call displayItem
-                    jmp .endLetter
-                .endLetter:
-                    add word [item_x_pos], PRESS_ARROWS_TEXT_WIDTH + 1
-                    pop cx
-                    dec cx
-                    jnz .eachLetter
-            ret
-
-        ; testing purpose
-        drawPixel:
-            mov word [item_width], 1
-            mov word [item_height], 1
-            mov ax, 2
-            mov word [item_x_pos], ax
-            mov ax, 2
-            ret
+        ; ; testing purpose
+        ; drawPixel:
+        ;     mov word [item_width], 1
+        ;     mov word [item_height], 1
+        ;     mov ax, 2
+        ;     mov word [item_x_pos], ax
+        ;     mov ax, 2
+        ;     ret

@@ -27,4 +27,4 @@ section .bss
 
     ghost_y_speed resw 4
 
-    ghost_animation_frame resb 4 
+    ghost_animation_frame resb 4

@@ -22,3 +22,10 @@ section .data
     PRESS_ENTER_TEXT_HEIGHT equ 5
     PRESS_ENTER_WIDTH equ 5
     PRESS_ENTER_HEIGHT equ 5
+
+    pressText dw P, R, E, S, S
+    enterText dw E, N, T, E, R
+
+section .bss
+    letter_x_pos resw 1
+    letter_y_pos resw 1

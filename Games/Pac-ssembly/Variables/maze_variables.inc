@@ -7,3 +7,7 @@ section .data
 
     MAZE_X_POS equ (320 - COLUMN_NUMBER * WALL_WIDTH) / 2
     MAZE_Y_POS equ 0
+
+section .bss
+    wall_x_pos resw 1
+    wall_y_pos resw 1
