@@ -2,8 +2,6 @@ section .data
     PACMAN_WIDTH equ 12
     PACMAN_HEIGHT equ 12
 
-    pacman_direction db 1
-
     pacman_x_pos dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 5
     pacman_y_pos dw MAZE_Y_POS + WALL_HEIGHT * 23 - 3
 
@@ -12,6 +10,8 @@ section .data
 
     pacman_x_speed_buffer dw 0
     pacman_y_speed_buffer dw 0
+    movement_buffered db 0
+    buffered_col_test db 0
 
     col_test_nb db 1
 

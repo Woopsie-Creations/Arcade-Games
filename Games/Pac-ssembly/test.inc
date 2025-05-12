@@ -66,9 +66,6 @@
 %endmacro
 
 section .text
-    secondCollisionTest:
-        cmp byte [buffered_col_test], 0
-        je continueDirection
     pacmanMovement:
         cmp byte [movement_buffered], 0
         je continueDirection
@@ -101,7 +98,7 @@ section .text
         cmp byte [col_test_nb], 1
         jne .secondColTest
         mov byte [col_test_nb], 2
-        colVerifier secondCollisionTest
+        colVerifier pacmanMovement
         .secondColTest:
         mov byte [col_test_nb], 1
         colVerifier .doMovement

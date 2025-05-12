@@ -2,8 +2,9 @@
     cmp byte [%1], %2
     je gameLoop
 
-    mov word [pacman_x_speed], %3
-    mov word [pacman_y_speed], %4
+    mov word [pacman_x_speed_buffer], %3
+    mov word [pacman_y_speed_buffer], %4
+    mov byte [movement_buffered], 1
     jmp gameLoop
 %endmacro
 
@@ -44,21 +45,13 @@ section .text
         jmp gameLoop
 
     upKey:
-        mov byte [item+0], 1
-        mov byte [pacman_animation_frame], 0
         applyKeyPress pacman_y_speed, -2, 0, -2
 
     rightKey:
-        mov byte [item+0], 3
-        mov byte [pacman_animation_frame], 0
         applyKeyPress pacman_x_speed, 2, 2, 0
 
     downKey:
-        mov byte [item+0], 5
-        mov byte [pacman_animation_frame], 0
         applyKeyPress pacman_y_speed, 2, 0, 2
 
     leftKey:
-        mov byte [item+0], 7
-        mov byte [pacman_animation_frame], 0
         applyKeyPress pacman_x_speed, -2, -2, 0
