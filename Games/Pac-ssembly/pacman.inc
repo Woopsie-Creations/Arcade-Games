@@ -49,10 +49,10 @@
         je .pacmanFrame4
         ret
         .pacmanFrame1:
-            inc byte [item+0]
+            mov byte [item+0], %2 + 1
             ret
         .pacmanFrame2:
-            dec byte [item+0]
+            mov byte [item+0], %2
             ret
         .pacmanFrame3:
             mov byte [item+0], 0
