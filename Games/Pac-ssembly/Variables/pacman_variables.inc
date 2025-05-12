@@ -8,11 +8,12 @@ section .data
     pacman_x_speed dw 2
     pacman_y_speed dw 0
 
-    pacman_x_speed_buffer dw 0
-    pacman_y_speed_buffer dw 0
-    movement_buffered db 0
-    buffered_col_test db 0
-
     col_test_nb db 1
 
-    pacman_animation_frame db 0
+section .bss
+    pacman_x_speed_buffer resw 1
+    pacman_y_speed_buffer resw 1
+    movement_buffered resb 1
+    buffered_col_test resb 1
+
+    pacman_animation_frame resb 1

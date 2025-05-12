@@ -24,7 +24,11 @@ section .data
 
 section .bss
     ghost_x_speed resw 4
-
     ghost_y_speed resw 4
+    ghost_x_speed_buffer resw 4
+    ghost_y_speed_buffer resw 4
+
+    ghost_movement_buffered resb 4
+    ghost_buffered_col_test resb 4
 
     ghost_animation_frame resb 4
