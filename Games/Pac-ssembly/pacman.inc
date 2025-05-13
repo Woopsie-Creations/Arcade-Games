@@ -28,9 +28,9 @@
     je .tunnelTeleport
     cmp al, 33
     je .tunnelTeleport
-    cmp al, 35
+    cmp al, 35 ; super gum
     je %1
-    cmp al, 36
+    cmp al, 36 ; gum
     je %1
     cmp al, 37
     je %1
@@ -107,6 +107,7 @@ section .text
         colVerifier .doMovement
 
         .doMovement:
+            call pacmanEatingGum
             inc byte [pacman_animation_frame]
             cmp byte [buffered_col_test], 0
             je .normalMovement
@@ -150,3 +151,19 @@ section .text
             pacmanAnimationSide animationRight, 3
             pacmanAnimationSide animationDown, 5
             pacmanAnimationSide animationLeft, 7
+        
+    pacmanEatingGum:
+        xor dx, dx
+        cmp al, 35 ; super gum
+        je .eraseSuperGum
+        cmp al, 36 ; gum
+        je .eraseGum
+        ret
+        .eraseSuperGum:
+        mov byte [maze+bx], 37
+        addToScore 50
+        ret
+        .eraseGum:
+        mov byte [maze+bx], 37
+        addToScore 10
+        ret

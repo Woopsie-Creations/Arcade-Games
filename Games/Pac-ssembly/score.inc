@@ -91,7 +91,7 @@ section .text
     updateDisplayedScore:
         xor dx, dx ; current_score' count (7)
         xor cx, cx ; displayedNumbers' count (7 + 2 dots)
-        addToScore 10
+        ; addToScore 10 ; testing purpose
         .loop:
             cmp cx, 9
             jge .done
