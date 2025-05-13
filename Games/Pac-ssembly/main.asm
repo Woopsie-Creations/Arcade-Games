@@ -64,12 +64,12 @@ section .text
         jc gameLoop ; return to the gameloop in case of failure (just to verify for now, will probably change)
         ret
 
+%include "score.inc"
 %include "display.inc"
 %include "key_input.inc"
 %include "pacman.inc"
 %include "ghosts.inc"
 %include "timer.inc"
-
 
 
 

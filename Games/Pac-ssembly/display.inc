@@ -185,9 +185,15 @@ section .text
         team:
             mov si, topright
             displayItem TEAM_Y_POS, TEAM_X_POS, TEAM_HEIGHT, TEAM_WIDTH
-        printScore:
+        printScoreText:
             mov si, scoreTitle
-            displayItem SCORE_Y_POS, SCORE_X_POS, SCORE_TITLE_HEIGHT, SCORE_TITLE_WIDTH
+            displayItem SCORE_TEXT_Y_POS, SCORE_TEXT_X_POS, SCORE_TEXT_TITLE_HEIGHT, SCORE_TEXT_TITLE_WIDTH
+        printScoreBox:
+            mov si, scoreNumberBox
+            displayItem SCORE_BOX_Y_POS, SCORE_BOX_X_POS, SCORE_TEXT_TITLE_HEIGHT, SCORE_BOX_WIDTH
+        printScore:
+            call updateDisplayedScore
+            textDisplay displayedNumbers, 9, SCORE_BOX_Y_POS+2, SCORE_BOX_X_POS+2, FONT_HEIGHT, FONT_WIDTH
         printFruit:
             mov si, fruitTitle
             displayItem FRUIT_Y_POS, FRUIT_X_POS, FRUIT_TITLE_HEIGHT, FRUIT_TITLE_WIDTH

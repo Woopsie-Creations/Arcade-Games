@@ -17,10 +17,14 @@ section .data
     PRESS_ENTER_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
     PRESS_ENTER_Y_POS equ (ROW_NUMBER * WALL_HEIGHT) - 4 - (PRESS_ARROWS_HEIGHT + FONT_HEIGHT + 4)
 
-    SCORE_X_POS equ MAZE_X_POS - 8 - SCORE_TITLE_WIDTH
-    SCORE_Y_POS equ 28
-    SCORE_TITLE_WIDTH equ 39
-    SCORE_TITLE_HEIGHT equ 10
+    SCORE_TEXT_X_POS equ MAZE_X_POS - 8 - SCORE_TEXT_TITLE_WIDTH
+    SCORE_TEXT_Y_POS equ 28
+    SCORE_TEXT_TITLE_WIDTH equ 39
+    SCORE_TEXT_TITLE_HEIGHT equ 10
+    
+    SCORE_BOX_X_POS equ MAZE_X_POS - 8 - SCORE_BOX_WIDTH
+    SCORE_BOX_Y_POS equ 41
+    SCORE_BOX_WIDTH equ 58
 
     FRUIT_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
     FRUIT_Y_POS equ 28
@@ -37,6 +41,18 @@ section .data
     pressText dw P, R, E, S, S
     enterText dw E, N, T, E, R
 
+    displayNumbersFont dw font0
+                       dw font1
+                       dw font2
+                       dw font3
+                       dw font4
+                       dw font5
+                       dw font6
+                       dw font7
+                       dw font8
+                       dw font9
+    
 section .bss
     letter_x_pos resw 1
     letter_y_pos resw 1
+    displayedNumbers resw 9
