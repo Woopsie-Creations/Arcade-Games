@@ -1,33 +1,8 @@
-%macro ghost_colTest 6
-    %6:
-        mov ax, %1
-        sub ax, %4
-        cmp word %2, -2
-        jne .testOtherSide
-        add ax, 2
-        jmp .endCol
-        .testOtherSide:
-        cmp word %2, 2
-        jne .sideCol
-        add ax, 9
-        jmp .endCol
-        .sideCol:
-        cmp byte %3, 1
-        je .firstSideCol
-        add ax, 5
-        .firstSideCol:
-        add ax, 3
-        .endCol:
-        mov bx, %5
-        xor dx, dx
-        div bx
-%endmacro
-
 %macro ghost_colVerifier 1
     cmp al, 32
-    je .tunnelTeleport
+    je ghostMovement.tunnelTeleport
     cmp al, 33
-    je .tunnelTeleport
+    je ghostMovement.tunnelTeleport
     cmp al, 34
     je %1
     cmp al, 35
@@ -94,55 +69,34 @@ section .text
     ghostMovement:
         add sp, 2
         mov cx, 4
-        eachGhostMovement:
+        .eachGhostMovement:
             mov bx, cx
             push cx
             dec bx ; byte index
             mov ax, bx
             push bx
             shl ax, 1 ; word index
-            mov si, ax
+            mov di, ax
 
-            ghost_colTest [ghost_y_pos+si], [ghost_y_speed+si], [ghost_col_test_nb+bx], MAZE_Y_POS, WALL_HEIGHT, ghost_colY
-            mov bx, COLUMN_NUMBER
-            xor dx, dx
-            mul bx
-            pop bx ; byte index
-            push ax
-
-            ghost_colTest [ghost_x_pos+si], [ghost_x_speed+si], [ghost_col_test_nb+bx], MAZE_X_POS, WALL_WIDTH, ghost_colX
-            mov bx, ax
-            pop ax
-
-            add bx, ax
-            mov al, [maze+bx]
+            colCalculations [ghost_y_pos+di], [ghost_y_speed+di], [ghost_x_pos+di], [ghost_x_speed+di], ghostCol
 
             pop bx
             mov cx, bx
             push cx
             dec bx ; byte index
 
-            cmp byte [ghost_col_test_nb+bx], 1
-            jne .secondColTest
-            mov byte [ghost_col_test_nb+bx], 2
-            ghost_colVerifier ghostMovement
-            .secondColTest:
-            mov byte [ghost_col_test_nb+bx], 1
-            ghost_colVerifier .doMovement
-            jmp .endLoop
-
             .doMovement:
                 inc byte [ghost_animation_frame+bx]
                 shl bx, 1
-                mov ax, [ghost_x_speed+bx]
-                add word [ghost_x_pos+bx], ax
-                mov ax, [ghost_y_speed+bx]
-                add word [ghost_y_pos+bx], ax
+                mov ax, [ghost_x_speed+di]
+                add word [ghost_x_pos+di], ax
+                mov ax, [ghost_y_speed+di]
+                add word [ghost_y_pos+di], ax
 
                 jmp .endLoop
 
             .skipMovement:
-                mov byte [ghost_col_test_nb+bx], 1
+                mov byte [col_test_nb], 1
                 mov byte [ghost_animation_frame+bx], 8
                 jmp .endLoop
             .tunnelTeleport:
@@ -157,7 +111,7 @@ section .text
             .endLoop:
                 pop cx
                 dec cx
-                jnz eachGhostMovement
+                jnz .eachGhostMovement
                 xor si, si
                 ret
 

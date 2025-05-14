@@ -32,7 +32,7 @@ section .text
         call pacmanMovement
         call pacmanAnimation
         call displayFrame
-        call ghostBehavior
+        ; call ghostBehavior
         call ghostAnimation
         jmp readKeyboard
 
@@ -130,6 +130,7 @@ section .text
 %include "score.inc"
 %include "display.inc"
 %include "key_input.inc"
+%include "collisions.inc"
 %include "pacman.inc"
 %include "ghosts.inc"
 %include "timer.inc"

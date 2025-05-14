@@ -1,110 +1,56 @@
-%macro colTest 6
-    %6:
-        mov ax, %1
-        sub ax, %4
-        cmp %2, -2
-        jne .testOtherSide
-        add ax, 2
-        jmp .endCol
-        .testOtherSide:
-        cmp %2, 2
-        jne .sideCol
-        add ax, 9
-        jmp .endCol
-        .sideCol:
-        cmp byte %3, 1
-        je .firstSideCol
-        add ax, 5
-        .firstSideCol:
-        add ax, 3
-        .endCol:
-        mov bx, %5
-        xor dx, dx
-        div bx
-%endmacro
-
 %macro colVerifier 1
     cmp al, 32
-    je .tunnelTeleport
+    je pacmanMovement.tunnelTeleport
     cmp al, 33
-    je .tunnelTeleport
+    je pacmanMovement.tunnelTeleport
     cmp al, 35 ; super gum
     je %1
     cmp al, 36 ; gum
     je %1
     cmp al, 37
     je %1
-    jmp .skipMovement
+    jmp pacmanMovement.skipMovement
 %endmacro
 
 %macro pacmanAnimationSide 2
     %1:
         cmp byte [pacman_animation_frame], 2
-        je .pacmanFrame1
+        je %%pacmanFrame1
         cmp byte [pacman_animation_frame], 4
-        je .pacmanFrame2
+        je %%pacmanFrame2
         cmp byte [pacman_animation_frame], 6
-        je .pacmanFrame3
+        je %%pacmanFrame3
         cmp byte [pacman_animation_frame], 8
-        je .pacmanFrame4
+        je %%pacmanFrame4
         ret
-        .pacmanFrame1:
+        %%pacmanFrame1:
             mov byte [item+0], %2 + 1
             ret
-        .pacmanFrame2:
+        %%pacmanFrame2:
             mov byte [item+0], %2
             ret
-        .pacmanFrame3:
+        %%pacmanFrame3:
             mov byte [item+0], 0
             ret
-        .pacmanFrame4:
+        %%pacmanFrame4:
             mov byte [item+0], %2
-            jmp .endAnimation
-        .endAnimation:
-        mov byte [pacman_animation_frame], 0
-        ret
+            mov byte [pacman_animation_frame], 0
+            ret
 %endmacro
 
 section .text
     secondCollisionTest:
         cmp byte [buffered_col_test], 0
-        je continueDirection
+        je pacmanMovement.continueDirection
     pacmanMovement:
         cmp byte [movement_buffered], 0
-        je continueDirection
+        je .continueDirection
         mov byte [buffered_col_test], 1
-        mov dx, [pacman_x_speed_buffer]
-        push dx
-        mov dx, [pacman_y_speed_buffer]
-        jmp collisionCalculations
+        colCalculations [pacman_y_pos], [pacman_y_speed_buffer], [pacman_x_pos], [pacman_x_speed_buffer], pacmanCol
 
-        continueDirection:
+        .continueDirection:
         mov byte [buffered_col_test], 0
-        mov dx, [pacman_x_speed]
-        push dx
-        mov dx, [pacman_y_speed]
-
-        collisionCalculations:
-        colTest [pacman_y_pos], dx, [col_test_nb], MAZE_Y_POS, WALL_HEIGHT, colY
-        mov bx, COLUMN_NUMBER
-        xor dx, dx
-        mul bx
-        pop dx
-
-        push ax
-        colTest [pacman_x_pos], dx, [col_test_nb], MAZE_X_POS, WALL_WIDTH, colX
-        mov bx, ax
-        pop ax
-
-        add bx, ax
-        mov al, [maze+bx]
-        cmp byte [col_test_nb], 1
-        jne .secondColTest
-        mov byte [col_test_nb], 2
-        colVerifier secondCollisionTest
-        .secondColTest:
-        mov byte [col_test_nb], 1
-        colVerifier .doMovement
+        colCalculations [pacman_y_pos], [pacman_y_speed], [pacman_x_pos], [pacman_x_speed], pacmanCol
 
         .doMovement:
             call pacmanEatingGum
@@ -125,7 +71,7 @@ section .text
         .skipMovement:
             mov byte [col_test_nb], 1
             cmp byte [buffered_col_test], 1
-            je continueDirection
+            je .continueDirection
             mov byte [pacman_animation_frame], 8
             ret
         .tunnelTeleport:
