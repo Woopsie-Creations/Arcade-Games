@@ -70,6 +70,9 @@
         xor cx, cx
 %endmacro
 
+section .data
+    level db 1
+
 section .bss
     current_score resb 7
 

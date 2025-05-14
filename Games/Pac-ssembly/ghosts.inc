@@ -78,13 +78,10 @@
         ret
 %endmacro
 
-section .data
-    cage_amount_of_ghosts db 3
+section .bss
+    cage_amount_of_ghosts resb 1
 
-    ghost_waiting_in_cage db 0 ; Blinky
-                          db 1 ; Pinky
-                          db 1 ; Inky
-                          db 1 ; Clyde
+    ghost_waiting_in_cage resb 4 ; 4 ghosts
 
 section .text
     ghostBehavior:

@@ -160,10 +160,12 @@ section .text
         je .eraseGum
         ret
         .eraseSuperGum:
+        dec byte [MAZE_AMOUNT_OF_GUMS]
         mov byte [maze+bx], 37
         addToScore 50
         ret
         .eraseGum:
+        dec byte [MAZE_AMOUNT_OF_GUMS]
         mov byte [maze+bx], 37
         addToScore 10
         ret
