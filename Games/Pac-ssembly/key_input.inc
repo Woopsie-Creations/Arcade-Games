@@ -20,8 +20,27 @@ section .data
     %define D_KEY 20h
 
     %define ESCAPE_KEY 01h
+    %define ENTER_KEY 1Ch
 
 section .text
+    pauseMenu:
+        cmp ah, ESCAPE_KEY
+        je waitForEnterPress
+        ret
+    waitForEnterPress:
+        ; change display to 'press enter'
+        mov byte [isPause], 1
+        call displayFrame
+        mov ah, 00h
+        int 16h
+        cmp ah, ESCAPE_KEY
+        je exitProgram
+        cmp ah, ENTER_KEY 
+        jne waitForEnterPress
+        ; change display to 'press esc'
+        mov byte [isPause], 0
+        ret
+    
     readKeyboard:
         ; is key pressed ?
         mov ah, 01h 
@@ -31,6 +50,8 @@ section .text
         ; which key is pressed
         mov ah, 00h
         int 16h
+        call pauseMenu
+        
         cmp ah, UP_ARROW 
         je upKey
         cmp ah, RIGHT_ARROW
@@ -39,9 +60,7 @@ section .text
         je downKey
         cmp ah, LEFT_ARROW
         je leftKey
-
-        cmp ah, ESCAPE_KEY
-        je exitProgram
+        
         jmp gameLoop
 
     upKey:

@@ -61,6 +61,7 @@ section .text
         mov word [pacman_x_speed_buffer], 0
         mov word [pacman_y_speed_buffer], 0
         mov byte [movement_buffered], 0
+        mov byte [item+0], 3
         ; ghosts
         mov word [ghost_x_pos], BLINKY_INITIAL_X_POS
         mov word [ghost_x_pos+2], PINKY_INITIAL_X_POS
@@ -70,17 +71,21 @@ section .text
         mov word [ghost_y_pos+2], PINKY_INITIAL_Y_POS
         mov word [ghost_y_pos+4], INKY_INITIAL_Y_POS
         mov word [ghost_y_pos+6], CLYDE_INITIAL_Y_POS
-
         mov byte [cage_amount_of_ghosts], 3
         mov byte [ghost_waiting_in_cage], 0 
         mov byte [ghost_waiting_in_cage+1], 1
         mov byte [ghost_waiting_in_cage+2], 1
         mov byte [ghost_waiting_in_cage+3], 1
+        mov byte [item+2], 6
+        mov byte [item+3], 4
+        mov byte [item+4], 0
+        mov byte [item+5], 0
 
         initGhosts
 
         call clearScreen
         call initViewport
+        call waitForEnterPress
         call initTimer
         ret
 

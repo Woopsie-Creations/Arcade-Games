@@ -207,6 +207,11 @@ section .text
                 displayItem PRESS_ARROWS_Y_POS + FONT_HEIGHT + 4, PRESS_ARROWS_X_POS + 1, PRESS_ARROWS_HEIGHT, PRESS_ARROWS_WIDTH
         pressEnter:
             textDisplay pressText, 5, PRESS_ENTER_Y_POS, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
+            cmp byte [isPause], 1
+            je displayEnterText
+            displayEscText:
+                textDisplay escText, 6, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
+            ret
             displayEnterText:
                 textDisplay enterText, 5, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
         ret

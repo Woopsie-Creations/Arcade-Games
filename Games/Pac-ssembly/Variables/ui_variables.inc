@@ -40,6 +40,7 @@ section .data
 
     pressText dw P, R, E, S, S
     enterText dw E, N, T, E, R
+    escText dw E, S, C, A, P, E
 
     displayNumbersFont dw font0
                        dw font1
@@ -53,6 +54,7 @@ section .data
                        dw font9
     
 section .bss
+    isPause resb 1
     letter_x_pos resw 1
     letter_y_pos resw 1
     displayedNumbers resw 9
