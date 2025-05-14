@@ -200,6 +200,12 @@ section .text
         printLevel:
             mov si, levelTitle
             displayItem LEVEL_Y_POS, LEVEL_X_POS, LEVEL_TITLE_HEIGHT, LEVEL_TITLE_WIDTH
+        printLevelNbBox:
+            mov si, levelNbBox
+            displayItem LEVEL_BOX_Y_POS, LEVEL_X_POS, LEVEL_NUMBER_HEIGHT, LEVEL_NUMBER_WIDTH
+        printLevelNb:
+            call updateDisplayedLevel
+            textDisplay displayedLevel, 3, LEVEL_BOX_Y_POS+3, LEVEL_X_POS+3, FONT_HEIGHT, FONT_WIDTH
         pressArrows:
             textDisplay pressText, 5, PRESS_ARROWS_Y_POS, PRESS_ARROWS_X_POS, FONT_HEIGHT, FONT_WIDTH
             arrows:

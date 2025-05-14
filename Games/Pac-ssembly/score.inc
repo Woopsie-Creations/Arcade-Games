@@ -1,3 +1,17 @@
+%macro addDigitWithoutOverflow 1
+    %%checking:
+    cmp byte [%1+bx], 9
+    jne %%skip
+    mov byte [%1+bx], 0
+    dec bx
+    ; recheck the overflow to be sure
+    cmp byte [%1+bx], 9
+    je %%checking
+    %%skip: 
+    ; update
+    inc byte [%1+bx] 
+%endmacro
+
 %macro addToScore 1
     ; increment number in ax
     ; if number too big (10,000 or more):
@@ -27,70 +41,50 @@
 
     %%millions:
         mov bx, 0
-        mov cx, 100
-        mov ax, dx
-        call checkScoreDigitOverflow
-        mov dx, ax
+        addDigitWithoutOverflow current_score
+        sub dx, 100
         jmp %%start
 
     %%hundredthousands:
         mov bx, 1
-        mov cx, 10
-        mov ax, dx
-        call checkScoreDigitOverflow
-        mov dx, ax
+        addDigitWithoutOverflow current_score
+        sub dx, 10
         jmp %%start
 
     %%tenthousands:
         mov bx, 2
-        mov cx, 1
-        mov ax, dx
-        call checkScoreDigitOverflow
-        mov dx, ax
+        addDigitWithoutOverflow current_score
+        sub dx, 1
         jmp %%start
 
     %%thousands:
         mov bx, 3
-        mov cx, 1000
-        call checkScoreDigitOverflow
+        addDigitWithoutOverflow current_score
+        sub ax, 1000
         jmp %%start
 
     %%hundreds:
         mov bx, 4
-        mov cx, 100
-        call checkScoreDigitOverflow
+        addDigitWithoutOverflow current_score
+        sub ax, 100
         jmp %%start
 
     %%tens:
         mov bx, 5
-        mov cx, 10
-        call checkScoreDigitOverflow
+        addDigitWithoutOverflow current_score
+        sub ax, 10
         jmp %%start
     %%end:
         xor cx, cx
 %endmacro
 
 section .data
-    level db 1
+    level db 0,0,1
 
 section .bss
     current_score resb 7
 
 section .text
-    checkScoreDigitOverflow:
-        cmp byte [current_score+bx], 9
-        jne .skip
-        mov byte [current_score+bx], 0
-        dec bx
-        ; recheck the overflow to be sure
-        cmp byte [current_score+bx], 9
-        je checkScoreDigitOverflow
-        .skip: 
-        ; update
-        inc byte [current_score+bx]
-        sub ax, cx
-        ret
-
     updateDisplayedScore:
         xor dx, dx ; current_score' count (7)
         xor cx, cx ; displayedNumbers' count (7 + 2 dots)
@@ -123,6 +117,33 @@ section .text
             mov ax, fontDot
             shl bx, 1
             mov [displayedNumbers + bx], ax
+
+            inc cx
+            jmp .loop
+        .done:
+            ret
+
+    increaseLevel:
+        mov bx, 2
+        addDigitWithoutOverflow level
+        ret
+
+    updateDisplayedLevel:
+        xor cx, cx ; displayedLevel' count (3)
+        mov bx, 2
+        ; addDigitWithoutOverflow level ; testing purpose
+        .loop:
+            cmp cx, 3
+            jge .done
+
+            mov bx, cx ; get level' count
+            movzx ax, byte [level + bx] ; get the number
+            shl ax, 1
+            mov bx, ax
+            mov ax, [displayNumbersFont + bx] ; use the number as an index to get sprite
+            mov bx, cx
+            shl bx, 1
+            mov [displayedLevel + bx], ax ; put the sprite
 
             inc cx
             jmp .loop

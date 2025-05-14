@@ -33,6 +33,7 @@ section .data
 
     LEVEL_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
     LEVEL_Y_POS equ (ROW_NUMBER * WALL_HEIGHT) - 32 - (LEVEL_TITLE_HEIGHT + LEVEL_NUMBER_HEIGHT + 2)
+    LEVEL_BOX_Y_POS equ LEVEL_Y_POS + 11
     LEVEL_TITLE_WIDTH equ 39
     LEVEL_TITLE_HEIGHT equ 10
     LEVEL_NUMBER_WIDTH equ 22
@@ -58,3 +59,4 @@ section .bss
     letter_x_pos resw 1
     letter_y_pos resw 1
     displayedNumbers resw 9
+    displayedLevel resw 3

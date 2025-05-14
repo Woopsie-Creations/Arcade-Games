@@ -38,7 +38,7 @@ section .text
 
 ; ------------------------------
     goToNextLevel:
-        inc byte [level]
+        call increaseLevel
         call deallocationViewport
         call initLevel
         jmp gameLoop
