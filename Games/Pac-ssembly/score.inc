@@ -126,8 +126,27 @@ section .text
     increaseLevel:
         mov bx, 2
         addDigitWithoutOverflow level
-        inc byte [current_fruit_case_index]
-        ret
+        ; update fruit to spawn
+        mov bx, [level+2]
+        cmp byte [level+0], 1
+        jge .isKey
+        cmp byte [level+1], 1
+        je .moreThanTen
+        cmp byte [level+1], 1
+        jg .isKey
+        mov bx, [fruit_table+bx]
+        jmp .end
+        .moreThanTen:
+            cmp bx, 3
+            jge .isKey
+            add bx, 10
+            mov bx, [fruit_table+bx]
+            jmp .end
+        .isKey:
+            mov bx, 7 ; default if > 13: key
+        .end:
+            mov [current_fruit_case_index], bx        
+            ret
 
     updateDisplayedLevel:
         xor cx, cx ; displayedLevel' count (3)
