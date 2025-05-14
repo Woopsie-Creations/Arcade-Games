@@ -26,10 +26,16 @@ section .data
     SCORE_BOX_Y_POS equ 41
     SCORE_BOX_WIDTH equ 58
 
-    FRUIT_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
-    FRUIT_Y_POS equ 28
+    FRUIT_TITLE_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
+    FRUIT_TITLE_Y_POS equ 28
     FRUIT_TITLE_WIDTH equ 39
     FRUIT_TITLE_HEIGHT equ 10
+    FRUIT_BANK_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
+    FRUIT_BANK_Y_POS equ FRUIT_TITLE_Y_POS + FRUIT_TITLE_HEIGHT + 5
+    FRUIT_HEIGHT equ 9
+    FRUIT_WIDTH equ 11
+    SELECT_FRUIT_BOX_HEIGHT equ 14
+    SELECT_FRUIT_BOX_WIDTH equ 14
 
     LEVEL_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
     LEVEL_Y_POS equ (ROW_NUMBER * WALL_HEIGHT) - 32 - (LEVEL_TITLE_HEIGHT + LEVEL_NUMBER_HEIGHT + 2)
@@ -53,8 +59,10 @@ section .data
                        dw font7
                        dw font8
                        dw font9
+
     
 section .bss
+    current_fruit_case_index resb 1
     isPause resb 1
     letter_x_pos resw 1
     letter_y_pos resw 1

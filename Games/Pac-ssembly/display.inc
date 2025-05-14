@@ -1,36 +1,39 @@
 %macro displayItem  4
+    %define %%item_x_pos %2
+    %define %%item_y_pos %1
+
     mov ax, [viewport_memory_block_pos]
     mov es, ax
     ; calculate the position of the item
-    mov ax, %1 ;[item_y_pos]
+    mov ax, %%item_y_pos
     mov bx, 320
     mul bx
-    add ax, %2 ;[item_x_pos]
+    add ax, %%item_x_pos
     mov di, ax
     ; draw the item
     mov dx, %3 ;[item_height]
-    .eachItemRow:
+    %%eachItemRow:
         mov cx, %4 ;[item_width]
-        .eachItemColumn:
+        %%eachItemColumn:
             xor ax, ax
             ; get the colour of the sprite at said position in the memory by the register si
             mov al, [si]
             cmp al, 0x00
-            je .skipTransparent      ; skip the colour placement if transparent
+            je %%skipTransparent      ; skip the colour placement if transparent
             mov byte [es:di], al     ; place the pixel on the viewport
-            .skipTransparent:
+            %%skipTransparent:
             ; go to the next pixel
             add si, 1
             inc di
             ; if it hasn't reached the end of the line, loop
             dec cx
-            jnz .eachItemColumn
+            jnz %%eachItemColumn
         ; go to the next row
         add di, SCREEN_WIDTH
         sub di, %4 ;[item_width]
         ; if it hasn't reached the last row, loop
         dec dx
-        jnz .eachItemRow
+        jnz %%eachItemRow
 %endmacro
 
 %macro textDisplay 6
@@ -46,6 +49,18 @@
         add bx, 2
         cmp bx, %2 * 2
         jne .eachLetter
+%endmacro
+
+%macro placeFruitBox 3
+    cmp byte [current_fruit_case_index], %1
+    je %%updateFruitBox
+    jmp %%skip
+    %%updateFruitBox:
+        push si
+        mov si, selectfruitBox
+        displayItem %2-2, %3-2, SELECT_FRUIT_BOX_HEIGHT, SELECT_FRUIT_BOX_WIDTH
+        pop si
+    %%skip:
 %endmacro
 
 section .text
@@ -194,9 +209,24 @@ section .text
         printScore:
             call updateDisplayedScore
             textDisplay displayedNumbers, 9, SCORE_BOX_Y_POS+2, SCORE_BOX_X_POS+2, FONT_HEIGHT, FONT_WIDTH
-        printFruit:
+        printFruitTitle:
             mov si, fruitTitle
-            displayItem FRUIT_Y_POS, FRUIT_X_POS, FRUIT_TITLE_HEIGHT, FRUIT_TITLE_WIDTH
+            displayItem FRUIT_TITLE_Y_POS, FRUIT_TITLE_X_POS, FRUIT_TITLE_HEIGHT, FRUIT_TITLE_WIDTH
+        printFruits:
+            %assign current_fruit_y_pos FRUIT_BANK_Y_POS
+            %assign current_fruit_x_pos FRUIT_BANK_X_POS
+            mov si, fruits
+            %assign current_fruit_index 0
+            %rep 8
+                placeFruitBox current_fruit_index, current_fruit_y_pos, current_fruit_x_pos
+                displayItem current_fruit_y_pos, current_fruit_x_pos, FRUIT_HEIGHT, FRUIT_WIDTH
+                %assign current_fruit_x_pos current_fruit_x_pos+FRUIT_WIDTH+6
+                %if current_fruit_x_pos = FRUIT_BANK_X_POS+(4*(FRUIT_WIDTH+6))
+                    %assign current_fruit_x_pos FRUIT_BANK_X_POS
+                    %assign current_fruit_y_pos current_fruit_y_pos+FRUIT_HEIGHT+5
+                %endif
+                %assign current_fruit_index current_fruit_index+1
+            %endrep
         printLevel:
             mov si, levelTitle
             displayItem LEVEL_Y_POS, LEVEL_X_POS, LEVEL_TITLE_HEIGHT, LEVEL_TITLE_WIDTH

@@ -126,6 +126,7 @@ section .text
     increaseLevel:
         mov bx, 2
         addDigitWithoutOverflow level
+        inc byte [current_fruit_case_index]
         ret
 
     updateDisplayedLevel:
