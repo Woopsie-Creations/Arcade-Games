@@ -16,13 +16,13 @@
 
 %macro pacmanAnimationSide 2
     %1:
-        cmp byte [pacman_animation_frame], 2
+        cmp byte [pacman_animation_frame], 1
         je %%pacmanFrame1
-        cmp byte [pacman_animation_frame], 4
+        cmp byte [pacman_animation_frame], 2
         je %%pacmanFrame2
-        cmp byte [pacman_animation_frame], 6
+        cmp byte [pacman_animation_frame], 3
         je %%pacmanFrame3
-        cmp byte [pacman_animation_frame], 8
+        cmp byte [pacman_animation_frame], 4
         je %%pacmanFrame4
         ret
         %%pacmanFrame1:
@@ -74,7 +74,7 @@ section .text
             mov byte [col_test_nb], 1
             cmp byte [buffered_col_test], 1
             je .continueDirection
-            mov byte [pacman_animation_frame], 8
+            mov byte [pacman_animation_frame], 4
             ret
         .tunnelTeleport:
             inc byte [pacman_animation_frame]
