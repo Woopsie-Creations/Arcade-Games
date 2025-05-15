@@ -9,6 +9,8 @@
     je %1
     cmp al, 37
     je %1
+    cmp al, 38
+    je %1
     jmp pacmanMovement.skipMovement
 %endmacro
 
@@ -53,7 +55,7 @@ section .text
         colCalculations [pacman_y_pos], [pacman_y_speed], [pacman_x_pos], [pacman_x_speed], pacmanCol
 
         .doMovement:
-            call pacmanEatingGum
+            call pacmanEating
             inc byte [pacman_animation_frame]
             cmp byte [buffered_col_test], 0
             je .normalMovement
@@ -97,21 +99,33 @@ section .text
             pacmanAnimationSide animationRight, 3
             pacmanAnimationSide animationDown, 5
             pacmanAnimationSide animationLeft, 7
-        
-    pacmanEatingGum:
-        xor dx, dx
+    
+    pacmanEating:
+        cmp al, 38 ; fruit
+        je .eraseFruit
         cmp al, 35 ; super gum
         je .eraseSuperGum
         cmp al, 36 ; gum
         je .eraseGum
-        ret
+        jmp .exit
+        .eraseFruit:
+            cmp byte [fruit_should_be_displayed], 0
+            je .exit
+            inc byte [fruits_eaten]
+            mov byte [fruit_should_be_displayed], 0
+            ; -- WHICH FRUIT --
+            movzx bx, [current_fruit_case_index]
+            shl bx, 1
+            addToScore [fruit_score_table+bx]
+            jmp .exit
         .eraseSuperGum:
-        dec byte [MAZE_AMOUNT_OF_GUMS]
-        mov byte [maze+bx], 37
-        addToScore 50
-        ret
+            dec byte [maze_remaining_gums]
+            mov byte [maze+bx], 37
+            addToScore 50
+            jmp .exit
         .eraseGum:
-        dec byte [MAZE_AMOUNT_OF_GUMS]
-        mov byte [maze+bx], 37
-        addToScore 10
-        ret
+            dec byte [maze_remaining_gums]
+            mov byte [maze+bx], 37
+            addToScore 10
+        .exit:
+            ret

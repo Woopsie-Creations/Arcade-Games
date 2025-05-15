@@ -45,9 +45,16 @@
     %%end:
 %endmacro
 
+%macro checkSpawnFruit 1
+    cmp byte [maze_remaining_gums], MAZE_AMOUNT_OF_GUMS-%1
+    jne %%skip
+    mov byte [fruit_should_be_displayed], 1
+    %%skip:
+%endmacro
+
 section .data
     level db 0,0,1
-    fruit_table:
+    fruit_spawn_table:
                 db 0      ; Offset of 1 (cannot be level 0), default cherry
                 db 0      ; Level 1 - Cherry
                 db 1      ; Level 2 - Strawberry
@@ -62,6 +69,16 @@ section .data
                 db 6      ; Level 11 - Bell
                 db 6      ; Level 12 - Bell
                 db 7      ; Level 13 - Key
+
+    fruit_score_table:
+                dw 100      ; Cherry
+                dw 300      ; Strawberry
+                dw 500      ; Orange
+                dw 700      ; Apple
+                dw 1000      ; Melon
+                dw 2000      ; Galaxian
+                dw 3000      ; Bell
+                dw 5000      ; Key
 
 section .bss
     current_score resb 7
@@ -116,18 +133,19 @@ section .text
         je .moreThanTen
         cmp byte [level+1], 1
         jg .isKey
-        mov bx, [fruit_table+bx]
+        mov bx, [fruit_spawn_table+bx]
         jmp .end
         .moreThanTen:
             cmp bx, 3
             jge .isKey
             add bx, 10
-            mov bx, [fruit_table+bx]
+            mov bx, [fruit_spawn_table+bx]
             jmp .end
         .isKey:
             mov bx, 7 ; default if > 13: key
         .end:
-            mov [current_fruit_case_index], bx        
+            mov [current_fruit_case_index], bx
+            mov byte [fruits_eaten], 0      
             ret
 
     updateDisplayedLevel:
@@ -150,4 +168,17 @@ section .text
             inc cx
             jmp .loop
         .done:
+            ret
+    events:
+        ; gums
+        cmp byte [maze_remaining_gums], 0
+        je goToNextLevel
+        ; fruits
+        cmp byte [fruits_eaten], 2
+        jl .checkFruit
+        mov byte [fruit_should_be_displayed], 0
+        ret
+        .checkFruit:
+            checkSpawnFruit 70
+            checkSpawnFruit 170
             ret

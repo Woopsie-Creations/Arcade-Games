@@ -25,9 +25,7 @@ section .text
         call initLevel
 
     gameLoop:
-        cmp byte [MAZE_AMOUNT_OF_GUMS], 0
-        je goToNextLevel
-
+        call events
         call waitForNextFrame
         call pacmanMovement
         call pacmanAnimation
@@ -52,7 +50,7 @@ section .text
             dec bx
             jnz .eachCells
         ; gums
-        mov byte [MAZE_AMOUNT_OF_GUMS], 246
+        mov byte [maze_remaining_gums], MAZE_AMOUNT_OF_GUMS
         ; pacman
         mov word [pacman_x_pos], PACMAN_INITIAL_X_POS
         mov word [pacman_y_pos], PACMAN_INITIAL_Y_POS

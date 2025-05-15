@@ -78,6 +78,7 @@ section .text
     displayFrame:
         call clearViewport
         call printMaze
+        call spawnCurrentFruit
         call printGhosts
         call printPacman
         call printUI
@@ -191,6 +192,19 @@ section .text
             inc dx
             cmp dx, ROW_NUMBER
             jne .eachMazeRow
+        ret
+
+    spawnCurrentFruit:
+        cmp byte [fruit_should_be_displayed], 1
+        je .spawn
+        ret
+        .spawn:
+            mov ax, 99
+            mov bx, [current_fruit_case_index]
+            mul bx
+            mov si, fruits
+            add si, ax
+            displayItem FRUIT_SPAWN_Y_POS, FRUIT_SPAWN_X_POS, FRUIT_HEIGHT, FRUIT_WIDTH
         ret
 
     printUI:

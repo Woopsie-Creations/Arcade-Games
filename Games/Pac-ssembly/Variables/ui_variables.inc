@@ -36,6 +36,8 @@ section .data
     FRUIT_WIDTH equ 11
     SELECT_FRUIT_BOX_HEIGHT equ 14
     SELECT_FRUIT_BOX_WIDTH equ 14
+    FRUIT_SPAWN_X_POS equ PACMAN_INITIAL_X_POS - 1
+    FRUIT_SPAWN_Y_POS equ MAZE_Y_POS + WALL_HEIGHT * 18 - 7
 
     LEVEL_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
     LEVEL_Y_POS equ (ROW_NUMBER * WALL_HEIGHT) - 32 - (LEVEL_TITLE_HEIGHT + LEVEL_NUMBER_HEIGHT + 2)
@@ -61,6 +63,8 @@ section .data
                        dw font9
     
 section .bss
+    fruit_should_be_displayed resb 1
+    fruits_eaten resb 1
     current_fruit_case_index resb 1
     isPause resb 1
     letter_x_pos resw 1
