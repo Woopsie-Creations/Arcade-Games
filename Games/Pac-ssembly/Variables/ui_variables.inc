@@ -60,23 +60,6 @@ section .data
                        dw font8
                        dw font9
     
-    fruit_table:
-                db 0      ; Offset of 1 (cannot be level 0), default cherry
-                db 0      ; Level 1 - Cherry
-                db 1      ; Level 2 - Strawberry
-                db 2      ; Level 3 - Orange
-                db 2      ; Level 4 - Orange
-                db 3      ; Level 5 - Apple
-                db 3      ; Level 6 - Apple
-                db 4      ; Level 7 - Melon
-                db 4      ; Level 8 - Melon
-                db 5      ; Level 9 - Galaxian
-                db 5      ; Level 10 - Galaxian
-                db 6      ; Level 11 - Bell
-                db 6      ; Level 12 - Bell
-                db 7      ; Level 13 - Key
-
-    
 section .bss
     current_fruit_case_index resb 1
     isPause resb 1
