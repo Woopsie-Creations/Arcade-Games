@@ -14,22 +14,8 @@
 
 %macro addToScore 1
     ; increment number in ax
-    ; if number too big (10,000 or more):
-    ;   - dx = ten thousand digits and more
-    ; else dx must be = 0
     mov ax, %1
-
     %%start:
-    cmp dx, 0
-    je %%noDx
-    cmp dx, 100
-    jae %%millions
-    cmp dx, 10
-    jae %%hundredthousands
-    cmp dx, 1
-    jae %%tenthousands
-    
-    %%noDx:
     cmp ax, 0
     je %%end
     cmp ax, 1000
@@ -38,24 +24,6 @@
     jae %%hundreds
     cmp ax, 10
     jae %%tens
-
-    %%millions:
-        mov bx, 0
-        addDigitWithoutOverflow current_score
-        sub dx, 100
-        jmp %%start
-
-    %%hundredthousands:
-        mov bx, 1
-        addDigitWithoutOverflow current_score
-        sub dx, 10
-        jmp %%start
-
-    %%tenthousands:
-        mov bx, 2
-        addDigitWithoutOverflow current_score
-        sub dx, 1
-        jmp %%start
 
     %%thousands:
         mov bx, 3
@@ -75,7 +43,6 @@
         sub ax, 10
         jmp %%start
     %%end:
-        xor cx, cx
 %endmacro
 
 section .data
