@@ -47,7 +47,7 @@ section .text
     pacmanMovement:
         cmp word [pacman_x_pos], MAZE_X_POS
         jbe .doMovement
-        cmp word [pacman_x_pos], MAZE_X_POS+COLUMN_NUMBER*WALL_WIDTH
+        cmp word [pacman_x_pos], MAZE_X_POS+COLUMN_NUMBER*WALL_WIDTH-PACMAN_WIDTH
         jae .doMovement
         cmp byte [movement_buffered], 0
         je .continueDirection
