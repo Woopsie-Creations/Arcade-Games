@@ -3,6 +3,8 @@
     %rep 4
         cmp byte [ghost_waiting_in_cage+bx], FALSE
         je %%continueLoop_%1
+        cmp byte [has_init_timer_ghost+bx], TRUE
+        je %%continueLoop_%1
 
         mov word [%1Struc + entity.x_speed], 0
         mov word [%1Struc + entity.y_speed], 0
@@ -47,14 +49,13 @@
             je %%continueLoop_%1 ; no need to redo a timer if there's no more ghost
 
             ; Schedule next run
-            ; Times specific to ghosts
-            ; mov ax, [expected_time]
-            ; add ax, [interval_ticks]
-            ; mov [expected_time], ax
+            mov ax, [expected_time_ghost]
+            add ax, [interval_ticks_ghost]
+            mov word [expected_time_ghost], ax
 
-            ; mov dx, [expected_time+2]
-            ; adc dx, [interval_ticks+2]
-            ; mov [expected_time+2], dx
+            mov dx, [expected_time_ghost+2]
+            adc dx, [interval_ticks_ghost+2]
+            mov word [expected_time_ghost+2], dx
     
         %%continueLoop_%1:
             inc bx
@@ -66,10 +67,11 @@ section .bss
     cage_amount_of_ghosts resb 1
 
     ghost_waiting_in_cage resb 4 ; 4 ghosts
+    ghost_needs_to_leave resb 4 ; 4 ghosts
 
 section .text
     ghostBehavior:
-        ; checkTimer current_time, expected_time, moveGhostsOutOfCage ; for cage behavior
+        ; checkTimer current_time_ghost, expected_time_ghost, moveGhostsOutOfCage, [has_init_timer_ghost+bx]
         call moveGhostsOutOfCage
         call ghostPattern
         ret

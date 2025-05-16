@@ -49,7 +49,7 @@
     cmp byte [maze_remaining_gums], MAZE_AMOUNT_OF_GUMS-%1
     jne %%skip
     mov byte [fruit_should_be_displayed], TRUE
-    init_timer 10
+    init_timer 10, time_start_fruit, interval_ticks_fruit, expected_time_fruit, [has_init_timer_fruit]
     %%skip:
 %endmacro
 
@@ -175,7 +175,7 @@ section .text
         cmp byte [maze_remaining_gums], 0
         je goToNextLevel
         ; fruits
-        cmp byte [has_init_timer], TRUE
+        cmp byte [has_init_timer_fruit], TRUE
         je .checkForFruitTimer
 
         .checkForSpawn:
@@ -193,11 +193,11 @@ section .text
             ret
         
         .checkForFruitTimer:
-            checkTimer current_time, expected_time, eraseFruit
+            checkTimer current_time_fruit, expected_time_fruit, eraseFruit, [has_init_timer_fruit]
             ret
     
     eraseFruit:
         inc byte [fruits_eaten]
         mov byte [fruit_should_be_displayed], FALSE
-        mov byte [has_init_timer], FALSE
+        mov byte [has_init_timer_fruit], FALSE
         ret

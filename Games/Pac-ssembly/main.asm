@@ -7,6 +7,7 @@ org 100h
 %include "Variables/include_variables.inc"
 %include "collisions.inc"
 %include "animations.inc"
+%include "timer.inc"
 
 %define FRAME_RATE 30
 
@@ -100,7 +101,7 @@ section .text
         updateCurrentStateText readyText
         call waitForEnterPress
         updateCurrentStateText pauseText
-        ; call initTimer ; for ghosts but for now it conflicts with the one for ghosts :)
+        initGhostTimers
         ret
 
     waitForNextFrame:
@@ -141,7 +142,6 @@ section .text
         jc gameLoop ; return to the gameloop in case of failure (just to verify for now, will probably change)
         ret
 
-%include "timer.inc"
 %include "score.inc"
 %include "display.inc"
 %include "key_input.inc"

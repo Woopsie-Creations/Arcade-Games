@@ -1,4 +1,4 @@
-%macro init_timer 1
+%macro init_timer 5
     ; === Get initial tick count ===
     mov ax, 0x0040
     mov es, ax
@@ -9,30 +9,40 @@
     sti
 
     ; Save start time
-    mov [time_start], ax
-    mov [time_start+2], dx
+    mov [%2], ax
+    mov [%2+2], dx
 
     ; Convert seconds (%1) to ticks (18 ticks/sec)
     mov bx, %1
     mov ax, 18
     mul bx                 ; DX:AX = ticks
-    mov [interval_ticks], ax
-    mov [interval_ticks+2], dx
+    mov [%3], ax
+    mov [%3+2], dx
 
     ; expected_time = start_time + interval_ticks
-    mov ax, [time_start]
-    add ax, [interval_ticks]
-    mov [expected_time], ax
+    mov ax, [%2]
+    add ax, [%3]
+    mov [%4], ax
 
-    mov dx, [time_start+2]
-    adc dx, [interval_ticks+2]
-    mov [expected_time+2], dx
+    mov dx, [%2+2]
+    adc dx, [%3+2]
+    mov [%4+2], dx
 
-    mov byte [has_init_timer], TRUE
+    mov byte %5, TRUE
 %endmacro
 
-%macro checkTimer 3
-    call getCurrentTime
+%macro getCurrentTime 0
+    mov ax, 0x0040
+    mov es, ax
+    mov si, 0x006C
+    cli
+    mov ax, word [es:si]
+    mov dx, word [es:si+2]
+    sti
+%endmacro
+
+%macro checkTimer 4
+    getCurrentTime
 
     mov [%1], ax ; current_time
     mov [%1+2], dx
@@ -48,34 +58,39 @@
     jb %%earlyExit
     
     ; it's time to...
+    mov byte %4, FALSE
     call %3
-    mov byte [has_init_timer], FALSE
     %%earlyExit:
 %endmacro
 
+%macro initGhostTimers 0
+    mov bx, 0
+    %rep 4
+        init_timer 5, time_start_ghost, interval_ticks_ghost, expected_time_ghost, [has_init_timer_ghost+bx]
+        inc bx
+    %endrep
+%endmacro
+
 section .data
-    has_init_timer db FALSE
+    has_init_timer_fruit db FALSE
+    time_start_fruit dw 0
+                     dw 0
+    interval_ticks_fruit dw 0
+                         dw 0
+    expected_time_fruit dw 0
+                        dw 0
+    current_time_fruit dw 0
+                       dw 0
 
-    time_start dw 0
-               dw 0
-    interval_ticks dw 0
-                   dw 0
-    expected_time dw 0
-                  dw 0
-    current_time dw 0
-                 dw 0
-
-section .text
-    initTimer:
-        init_timer 2
-        ret
-
-    getCurrentTime:
-        mov ax, 0x0040
-        mov es, ax
-        mov si, 0x006C
-        cli
-        mov ax, word [es:si]
-        mov dx, word [es:si+2]
-        sti
-        ret
+    has_init_timer_ghost db FALSE
+                         db FALSE
+                         db FALSE
+                         db FALSE
+    time_start_ghost dw 0
+                     dw 0
+    interval_ticks_ghost dw 0
+                         dw 0
+    expected_time_ghost dw 0
+                        dw 0
+    current_time_ghost dw 0
+                       dw 0
