@@ -47,9 +47,14 @@ section .data
     LEVEL_NUMBER_WIDTH equ 22
     LEVEL_NUMBER_HEIGHT equ 10
 
+    STATE_TEXT_X_POS equ MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2-2) - 2
+    STATE_TEXT_Y_POS equ MAZE_Y_POS + WALL_HEIGHT * 18 - 5
+
     pressText dw P, R, E, S, S
     enterText dw E, N, T, E, R
     escText dw E, S, C, A, P, E
+    readyText dw R, E, A, D, Y
+    pauseText dw P, A, U, S, E
 
     displayNumbersFont dw font0
                        dw font1
@@ -63,6 +68,7 @@ section .data
                        dw font9
     
 section .bss
+    current_state_text resw 5
     fruit_should_be_displayed resb 1
     fruits_eaten resb 1
     current_fruit_case_index resb 1

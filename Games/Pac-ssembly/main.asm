@@ -24,6 +24,19 @@ org 100h
     %endrep
 %endmacro
 
+%macro updateCurrentStateText 1  
+    mov word ax, [%1]
+    mov word [current_state_text], ax
+    mov word ax, [%1+2]
+    mov word [current_state_text+2], ax
+    mov word ax, [%1+4]
+    mov word [current_state_text+4], ax
+    mov word ax, [%1+6]
+    mov word [current_state_text+6], ax
+    mov word ax, [%1+8]
+    mov word [current_state_text+8], ax
+%endmacro
+
 section .text
     mov ah, 00h     ;--------------------------------
     mov al, 13h     ; set screen 320x200 256colours
@@ -85,7 +98,9 @@ section .text
 
         call clearScreen
         call initViewport
+        updateCurrentStateText readyText
         call waitForEnterPress
+        updateCurrentStateText pauseText
         ; call initTimer ; for ghosts but for now it conflicts with the one for ghosts :)
         ret
 

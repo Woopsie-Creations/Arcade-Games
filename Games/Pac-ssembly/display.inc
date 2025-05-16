@@ -40,7 +40,7 @@
     mov word [letter_x_pos], %4
     mov word [letter_y_pos], %3
     mov bx, 0
-        .eachLetter:
+        %%eachLetter:
         mov si, [%1+bx]
         push bx
         displayItem [letter_y_pos], [letter_x_pos], %5, %6
@@ -48,7 +48,7 @@
         add word [letter_x_pos], %6 + 1
         add bx, 2
         cmp bx, %2 * 2
-        jne .eachLetter
+        jne %%eachLetter
 %endmacro
 
 %macro placeFruitBox 3
@@ -235,13 +235,20 @@ section .text
                 displayItem PRESS_ARROWS_Y_POS + FONT_HEIGHT + 4, PRESS_ARROWS_X_POS + 1, PRESS_ARROWS_HEIGHT, PRESS_ARROWS_WIDTH
         pressEnter:
             textDisplay pressText, 5, PRESS_ENTER_Y_POS, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
-            cmp byte [isPause], 1
-            je displayEnterText
-            displayEscText:
+            cmp byte [isPause], TRUE
+            je .displayEnterText
+            .displayEscText:
                 textDisplay escText, 6, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
-            ret
-            displayEnterText:
+            jmp .end
+            .displayEnterText:
                 textDisplay enterText, 5, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
+            .end:
+        ReadyPause:
+            displayStateText:
+                cmp byte [isPause], FALSE
+                je .end
+                textDisplay current_state_text, 5, STATE_TEXT_Y_POS, STATE_TEXT_X_POS, FONT_HEIGHT, FONT_WIDTH
+                .end:
         ret
 
         ; ; testing purpose
