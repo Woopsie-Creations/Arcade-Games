@@ -1,10 +1,10 @@
 %macro applyKeyPress 4
-    cmp byte [%1], %2
+    cmp word [%1], %2
     je gameLoop
 
-    mov word [pacman_x_speed_buffer], %3
-    mov word [pacman_y_speed_buffer], %4
-    mov byte [movement_buffered], 1
+    mov word [pacmanStruc + entity.x_speed_buffer], %3
+    mov word [pacmanStruc + entity.y_speed_buffer], %4
+    mov byte [pacmanStruc + entity.movement_buffered], TRUE
     jmp gameLoop
 %endmacro
 
@@ -29,7 +29,7 @@ section .text
         ret
     waitForEnterPress:
         ; change display to 'press enter'
-        mov byte [isPause], 1
+        mov byte [isPause], TRUE
         call displayFrame
         mov ah, 00h
         int 16h
@@ -38,7 +38,7 @@ section .text
         cmp ah, ENTER_KEY 
         jne waitForEnterPress
         ; change display to 'press esc'
-        mov byte [isPause], 0
+        mov byte [isPause], FALSE
         ret
     
     readKeyboard:
@@ -64,13 +64,13 @@ section .text
         jmp gameLoop
 
     upKey:
-        applyKeyPress pacman_y_speed, -2, 0, -2
+        applyKeyPress pacmanStruc + entity.y_speed, -2, 0, -2
 
     rightKey:
-        applyKeyPress pacman_x_speed, 2, 2, 0
+        applyKeyPress pacmanStruc + entity.x_speed, 2, 2, 0
 
     downKey:
-        applyKeyPress pacman_y_speed, 2, 0, 2
+        applyKeyPress pacmanStruc + entity.y_speed, 2, 0, 2
 
     leftKey:
-        applyKeyPress pacman_x_speed, -2, -2, 0
+        applyKeyPress pacmanStruc + entity.x_speed, -2, -2, 0

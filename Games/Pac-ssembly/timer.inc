@@ -54,22 +54,22 @@ section .text
         sti
         ret
 
-    checkTimer:
-        call getCurrentTime
-
-        mov [current_time], ax
-        mov [current_time+2], dx
-
-        ; Then we compare times
-        mov ax, [current_time+2]
-        cmp ax, [expected_time+2]
-        ja moveGhostsOutOfCage
-        jb .earlyExit
-
-        mov ax, [current_time]
-        cmp ax, [expected_time]
-        jb .earlyExit
-        
-        call moveGhostsOutOfCage
-        .earlyExit:
-        ret
+;    checkTimer:
+;        call getCurrentTime
+;
+;        mov [current_time], ax
+;        mov [current_time+2], dx
+;
+;        ; Then we compare times
+;        mov ax, [current_time+2]
+;        cmp ax, [expected_time+2]
+;        ja moveGhostsOutOfCage
+;        jb .earlyExit
+;
+;        mov ax, [current_time]
+;        cmp ax, [expected_time]
+;        jb .earlyExit
+;        
+;        call moveGhostsOutOfCage
+;        .earlyExit:
+;        ret

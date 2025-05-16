@@ -1,17 +1,25 @@
 org 100h
 
+%define TRUE 1
+%define FALSE 0
+
 %include "Sprites/include_sprites.inc"
 %include "Variables/include_variables.inc"
 
 %define FRAME_RATE 30
 
-%macro initGhosts 0-* 0, 1, 2, 3
+%macro initGhosts 0-* blinky, pinky, inky, clyde
     %rep %0
-        mov word [ghost_x_speed+%1*2], 0
-        mov word [ghost_y_speed+%1*2], 0
-        mov word [ghost_x_speed_buffer+%1*2], 0
-        mov word [ghost_y_speed_buffer+%1*2], 0
-        mov byte [ghost_movement_buffered+%1], 0
+        mov word ax, [%1Struc + entity.initial_x_pos]
+        mov word [%1Struc + entity.x_pos], ax
+        mov word ax, [%1Struc + entity.initial_y_pos]
+        mov word [%1Struc + entity.y_pos], ax
+
+        mov word [%1Struc + entity.x_speed], 0
+        mov word [%1Struc + entity.y_speed], 0
+        mov word [%1Struc + entity.x_speed_buffer], 0
+        mov word [%1Struc + entity.y_speed_buffer], 0
+        mov byte [%1Struc + entity.movement_buffered], FALSE
         %rotate 1
     %endrep
 %endmacro
@@ -31,7 +39,7 @@ section .text
         call pacmanAnimation
         call displayFrame
         ; call ghostBehavior
-        call ghostAnimation
+        ; call ghostAnimation
         jmp readKeyboard
 
 ; ------------------------------
@@ -52,34 +60,28 @@ section .text
         ; gums
         mov byte [maze_remaining_gums], MAZE_AMOUNT_OF_GUMS
         ; pacman
-        mov word [pacman_x_pos], PACMAN_INITIAL_X_POS
-        mov word [pacman_y_pos], PACMAN_INITIAL_Y_POS
-        mov word [pacman_x_speed], 2
-        mov word [pacman_y_speed], 0
-        mov word [pacman_x_speed_buffer], 0
-        mov word [pacman_y_speed_buffer], 0
-        mov byte [movement_buffered], 0
-        mov byte [item+0], 3
+        mov word ax, [pacmanStruc + entity.initial_x_pos]
+        mov word [pacmanStruc + entity.x_pos], ax
+        mov word ax, [pacmanStruc + entity.initial_y_pos]
+        mov word [pacmanStruc + entity.y_pos], ax
+        mov word [pacmanStruc + entity.x_speed], 2
+        mov word [pacmanStruc + entity.y_speed], 0
+        mov word [pacmanStruc + entity.x_speed_buffer], 0
+        mov word [pacmanStruc + entity.y_speed_buffer], 0
+        mov byte [pacmanStruc + entity.movement_buffered], FALSE
+        mov byte [pacmanStruc + entity.sprite_nb], 3
+        mov byte [pacmanStruc + entity.animation_frame], 1
         ; ghosts
-        mov word [ghost_x_pos], BLINKY_INITIAL_X_POS
-        mov word [ghost_x_pos+2], PINKY_INITIAL_X_POS
-        mov word [ghost_x_pos+4], INKY_INITIAL_X_POS
-        mov word [ghost_x_pos+6], CLYDE_INITIAL_X_POS
-        mov word [ghost_y_pos], BLINKY_INITIAL_Y_POS
-        mov word [ghost_y_pos+2], PINKY_INITIAL_Y_POS
-        mov word [ghost_y_pos+4], INKY_INITIAL_Y_POS
-        mov word [ghost_y_pos+6], CLYDE_INITIAL_Y_POS
-        mov byte [cage_amount_of_ghosts], 3
-        mov byte [ghost_waiting_in_cage], 0 
-        mov byte [ghost_waiting_in_cage+1], 1
-        mov byte [ghost_waiting_in_cage+2], 1
-        mov byte [ghost_waiting_in_cage+3], 1
-        mov byte [item+2], 6
-        mov byte [item+3], 4
-        mov byte [item+4], 0
-        mov byte [item+5], 0
-
         initGhosts
+        ; mov byte [cage_amount_of_ghosts], 3
+        ; mov byte [ghost_waiting_in_cage], 0 
+        ; mov byte [ghost_waiting_in_cage+1], 1
+        ; mov byte [ghost_waiting_in_cage+2], 1
+        ; mov byte [ghost_waiting_in_cage+3], 1
+        mov byte [blinkyStruc + entity.sprite_nb], 6
+        mov byte [pinkyStruc + entity.sprite_nb], 4
+        mov byte [inkyStruc + entity.sprite_nb], 0
+        mov byte [clydeStruc + entity.sprite_nb], 0
 
         call clearScreen
         call initViewport
@@ -130,7 +132,7 @@ section .text
 %include "key_input.inc"
 %include "collisions.inc"
 %include "pacman.inc"
-%include "ghosts.inc"
+; %include "ghosts.inc"
 %include "timer.inc"
 
 

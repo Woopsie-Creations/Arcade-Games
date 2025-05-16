@@ -63,6 +63,22 @@
     %%skip:
 %endmacro
 
+%macro displayEntities 0-* pacman, blinky, pinky, inky, clyde
+    %rep 5
+        mov al, [%1Struc + entity.sprite_nb]
+        xor ah, ah ; make sure we read only 1 byte of item
+
+        mov bx, ENTITY_SPRITE_WIDTH * ENTITY_SPRITE_HEIGHT
+        mul bx
+
+        mov si, %1
+        add si, ax
+
+        displayItem [%1Struc + entity.y_pos], [%1Struc + entity.x_pos], ENTITY_SPRITE_HEIGHT, ENTITY_SPRITE_WIDTH 
+        %rotate 1
+    %endrep
+%endmacro
+
 section .text
     initViewport:
         mov bx, 4000        ; nb of 16bytes sections we want to allocate
@@ -79,8 +95,7 @@ section .text
         call clearViewport
         call printMaze
         call spawnCurrentFruit
-        call printGhosts
-        call printPacman
+        call printEntities
         call printUI
         ; call drawPixel
         call displayViewport
@@ -122,41 +137,8 @@ section .text
             jne .eachPixel
         ret
 
-    printPacman:
-        ; choose animation frame
-        mov ax, [item+0]
-        mov bx, PACMAN_WIDTH * PACMAN_HEIGHT
-        mul bx
-        mov si, pacman
-        add si, ax
-    
-        displayItem [pacman_y_pos], [pacman_x_pos], PACMAN_HEIGHT, PACMAN_WIDTH
-        ret
-
-    printGhosts:
-        mov cx, 4 ; 4 ghosts
-        .eachGhost:
-            ; choose animation frame
-            mov bx, cx ; get byte index
-            inc bx
-            mov al, [item+bx]
-            xor ah, ah ; make sure we read only 1 byte of item
-
-            mov bx, GHOST_WIDTH * GHOST_HEIGHT
-            mul bx
-            
-            mov bx, cx
-            dec bx
-            shl bx, 1
-
-            mov si, [ghost_sprite+bx]
-            add si, ax
-
-            mov di, bx
-            push cx
-            displayItem [ghost_y_pos+di], [ghost_x_pos+di], GHOST_HEIGHT, GHOST_WIDTH
-            pop cx
-            loop .eachGhost
+    printEntities:
+        displayEntities
         ret
 
     printMaze:

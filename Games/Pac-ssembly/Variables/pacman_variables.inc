@@ -1,20 +1,15 @@
 section .data
-    PACMAN_WIDTH equ 12
-    PACMAN_HEIGHT equ 12
-
-    %define PACMAN_INITIAL_X_POS MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 5
-    %define PACMAN_INITIAL_Y_POS MAZE_Y_POS + WALL_HEIGHT * 23 - 3
-
-    col_test_nb db 1
-
-section .bss
-    pacman_x_pos resw 1
-    pacman_y_pos resw 1
-    pacman_x_speed resw 1
-    pacman_y_speed resw 1
-    pacman_x_speed_buffer resw 1
-    pacman_y_speed_buffer resw 1
-    movement_buffered resb 1
-    buffered_col_test resb 1
-
-    pacman_animation_frame resb 1
+    pacmanStruc:
+        istruc entity
+            at entity.initial_x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 5
+            at entity.initial_y_pos, dw MAZE_Y_POS + WALL_HEIGHT * 23 - 3
+            at entity.x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 5
+            at entity.y_pos, dw MAZE_Y_POS + WALL_HEIGHT * 23 - 3
+            at entity.x_speed, dw 2
+            at entity.y_speed, dw 0
+            at entity.x_speed_buffer, dw 0
+            at entity.y_speed_buffer, dw 0
+            at entity.movement_buffered, db FALSE
+            at entity.animation_frame, db 1
+            at entity.sprite_nb, db 3
+        iend

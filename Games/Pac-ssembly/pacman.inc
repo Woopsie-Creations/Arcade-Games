@@ -16,96 +16,96 @@
 
 %macro pacmanAnimationSide 2
     %1:
-        cmp byte [pacman_animation_frame], 1
+        cmp byte [pacmanStruc + entity.animation_frame], 1
         je %%pacmanFrame1
-        cmp byte [pacman_animation_frame], 2
+        cmp byte [pacmanStruc + entity.animation_frame], 2
         je %%pacmanFrame2
-        cmp byte [pacman_animation_frame], 3
+        cmp byte [pacmanStruc + entity.animation_frame], 3
         je %%pacmanFrame3
-        cmp byte [pacman_animation_frame], 4
+        cmp byte [pacmanStruc + entity.animation_frame], 4
         je %%pacmanFrame4
         ret
         %%pacmanFrame1:
-            mov byte [item+0], %2 + 1
+            mov byte [pacmanStruc + entity.sprite_nb], %2 + 1
             ret
         %%pacmanFrame2:
-            mov byte [item+0], %2
+            mov byte [pacmanStruc + entity.sprite_nb], %2
             ret
         %%pacmanFrame3:
-            mov byte [item+0], 0
+            mov byte [pacmanStruc + entity.sprite_nb], 0
             ret
         %%pacmanFrame4:
-            mov byte [item+0], %2
-            mov byte [pacman_animation_frame], 0
+            mov byte [pacmanStruc + entity.sprite_nb], %2
+            mov byte [pacmanStruc + entity.animation_frame], 0
             ret
 %endmacro
 
 section .text
     secondCollisionTest:
-        cmp byte [buffered_col_test], 0
+        cmp byte [buffered_col_test], FALSE
         je pacmanMovement.continueDirection
     pacmanMovement:
-        cmp word [pacman_x_pos], MAZE_X_POS
+        cmp word [pacmanStruc + entity.x_pos], MAZE_X_POS
         jbe .doMovement
-        cmp word [pacman_x_pos], MAZE_X_POS+COLUMN_NUMBER*WALL_WIDTH-PACMAN_WIDTH
+        cmp word [pacmanStruc + entity.x_pos], MAZE_X_POS+COLUMN_NUMBER*WALL_WIDTH-ENTITY_SPRITE_WIDTH
         jae .doMovement
-        cmp byte [movement_buffered], 0
+        cmp byte [pacmanStruc + entity.movement_buffered], FALSE
         je .continueDirection
-        mov byte [buffered_col_test], 1
-        colCalculations [pacman_y_pos], [pacman_y_speed_buffer], [pacman_x_pos], [pacman_x_speed_buffer], pacmanCol
+        mov byte [buffered_col_test], TRUE
+        colCalculations [pacmanStruc + entity.y_pos], [pacmanStruc + entity.y_speed_buffer], [pacmanStruc + entity.x_pos], [pacmanStruc + entity.x_speed_buffer], pacmanCol
 
         .continueDirection:
-        mov byte [buffered_col_test], 0
-        colCalculations [pacman_y_pos], [pacman_y_speed], [pacman_x_pos], [pacman_x_speed], pacmanCol
+        mov byte [buffered_col_test], FALSE
+        colCalculations [pacmanStruc + entity.y_pos], [pacmanStruc + entity.y_speed], [pacmanStruc + entity.x_pos], [pacmanStruc + entity.x_speed], pacmanCol
 
         .doMovement:
             call pacmanEating
-            inc byte [pacman_animation_frame]
-            cmp byte [buffered_col_test], 0
+            inc byte [pacmanStruc + entity.animation_frame]
+            cmp byte [buffered_col_test], FALSE
             je .normalMovement
-            mov byte [movement_buffered], 0
-            mov ax, [pacman_x_speed_buffer]
-            mov word [pacman_x_speed], ax
-            mov ax, [pacman_y_speed_buffer]
-            mov word [pacman_y_speed], ax
+            mov byte [pacmanStruc + entity.movement_buffered], FALSE
+            mov ax, [pacmanStruc + entity.x_speed_buffer]
+            mov word [pacmanStruc + entity.x_speed], ax
+            mov ax, [pacmanStruc + entity.y_speed_buffer]
+            mov word [pacmanStruc + entity.y_speed], ax
             .normalMovement:
-            mov ax, [pacman_x_speed]
-            add word [pacman_x_pos], ax
-            mov ax, [pacman_y_speed]
-            add word [pacman_y_pos], ax
+            mov ax, [pacmanStruc + entity.x_speed]
+            add word [pacmanStruc + entity.x_pos], ax
+            mov ax, [pacmanStruc + entity.y_speed]
+            add word [pacmanStruc + entity.y_pos], ax
             ret
         .skipMovement:
             mov byte [col_test_nb], 1
-            cmp byte [buffered_col_test], 1
+            cmp byte [buffered_col_test], TRUE
             je .continueDirection
-            mov byte [pacman_animation_frame], 4
+            mov byte [pacmanStruc + entity.animation_frame], 4
             ret
         .tunnelTeleport:
-            inc byte [pacman_animation_frame]
-            cmp word [pacman_x_speed], -2
+            inc byte [pacmanStruc + entity.animation_frame]
+            cmp word [pacmanStruc + entity.x_speed], -2
             je .tpToRight
-            sub word [pacman_x_pos], WALL_WIDTH * 25
-            cmp word [pacman_x_pos], 0
+            sub word [pacmanStruc + entity.x_pos], WALL_WIDTH * 25
+            cmp word [pacmanStruc + entity.x_pos], 0
             jg .skipFixTp
-            add word [pacman_x_pos], 320
+            add word [pacmanStruc + entity.x_pos], 320
             ret
             .tpToRight:
-            add word [pacman_x_pos], WALL_WIDTH * 25
-            cmp word [pacman_x_pos], 320
+            add word [pacmanStruc + entity.x_pos], WALL_WIDTH * 25
+            cmp word [pacmanStruc + entity.x_pos], 320
             jl .skipFixTp
-            sub word [pacman_x_pos], 320
+            sub word [pacmanStruc + entity.x_pos], 320
             ret
             .skipFixTp:
             ret
 
     pacmanAnimation:
-        cmp word [pacman_y_speed], -2
+        cmp word [pacmanStruc + entity.y_speed], -2
         je animationUp
-        cmp word [pacman_x_speed], 2
+        cmp word [pacmanStruc + entity.x_speed], 2
         je animationRight
-        cmp word [pacman_y_speed], 2
+        cmp word [pacmanStruc + entity.y_speed], 2
         je animationDown
-        cmp word [pacman_x_speed], -2
+        cmp word [pacmanStruc + entity.x_speed], -2
         je animationLeft
             pacmanAnimationSide animationUp, 1
             pacmanAnimationSide animationRight, 3
