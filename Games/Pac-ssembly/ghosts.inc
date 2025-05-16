@@ -60,7 +60,7 @@ section .bss
 
 section .text
     ghostBehavior:
-        call checkTimer ; for cage behavior
+        ; checkTimer current_time, expected_time, moveGhostsOutOfCage ; for cage behavior
 
         call ghostPattern
         call ghostMovement

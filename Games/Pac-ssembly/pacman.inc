@@ -121,10 +121,9 @@ section .text
         je .eraseGum
         jmp .exit
         .eraseFruit:
-            cmp byte [fruit_should_be_displayed], 0
+            cmp byte [fruit_should_be_displayed], FALSE
             je .exit
-            inc byte [fruits_eaten]
-            mov byte [fruit_should_be_displayed], 0
+            call eraseFruit
             ; -- WHICH FRUIT --
             mov bx, [current_fruit_case_index]
             shl bx, 1

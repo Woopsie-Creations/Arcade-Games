@@ -27,9 +27,35 @@
     mov dx, [time_start+2]
     adc dx, [interval_ticks+2]
     mov [expected_time+2], dx
+
+    mov byte [has_init_timer], TRUE
+%endmacro
+
+%macro checkTimer 3
+    call getCurrentTime
+
+    mov [%1], ax ; current_time
+    mov [%1+2], dx
+
+    ; Then we compare times
+    mov ax, [%1+2]
+    cmp ax, [%2+2] ; expected_time
+    ja %3
+    jb %%earlyExit
+
+    mov ax, [%1]
+    cmp ax, [%2]
+    jb %%earlyExit
+    
+    ; it's time to...
+    call %3
+    mov byte [has_init_timer], FALSE
+    %%earlyExit:
 %endmacro
 
 section .data
+    has_init_timer db FALSE
+
     time_start dw 0
                dw 0
     interval_ticks dw 0
@@ -53,23 +79,3 @@ section .text
         mov dx, word [es:si+2]
         sti
         ret
-
-;    checkTimer:
-;        call getCurrentTime
-;
-;        mov [current_time], ax
-;        mov [current_time+2], dx
-;
-;        ; Then we compare times
-;        mov ax, [current_time+2]
-;        cmp ax, [expected_time+2]
-;        ja moveGhostsOutOfCage
-;        jb .earlyExit
-;
-;        mov ax, [current_time]
-;        cmp ax, [expected_time]
-;        jb .earlyExit
-;        
-;        call moveGhostsOutOfCage
-;        .earlyExit:
-;        ret

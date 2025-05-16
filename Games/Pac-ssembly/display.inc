@@ -173,7 +173,7 @@ section .text
         ret
 
     spawnCurrentFruit:
-        cmp byte [fruit_should_be_displayed], 1
+        cmp byte [fruit_should_be_displayed], TRUE
         je .spawn
         ret
         .spawn:

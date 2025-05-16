@@ -86,7 +86,7 @@ section .text
         call clearScreen
         call initViewport
         call waitForEnterPress
-        call initTimer
+        ; call initTimer ; for ghosts but for now it conflicts with the one for ghosts :)
         ret
 
     waitForNextFrame:
@@ -127,13 +127,13 @@ section .text
         jc gameLoop ; return to the gameloop in case of failure (just to verify for now, will probably change)
         ret
 
+%include "timer.inc"
 %include "score.inc"
 %include "display.inc"
 %include "key_input.inc"
 %include "collisions.inc"
 %include "pacman.inc"
 ; %include "ghosts.inc"
-%include "timer.inc"
 
 
 
