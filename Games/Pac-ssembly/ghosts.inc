@@ -1,7 +1,6 @@
 %macro ghostsOutOfCage 0-* blinky, pinky, inky, clyde
     mov bx, 0
     %rep 4
-        push bx
         cmp byte [ghost_waiting_in_cage+bx], FALSE
         je %%continueLoop_%1
 
@@ -24,12 +23,11 @@
             jmp %%continueLoop_%1
             
         %%checkY_%1:
-            mov ax, MAZE_Y_POS + WALL_HEIGHT * 11 - 3
-            cmp word [%1Struc + entity.y_pos], ax
+            cmp word [%1Struc + entity.y_pos], MAZE_Y_POS + WALL_HEIGHT * 11 - 3
             je %%outOfCage_%1
 
             dec word [%1Struc + entity.y_pos]
-            ; mov byte [%1Struc + entity.sprite_nb], 0
+            mov byte [%1Struc + entity.sprite_nb], 0
             jmp %%continueLoop_%1
 
         %%outOfCage_%1:
@@ -37,11 +35,12 @@
             mov word [%1Struc + entity.y_speed], 0
             mov word [%1Struc + entity.x_speed], 2
             ; move ghosts because of an offset from cage
-            dec word [%1 + entity.x_pos]
+            mov word ax, [blinkyStruc + entity.initial_x_pos]
+            mov word [%1Struc + entity.x_pos], ax
+            mov word ax, [blinkyStruc + entity.initial_y_pos]
+            mov word [%1Struc + entity.y_pos], ax
 
-            pop bx
             mov byte [ghost_waiting_in_cage+bx], FALSE
-            push bx
             dec byte [cage_amount_of_ghosts]
 
             cmp byte [cage_amount_of_ghosts], 0
@@ -58,7 +57,6 @@
             ; mov [expected_time+2], dx
     
         %%continueLoop_%1:
-            pop bx
             inc bx
             %rotate 1
     %endrep

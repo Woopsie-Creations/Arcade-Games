@@ -34,6 +34,7 @@
     je %1_animationDown
     cmp word [%1Struc + entity.x_speed], -2
     je %1_animationLeft
+    jmp %%end
         animationSide %1, %1_animationUp, 1, 1, 2, 3, 4, 0
         jmp %%end
         animationSide %1, %1_animationRight, 3, 1, 2, 3, 4, 0
@@ -54,6 +55,7 @@
         je %1_animationDown
         cmp word [%1Struc + entity.x_speed], -2
         je %1_animationLeft
+        jmp %%end_%1
             animationSide %1, %1_animationUp, 0, 1, 3, 5, 7, 0
             jmp %%end_%1
             animationSide %1, %1_animationRight, 2, 1, 3, 5, 7, 2

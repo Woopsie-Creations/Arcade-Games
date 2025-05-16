@@ -26,17 +26,13 @@ org 100h
     %endrep
 %endmacro
 
-%macro updateCurrentStateText 1  
-    mov word ax, [%1]
-    mov word [current_state_text], ax
-    mov word ax, [%1+2]
-    mov word [current_state_text+2], ax
-    mov word ax, [%1+4]
-    mov word [current_state_text+4], ax
-    mov word ax, [%1+6]
-    mov word [current_state_text+6], ax
-    mov word ax, [%1+8]
-    mov word [current_state_text+8], ax
+%macro updateCurrentStateText 1
+    mov bx, 0
+    %rep 5
+        mov word ax, [%1+bx]
+        mov word [current_state_text+bx], ax
+        add bx, 2
+    %endrep
 %endmacro
 
 section .text
@@ -46,7 +42,6 @@ section .text
 
     init:
         call initLevel
-        jmp readKeyboard
 
     gameLoop:
         call events
@@ -89,13 +84,8 @@ section .text
         mov byte [pacmanStruc + entity.animation_frame], 1
         ; ghosts
         initGhosts
-        ; mov byte [cage_amount_of_ghosts], 3
-        ; mov byte [ghost_waiting_in_cage], 0 
-        ; mov byte [ghost_waiting_in_cage+1], 1
-        ; mov byte [ghost_waiting_in_cage+2], 1
-        ; mov byte [ghost_waiting_in_cage+3], 1
-        mov byte [blinkyStruc + entity.sprite_nb], 6
-        mov byte [pinkyStruc + entity.sprite_nb], 4
+        mov byte [blinkyStruc + entity.sprite_nb], 7
+        mov byte [pinkyStruc + entity.sprite_nb], 5
         mov byte [inkyStruc + entity.sprite_nb], 0
         mov byte [clydeStruc + entity.sprite_nb], 0
 
