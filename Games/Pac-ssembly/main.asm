@@ -6,6 +6,7 @@ org 100h
 %include "Sprites/include_sprites.inc"
 %include "Variables/include_variables.inc"
 %include "collisions.inc"
+%include "animations.inc"
 
 %define FRAME_RATE 30
 
@@ -16,8 +17,8 @@ org 100h
         mov word ax, [%1Struc + entity.initial_y_pos]
         mov word [%1Struc + entity.y_pos], ax
 
-        mov word [%1Struc + entity.x_speed], 0
-        mov word [%1Struc + entity.y_speed], 2
+        mov word [%1Struc + entity.x_speed], -2
+        mov word [%1Struc + entity.y_speed], 0
         mov word [%1Struc + entity.x_speed_buffer], 0
         mov word [%1Struc + entity.y_speed_buffer], 0
         mov byte [%1Struc + entity.movement_buffered], FALSE
@@ -50,12 +51,11 @@ section .text
     gameLoop:
         call events
         call waitForNextFrame
-        ; call pacmanMovement
-        movements
-        call pacmanAnimation
-        call displayFrame
         ; call ghostBehavior
-        ; call ghostAnimation
+        movements
+        pacman_animations
+        ghosts_animations
+        call displayFrame
         jmp readKeyboard
 
 ; ------------------------------

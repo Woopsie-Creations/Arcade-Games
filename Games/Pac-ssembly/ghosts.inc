@@ -1,42 +1,3 @@
-%macro ghostAnimationSide 2
-    %1:
-        pop bx
-        cmp byte [ghost_animation_frame+bx], 1
-        je .ghostFrame1
-        cmp byte [ghost_animation_frame+bx], 3
-        je .ghostFrame2
-        cmp byte [ghost_animation_frame+bx], 5
-        je .ghostFrame3
-        cmp byte [ghost_animation_frame+bx], 7
-        je .ghostFrame4
-        dec cx
-        jnz eachGhostAnimation
-        ret
-        .ghostFrame1:
-            mov byte [item+bx+2], %2
-            dec cx
-            jnz eachGhostAnimation
-            ret
-        .ghostFrame2:
-            mov byte [item+bx+2], %2
-            dec cx
-            jnz eachGhostAnimation
-            ret
-        .ghostFrame3:
-            mov byte [item+bx+2], %2
-            dec cx
-            jnz eachGhostAnimation
-            ret
-        .ghostFrame4:
-            mov byte [item+bx+2], %2
-            jmp .endAnimation
-        .endAnimation:
-            mov byte [ghost_animation_frame+bx], 0
-            dec cx
-            jnz eachGhostAnimation
-        ret
-%endmacro
-
 section .bss
     cage_amount_of_ghosts resb 1
 
@@ -194,27 +155,6 @@ section .text
                 dec cx
                 jnz .eachGhost
             .earlyExit:
-            ret
-    
-    ghostAnimation:
-        mov cx, 4
-        eachGhostAnimation:
-            mov bx, cx
-            dec bx ; byte index
-            mov ax, bx
-            shl ax, 1 ; word index
-            push bx
-            mov bx, ax
-            cmp word [ghost_y_speed+bx], 0
-            jl ghost_animationUp
-            jg ghost_animationDown
-            cmp word [ghost_x_speed+bx], 0
-            jg ghost_animationRight
-            jl ghost_animationLeft
-                ghostAnimationSide ghost_animationUp, 0
-                ghostAnimationSide ghost_animationRight, 2
-                ghostAnimationSide ghost_animationDown, 4
-                ghostAnimationSide ghost_animationLeft, 6
             ret
 
 %include "ghostPattern.inc"
