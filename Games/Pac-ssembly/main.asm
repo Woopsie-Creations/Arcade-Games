@@ -51,7 +51,7 @@ section .text
     gameLoop:
         call events
         call waitForNextFrame
-        ; call ghostBehavior
+        call ghostBehavior
         movements
         pacman_animations
         ghosts_animations
@@ -98,6 +98,12 @@ section .text
         mov byte [pinkyStruc + entity.sprite_nb], 4
         mov byte [inkyStruc + entity.sprite_nb], 0
         mov byte [clydeStruc + entity.sprite_nb], 0
+
+        mov byte [cage_amount_of_ghosts], 3
+        mov byte [ghost_waiting_in_cage+0], FALSE
+        mov byte [ghost_waiting_in_cage+1], TRUE
+        mov byte [ghost_waiting_in_cage+2], TRUE
+        mov byte [ghost_waiting_in_cage+3], TRUE
 
         call clearScreen
         call initViewport
@@ -150,7 +156,7 @@ section .text
 %include "display.inc"
 %include "key_input.inc"
 %include "pacman.inc"
-; %include "ghosts.inc"
+%include "ghosts.inc"
 
 
 

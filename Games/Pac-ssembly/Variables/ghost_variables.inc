@@ -6,7 +6,7 @@ section .data
 
     blinkyStruc:
         istruc entity
-            at entity.initial_x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 7
+            at entity.initial_x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - WALL_WIDTH - 1
             at entity.initial_y_pos, dw MAZE_Y_POS + WALL_HEIGHT * 11 - 3
             at entity.x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 7
             at entity.y_pos, dw MAZE_Y_POS + WALL_HEIGHT * 11 - 3
