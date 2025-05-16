@@ -199,4 +199,5 @@ section .text
     eraseFruit:
         inc byte [fruits_eaten]
         mov byte [fruit_should_be_displayed], FALSE
+        mov byte [has_init_timer], FALSE
         ret
