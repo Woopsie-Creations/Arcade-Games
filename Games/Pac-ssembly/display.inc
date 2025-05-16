@@ -1,14 +1,11 @@
 %macro displayItem  4
-    %define %%item_x_pos %2
-    %define %%item_y_pos %1
-
     mov ax, [viewport_memory_block_pos]
     mov es, ax
     ; calculate the position of the item
-    mov ax, %%item_y_pos
+    mov ax, %1
     mov bx, 320
     mul bx
-    add ax, %%item_x_pos
+    add ax, %2
     mov di, ax
     ; draw the item
     mov dx, %3 ;[item_height]

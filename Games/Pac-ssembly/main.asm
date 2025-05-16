@@ -5,6 +5,7 @@ org 100h
 
 %include "Sprites/include_sprites.inc"
 %include "Variables/include_variables.inc"
+%include "collisions.inc"
 
 %define FRAME_RATE 30
 
@@ -16,7 +17,7 @@ org 100h
         mov word [%1Struc + entity.y_pos], ax
 
         mov word [%1Struc + entity.x_speed], 0
-        mov word [%1Struc + entity.y_speed], 0
+        mov word [%1Struc + entity.y_speed], 2
         mov word [%1Struc + entity.x_speed_buffer], 0
         mov word [%1Struc + entity.y_speed_buffer], 0
         mov byte [%1Struc + entity.movement_buffered], FALSE
@@ -44,11 +45,13 @@ section .text
 
     init:
         call initLevel
+        jmp readKeyboard
 
     gameLoop:
         call events
         call waitForNextFrame
-        call pacmanMovement
+        ; call pacmanMovement
+        movements
         call pacmanAnimation
         call displayFrame
         ; call ghostBehavior
@@ -146,7 +149,6 @@ section .text
 %include "score.inc"
 %include "display.inc"
 %include "key_input.inc"
-%include "collisions.inc"
 %include "pacman.inc"
 ; %include "ghosts.inc"
 

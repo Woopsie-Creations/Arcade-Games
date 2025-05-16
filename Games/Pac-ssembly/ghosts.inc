@@ -1,19 +1,3 @@
-%macro ghost_colVerifier 1
-    cmp al, 32
-    je ghostMovement.tunnelTeleport
-    cmp al, 33
-    je ghostMovement.tunnelTeleport
-    cmp al, 34
-    je %1
-    cmp al, 35
-    je %1
-    cmp al, 36
-    je %1
-    cmp al, 37
-    je %1
-    jmp .skipMovement
-%endmacro
-
 %macro ghostAnimationSide 2
     %1:
         pop bx

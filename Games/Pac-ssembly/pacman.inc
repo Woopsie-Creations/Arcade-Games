@@ -1,19 +1,3 @@
-%macro colVerifier 1
-    cmp al, 32
-    je pacmanMovement.tunnelTeleport
-    cmp al, 33
-    je pacmanMovement.tunnelTeleport
-    cmp al, 35 ; super gum
-    je %1
-    cmp al, 36 ; gum
-    je %1
-    cmp al, 37
-    je %1
-    cmp al, 38
-    je %1
-    jmp pacmanMovement.skipMovement
-%endmacro
-
 %macro pacmanAnimationSide 2
     %1:
         cmp byte [pacmanStruc + entity.animation_frame], 1
@@ -41,63 +25,6 @@
 %endmacro
 
 section .text
-    secondCollisionTest:
-        cmp byte [buffered_col_test], FALSE
-        je pacmanMovement.continueDirection
-    pacmanMovement:
-        cmp word [pacmanStruc + entity.x_pos], MAZE_X_POS
-        jbe .doMovement
-        cmp word [pacmanStruc + entity.x_pos], MAZE_X_POS+COLUMN_NUMBER*WALL_WIDTH-ENTITY_SPRITE_WIDTH
-        jae .doMovement
-        cmp byte [pacmanStruc + entity.movement_buffered], FALSE
-        je .continueDirection
-        mov byte [buffered_col_test], TRUE
-        colCalculations [pacmanStruc + entity.y_pos], [pacmanStruc + entity.y_speed_buffer], [pacmanStruc + entity.x_pos], [pacmanStruc + entity.x_speed_buffer], pacmanCol
-
-        .continueDirection:
-        mov byte [buffered_col_test], FALSE
-        colCalculations [pacmanStruc + entity.y_pos], [pacmanStruc + entity.y_speed], [pacmanStruc + entity.x_pos], [pacmanStruc + entity.x_speed], pacmanCol
-
-        .doMovement:
-            call pacmanEating
-            inc byte [pacmanStruc + entity.animation_frame]
-            cmp byte [buffered_col_test], FALSE
-            je .normalMovement
-            mov byte [pacmanStruc + entity.movement_buffered], FALSE
-            mov ax, [pacmanStruc + entity.x_speed_buffer]
-            mov word [pacmanStruc + entity.x_speed], ax
-            mov ax, [pacmanStruc + entity.y_speed_buffer]
-            mov word [pacmanStruc + entity.y_speed], ax
-            .normalMovement:
-            mov ax, [pacmanStruc + entity.x_speed]
-            add word [pacmanStruc + entity.x_pos], ax
-            mov ax, [pacmanStruc + entity.y_speed]
-            add word [pacmanStruc + entity.y_pos], ax
-            ret
-        .skipMovement:
-            mov byte [col_test_nb], 1
-            cmp byte [buffered_col_test], TRUE
-            je .continueDirection
-            mov byte [pacmanStruc + entity.animation_frame], 4
-            ret
-        .tunnelTeleport:
-            inc byte [pacmanStruc + entity.animation_frame]
-            cmp word [pacmanStruc + entity.x_speed], -2
-            je .tpToRight
-            sub word [pacmanStruc + entity.x_pos], WALL_WIDTH * 25
-            cmp word [pacmanStruc + entity.x_pos], 0
-            jg .skipFixTp
-            add word [pacmanStruc + entity.x_pos], 320
-            ret
-            .tpToRight:
-            add word [pacmanStruc + entity.x_pos], WALL_WIDTH * 25
-            cmp word [pacmanStruc + entity.x_pos], 320
-            jl .skipFixTp
-            sub word [pacmanStruc + entity.x_pos], 320
-            ret
-            .skipFixTp:
-            ret
-
     pacmanAnimation:
         cmp word [pacmanStruc + entity.y_speed], -2
         je animationUp
