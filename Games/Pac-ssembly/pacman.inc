@@ -45,6 +45,10 @@ section .text
         cmp byte [buffered_col_test], 0
         je pacmanMovement.continueDirection
     pacmanMovement:
+        cmp word [pacman_x_pos], MAZE_X_POS
+        jbe .doMovement
+        cmp word [pacman_x_pos], MAZE_X_POS+COLUMN_NUMBER*WALL_WIDTH
+        jae .doMovement
         cmp byte [movement_buffered], 0
         je .continueDirection
         mov byte [buffered_col_test], 1
@@ -81,9 +85,17 @@ section .text
             cmp word [pacman_x_speed], -2
             je .tpToRight
             sub word [pacman_x_pos], WALL_WIDTH * 25
+            cmp word [pacman_x_pos], 0
+            jg .skipFixTp
+            add word [pacman_x_pos], 320
             ret
             .tpToRight:
             add word [pacman_x_pos], WALL_WIDTH * 25
+            cmp word [pacman_x_pos], 320
+            jl .skipFixTp
+            sub word [pacman_x_pos], 320
+            ret
+            .skipFixTp:
             ret
 
     pacmanAnimation:
@@ -114,7 +126,7 @@ section .text
             inc byte [fruits_eaten]
             mov byte [fruit_should_be_displayed], 0
             ; -- WHICH FRUIT --
-            movzx bx, [current_fruit_case_index]
+            mov bx, [current_fruit_case_index]
             shl bx, 1
             addToScore [fruit_score_table+bx]
             jmp .exit
