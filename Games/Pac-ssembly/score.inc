@@ -179,6 +179,10 @@ section .text
         mov byte [fruit_should_be_displayed], 0
         ret
         .checkFruit:
-            checkSpawnFruit 70
+            cmp byte [fruits_eaten], 1
+            jl .checkFruit1
             checkSpawnFruit 170
+            ret
+            .checkFruit1:
+            checkSpawnFruit 70
             ret

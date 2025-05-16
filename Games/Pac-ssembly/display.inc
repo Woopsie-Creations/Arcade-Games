@@ -63,7 +63,7 @@
     %%skip:
 %endmacro
 
-%macro displayEntities 0-* pacman, blinky, pinky, inky, clyde
+%macro printEntities 0-* pacman, blinky, pinky, inky, clyde
     %rep 5
         mov al, [%1Struc + entity.sprite_nb]
         xor ah, ah ; make sure we read only 1 byte of item
@@ -95,7 +95,7 @@ section .text
         call clearViewport
         call printMaze
         call spawnCurrentFruit
-        call printEntities
+        printEntities
         call printUI
         ; call drawPixel
         call displayViewport
@@ -135,10 +135,6 @@ section .text
             inc di
             cmp di, SCREEN_HEIGHT * SCREEN_WIDTH
             jne .eachPixel
-        ret
-
-    printEntities:
-        displayEntities
         ret
 
     printMaze:
