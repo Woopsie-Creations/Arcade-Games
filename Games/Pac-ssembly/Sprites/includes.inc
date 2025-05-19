@@ -1,6 +1,0 @@
-%include "Sprites/pacman.inc"
-%include "Sprites/ghosts.inc"
-%include "Sprites/maze.inc"
-%include "Sprites/fruits.inc"
-%include "Sprites/font.inc"
-%include "Sprites/ui.inc"

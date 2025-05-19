@@ -14,9 +14,13 @@ section .data
         .movement_buffered: resb 1
         .animation_frame: resb 1
         .sprite_nb: resb 1
+        .is_dead: resb 1
+        .top_bound: resw 1
+        .right_bound: resw 1
+        .bottom_bound: resw 1
+        .left_bound: resw 1
     endstruc
 
-    
     buffered_col_test db FALSE
     col_test_nb db 1
 

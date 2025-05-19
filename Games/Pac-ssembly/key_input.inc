@@ -1,5 +1,5 @@
 %macro applyKeyPress 4
-    cmp word [%1], %2
+    cmp word [pacmanStruc + entity.%1], %2
     je gameLoop
 
     mov word [pacmanStruc + entity.x_speed_buffer], %3
@@ -8,19 +8,18 @@
     jmp gameLoop
 %endmacro
 
-section .data
-    %define LEFT_ARROW 4Bh
-    %define RIGHT_ARROW 4Dh
-    %define UP_ARROW 48h
-    %define DOWN_ARROW 50h
+%define LEFT_ARROW 4Bh
+%define RIGHT_ARROW 4Dh
+%define UP_ARROW 48h
+%define DOWN_ARROW 50h
 
-    %define W_KEY 11h
-    %define A_KEY 1Eh
-    %define S_KEY 1Fh
-    %define D_KEY 20h
+%define W_KEY 11h
+%define A_KEY 1Eh
+%define S_KEY 1Fh
+%define D_KEY 20h
 
-    %define ESCAPE_KEY 01h
-    %define ENTER_KEY 1Ch
+%define ESCAPE_KEY 01h
+%define ENTER_KEY 1Ch
 
 section .text
     pauseMenu:
@@ -64,13 +63,13 @@ section .text
         jmp gameLoop
 
     upKey:
-        applyKeyPress pacmanStruc + entity.y_speed, -2, 0, -2
+        applyKeyPress y_speed, -2, 0, -2
 
     rightKey:
-        applyKeyPress pacmanStruc + entity.x_speed, 2, 2, 0
+        applyKeyPress x_speed, 2, 2, 0
 
     downKey:
-        applyKeyPress pacmanStruc + entity.y_speed, 2, 0, 2
+        applyKeyPress y_speed, 2, 0, 2
 
     leftKey:
-        applyKeyPress pacmanStruc + entity.x_speed, -2, -2, 0
+        applyKeyPress x_speed, -2, -2, 0

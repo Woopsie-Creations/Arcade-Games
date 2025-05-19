@@ -4,6 +4,8 @@ section .data
                  dw inky
                  dw clyde
 
+    in_fright_mode db FALSE
+
     blinkyStruc:
         istruc entity
             at entity.initial_x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - WALL_WIDTH - 1
@@ -17,6 +19,7 @@ section .data
             at entity.movement_buffered, db FALSE
             at entity.animation_frame, db 1
             at entity.sprite_nb, db 7
+            at entity.is_dead, db FALSE
         iend
     pinkyStruc:
         istruc entity
@@ -31,6 +34,7 @@ section .data
             at entity.movement_buffered, db FALSE
             at entity.animation_frame, db 1
             at entity.sprite_nb, db 5
+            at entity.is_dead, db FALSE
         iend
     inkyStruc:
         istruc entity
@@ -45,6 +49,7 @@ section .data
             at entity.movement_buffered, db FALSE
             at entity.animation_frame, db 1
             at entity.sprite_nb, db 0
+            at entity.is_dead, db FALSE
         iend
     clydeStruc:
         istruc entity
@@ -59,4 +64,5 @@ section .data
             at entity.movement_buffered, db FALSE
             at entity.animation_frame, db 1
             at entity.sprite_nb, db 0
+            at entity.is_dead, db FALSE
         iend

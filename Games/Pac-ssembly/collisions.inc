@@ -116,20 +116,71 @@
                 ; cmp %1, pacman
                 ; jne skipFixTp_%1
                 cmp word [%1Struc + entity.x_pos], 0
-                jg skipFixTp_%1
+                jg endMovement_%1
                 add word [%1Struc + entity.x_pos], 320
                 jmp endMovement_%1
                 tpToRight_%1:
                 add word [%1Struc + entity.x_pos], WALL_WIDTH * 25
-                mov ax, %1
-                cmp ax, pacman
-                jne skipFixTp_%1
+                ; cmp %1, pacman
+                ; jne skipFixTp_%1
                 cmp word [%1Struc + entity.x_pos], 320
-                jl skipFixTp_%1
+                jl endMovement_%1
                 sub word [%1Struc + entity.x_pos], 320
-                jmp endMovement_%1
-                skipFixTp_%1:
         endMovement_%1:
+        %rotate 1
+    %endrep
+%endmacro
+
+%macro colBetweenEntities 0-* blinky, pinky, inky, clyde
+    [section .bss]
+    %%in_bounds resb 1
+
+    [section .text]
+    mov ax, [pacmanStruc + entity.x_pos]
+    add ax, 3
+    mov word [pacmanStruc + entity.left_bound], ax
+    add ax, 5
+    mov word [pacmanStruc + entity.right_bound], ax
+    mov ax, [pacmanStruc + entity.y_pos]
+    add ax, 3
+    mov word [pacmanStruc + entity.top_bound], ax
+    add ax, 5
+    mov word [pacmanStruc + entity.bottom_bound], ax
+    %rep 4
+        mov ax, [%1Struc + entity.y_pos]
+        add ax, 6
+        cmp ax, [pacmanStruc + entity.top_bound]
+        jl testBottomBound_%1
+        inc byte [%%in_bounds]
+
+        testBottomBound_%1:
+        cmp ax, [pacmanStruc + entity.bottom_bound]
+        jg testLeftBound_%1
+        inc byte [%%in_bounds]
+
+        testLeftBound_%1:
+        mov ax, [%1Struc + entity.x_pos]
+        add ax, 6
+        cmp ax, [pacmanStruc + entity.left_bound]
+        jl testRightBound_%1
+        inc byte [%%in_bounds]
+
+        testRightBound_%1:
+        cmp ax, [pacmanStruc + entity.right_bound]
+        jg endBoundTest_%1
+        inc byte [%%in_bounds]
+
+        endBoundTest_%1:
+        cmp byte [%%in_bounds], 4
+        jne nextBoundVerif_%1
+        cmp byte [in_fright_mode], TRUE
+        jne pacmanDeath_%1
+        mov byte [%1Struc + entity.is_dead], TRUE
+        jmp nextBoundVerif_%1
+        pacmanDeath_%1:
+        mov byte [pacmanStruc + entity.is_dead], TRUE
+        nextBoundVerif_%1:
+        mov byte [%%in_bounds], 0
         %rotate 1
     %endrep
 %endmacro

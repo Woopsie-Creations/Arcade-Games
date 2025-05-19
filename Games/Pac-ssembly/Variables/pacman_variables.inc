@@ -12,4 +12,9 @@ section .data
             at entity.movement_buffered, db FALSE
             at entity.animation_frame, db 1
             at entity.sprite_nb, db 3
+            at entity.is_dead, db FALSE
+            at entity.top_bound, dw 0
+            at entity.right_bound, dw 0
+            at entity.bottom_bound, dw 0
+            at entity.left_bound, dw 0
         iend
