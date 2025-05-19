@@ -147,34 +147,3 @@ section .text
 %include "key_input.inc"
 %include "pacman.inc"
 %include "ghosts.inc"
-
-
-
-; jmp initMaze
-        ; initAll:
-        ;     call initFruits
-        ;     call initLives
-        ;     call initPac
-        ;     mov word [frameFromStart], 0
-
-        ;     mov word [ghostIndex], blinkyIndex
-        ;     call initGhost
-
-        ;     mov word [ghostIndex], pinkyIndex
-        ;     call initGhost
-
-        ;     mov word [ghostIndex], inkyIndex
-        ;     call initGhost
-
-        ;     mov word [ghostIndex], clydeIndex
-        ;     call initGhost
-
-        ;     call readyDraw
-        ;     call initScore
-        ;     call initLevelNb
-        ;     jmp selectFruit
-        ;     isGameStarted:
-        ;     cmp byte [started], 1
-        ;     je keyBottomLeft
-        ;     jmp extraUI
-            ; jmp readyClear

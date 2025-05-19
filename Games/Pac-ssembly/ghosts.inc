@@ -1,9 +1,11 @@
 %macro ghostsOutOfCage 0-* blinky, pinky, inky, clyde
     mov bx, 0
-    %rep 4
+    %rep %0
         cmp byte [ghost_waiting_in_cage+bx], FALSE
         je %%continueLoop_%1
-        cmp byte [has_init_timer_ghost+bx], TRUE
+        cmp byte [has_init_timer_%1], TRUE
+        je %%continueLoop_%1
+        cmp word [expected_time_%1], -1
         je %%continueLoop_%1
 
         mov word [%1Struc + entity.x_speed], 0
@@ -39,23 +41,12 @@
             ; move ghosts because of an offset from cage
             mov word ax, [blinkyStruc + entity.initial_x_pos]
             mov word [%1Struc + entity.x_pos], ax
-            mov word ax, [blinkyStruc + entity.initial_y_pos]
-            mov word [%1Struc + entity.y_pos], ax
 
             mov byte [ghost_waiting_in_cage+bx], FALSE
+            mov byte [has_init_timer_%1], FALSE
             dec byte [cage_amount_of_ghosts]
 
-            cmp byte [cage_amount_of_ghosts], 0
-            je %%continueLoop_%1 ; no need to redo a timer if there's no more ghost
-
-            ; Schedule next run
-            mov ax, [expected_time_ghost]
-            add ax, [interval_ticks_ghost]
-            mov word [expected_time_ghost], ax
-
-            mov dx, [expected_time_ghost+2]
-            adc dx, [interval_ticks_ghost+2]
-            mov word [expected_time_ghost+2], dx
+            mov word [expected_time_%1], -1
     
         %%continueLoop_%1:
             inc bx
@@ -71,8 +62,8 @@ section .bss
 
 section .text
     ghostBehavior:
-        ; checkTimer current_time_ghost, expected_time_ghost, moveGhostsOutOfCage, [has_init_timer_ghost+bx]
-        call moveGhostsOutOfCage
+        checkGhostTimers
+        ; call moveGhostsOutOfCage
         call ghostPattern
         ret
 

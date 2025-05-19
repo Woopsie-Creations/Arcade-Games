@@ -43,7 +43,6 @@
 
 %macro checkTimer 4
     getCurrentTime
-
     mov [%1], ax ; current_time
     mov [%1+2], dx
 
@@ -58,39 +57,46 @@
     jb %%earlyExit
     
     ; it's time to...
-    mov byte %4, FALSE
     call %3
+    mov byte %4, FALSE
     %%earlyExit:
 %endmacro
 
-%macro initGhostTimers 0
-    mov bx, 0
-    %rep 4
-        init_timer 5, time_start_ghost, interval_ticks_ghost, expected_time_ghost, [has_init_timer_ghost+bx]
-        inc bx
+%macro checkGhostTimers 0-* blinky, pinky, inky, clyde
+    %rep %0
+        checkTimer current_time_%1, expected_time_%1, moveGhostsOutOfCage, [has_init_timer_%1]
+        %rotate 1
     %endrep
 %endmacro
 
-section .data
-    has_init_timer_fruit db FALSE
-    time_start_fruit dw 0
-                     dw 0
-    interval_ticks_fruit dw 0
-                         dw 0
-    expected_time_fruit dw 0
-                        dw 0
-    current_time_fruit dw 0
-                       dw 0
+%macro initGhostTimers 0-* blinky, pinky, inky, clyde
+    createGhostsTimers
+    mov bx, 0
+    %rep 4
+        push bx
+        init_timer bx, time_start_%1, interval_ticks_%1, expected_time_%1, [has_init_timer_%1]
+        pop bx
+        add bx, 5
+        %rotate 1
+    %endrep
+%endmacro
 
-    has_init_timer_ghost db FALSE
-                         db FALSE
-                         db FALSE
-                         db FALSE
-    time_start_ghost dw 0
-                     dw 0
-    interval_ticks_ghost dw 0
-                         dw 0
-    expected_time_ghost dw 0
-                        dw 0
-    current_time_ghost dw 0
-                       dw 0
+%macro createGhostsTimers 0-* blinky, pinky, inky, clyde
+    [section .bss]
+    %rep %0
+        has_init_timer_%1 resb 1
+        time_start_%1 resw 2
+        interval_ticks_%1 resw 2
+        expected_time_%1 resw 2
+        current_time_%1 resw 2
+        %rotate 1
+    %endrep
+    [section .text]
+%endmacro
+
+section .bss
+    has_init_timer_fruit resb 1
+    time_start_fruit resw 2
+    interval_ticks_fruit resw 2
+    expected_time_fruit resw 2
+    current_time_fruit resw 2
