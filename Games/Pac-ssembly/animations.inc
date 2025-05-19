@@ -47,14 +47,12 @@
 
 %macro ghosts_animations 0-* blinky, pinky, inky, clyde
     %rep 4
-        cmp word [%1Struc + entity.y_speed], -2
-        je %1_animationUp
-        cmp word [%1Struc + entity.x_speed], 2
-        je %1_animationRight
-        cmp word [%1Struc + entity.y_speed], 2
-        je %1_animationDown
-        cmp word [%1Struc + entity.x_speed], -2
-        je %1_animationLeft
+        cmp word [%1Struc + entity.y_speed], 0
+        jl %1_animationUp
+        jg %1_animationDown
+        cmp word [%1Struc + entity.x_speed], 0
+        jg %1_animationRight
+        jl %1_animationLeft
         jmp %%end_%1
             animationSide %1, %1_animationUp, 0, 1, 3, 5, 7, 0
             jmp %%end_%1

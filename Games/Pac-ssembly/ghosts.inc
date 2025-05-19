@@ -8,8 +8,9 @@
         cmp word [expected_time_%1], -1
         je %%continueLoop_%1
 
-        mov word [%1Struc + entity.x_speed], 0
         mov word [%1Struc + entity.y_speed], 0
+        mov word [%1Struc + entity.x_speed], 0
+
         ; move
         cmp word [%1Struc + entity.x_pos], MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - WALL_WIDTH
         je %%checkY_%1
@@ -17,13 +18,13 @@
         jg %%moveXLeft_%1
 
         %%moveXRight_%1:
-            inc word [%1Struc + entity.x_pos]
-            mov byte [%1Struc + entity.sprite_nb], 2
+            mov word [%1Struc + entity.y_speed], 0
+            mov word [%1Struc + entity.x_speed], 1
             jmp %%continueLoop_%1
             
         %%moveXLeft_%1:
-            dec word [%1Struc + entity.x_pos]
-            mov byte [%1Struc + entity.sprite_nb], 6
+            mov word [%1Struc + entity.y_speed], 0
+            mov word [%1Struc + entity.x_speed], -1
             jmp %%continueLoop_%1
             
         %%checkY_%1:
@@ -54,6 +55,36 @@
     %endrep
 %endmacro
 
+%macro ghostsInCage 0-* blinky, pinky, inky, clyde
+    mov bx, 0
+    %rep %0
+        cmp byte [ghost_waiting_in_cage+bx], FALSE
+        je %%continueLoop_%1
+
+        mov word ax, [clydeStruc + entity.initial_x_pos]
+        cmp word [%1Struc + entity.x_pos], ax
+        jge %%goLeft_%1
+
+        mov word ax, [inkyStruc + entity.initial_x_pos]
+        cmp word [%1Struc + entity.x_pos], ax
+        jle %%goRight_%1
+        jmp %%continueLoop_%1
+
+        %%goRight_%1:
+            mov word [%1Struc + entity.x_speed], 1
+            mov byte [%1Struc + entity.sprite_nb], 2
+            jmp %%continueLoop_%1
+        
+        %%goLeft_%1:
+            mov word [%1Struc + entity.x_speed], -1
+            mov byte [%1Struc + entity.sprite_nb], 6
+
+        %%continueLoop_%1:
+            inc bx
+            %rotate 1
+    %endrep
+%endmacro
+
 section .bss
     cage_amount_of_ghosts resb 1
 
@@ -63,7 +94,6 @@ section .bss
 section .text
     ghostBehavior:
         checkGhostTimers
-        ; call moveGhostsOutOfCage
         call ghostPattern
         ret
 
@@ -71,6 +101,7 @@ section .text
         cmp byte [cage_amount_of_ghosts], 0
         je .earlyExit
 
+        ghostsInCage
         ghostsOutOfCage
 
         .earlyExit:
