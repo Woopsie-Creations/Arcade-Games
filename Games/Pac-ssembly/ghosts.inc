@@ -36,9 +36,6 @@
             jmp %%continueLoop_%1
 
         %%outOfCage_%1:
-            ; here is the next pattern (for now placeholder: going to the right)
-            mov word [%1Struc + entity.y_speed], 0
-            mov word [%1Struc + entity.x_speed], 2
             ; move ghosts because of an offset from cage
             mov word ax, [blinkyStruc + entity.initial_x_pos]
             mov word [%1Struc + entity.x_pos], ax
