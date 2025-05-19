@@ -116,8 +116,8 @@
                 cmp word [%1Struc + entity.x_pos], 0
                 jg endMovement_%1
                 add word [%1Struc + entity.x_pos], 320
-                jmp endMovement_%1
                 %endif
+                jmp endMovement_%1
                 tpToRight_%1:
                 add word [%1Struc + entity.x_pos], WALL_WIDTH * 25
                 %ifidni %1, pacman

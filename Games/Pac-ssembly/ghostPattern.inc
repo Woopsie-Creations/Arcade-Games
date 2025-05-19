@@ -16,14 +16,14 @@
     pop bx
 
     cmp al, 35
-    jge .continueDirection
+    jge %%continueDirection
     
     cmp word [bx + entity.x_speed_buffer], 0
     je %1.xCoordTest
     cmp word [bx + entity.y_speed_buffer], 0
     je %1.yCoordTest
 
-    .continueDirection:
+    %%continueDirection:
 %endmacro
 
 section .text
