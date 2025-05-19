@@ -67,12 +67,12 @@
             cmp byte [buffered_col_test], FALSE
             je continueDirection_%1
         movement_%1:
-            ; cmp %1, pacman
-            ; jne skipOutOfBounds_%1
+            %ifidni %1, pacman
             cmp word [%1Struc + entity.x_pos], MAZE_X_POS
             jbe doMovement_%1
             cmp word [%1Struc + entity.x_pos], MAZE_X_POS+COLUMN_NUMBER*WALL_WIDTH-ENTITY_SPRITE_WIDTH
             jae doMovement_%1
+            %endif
             skipOutOfBounds_%1:
             cmp byte [%1Struc + entity.movement_buffered], FALSE
             je continueDirection_%1
@@ -84,10 +84,9 @@
             colCalculations [%1Struc + entity.y_pos], [%1Struc + entity.y_speed], [%1Struc + entity.x_pos], [%1Struc + entity.x_speed], %1
 
             doMovement_%1:
-                ; cmp %1, pacman
-                ; jne skipGums_%1
+                %ifidni %1, pacman
                 call pacmanEating
-                skipGums_%1:
+                %endif
                 inc byte [%1Struc + entity.animation_frame]
                 cmp byte [buffered_col_test], FALSE
                 je normalMovement_%1
@@ -113,19 +112,19 @@
                 cmp word [%1Struc + entity.x_speed], -2
                 je tpToRight_%1
                 sub word [%1Struc + entity.x_pos], WALL_WIDTH * 25
-                ; cmp %1, pacman
-                ; jne skipFixTp_%1
+                %ifidni %1, pacman
                 cmp word [%1Struc + entity.x_pos], 0
                 jg endMovement_%1
                 add word [%1Struc + entity.x_pos], 320
                 jmp endMovement_%1
+                %endif
                 tpToRight_%1:
                 add word [%1Struc + entity.x_pos], WALL_WIDTH * 25
-                ; cmp %1, pacman
-                ; jne skipFixTp_%1
+                %ifidni %1, pacman
                 cmp word [%1Struc + entity.x_pos], 320
                 jl endMovement_%1
                 sub word [%1Struc + entity.x_pos], 320
+                %endif
         endMovement_%1:
         %rotate 1
     %endrep
