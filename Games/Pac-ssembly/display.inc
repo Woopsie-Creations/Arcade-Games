@@ -216,6 +216,23 @@ section .text
                 %endif
                 %assign current_fruit_index current_fruit_index+1
             %endrep
+        printLives:
+            mov bx, [pacman_lives]
+            xor bh, bh
+            cmp bx, 0
+            je printLevel
+            mov dx, LIVES_Y_POS
+            .everyLives:
+                mov si, pacman
+                add si, 3 * (ENTITY_SPRITE_HEIGHT * ENTITY_SPRITE_WIDTH)
+                push bx
+                push dx
+                displayItem dx, LIVES_X_POS, ENTITY_SPRITE_HEIGHT, ENTITY_SPRITE_WIDTH
+                pop dx
+                add dx, ENTITY_SPRITE_HEIGHT
+                pop bx
+                dec bx
+                jnz .everyLives
         printLevel:
             mov si, levelTitle
             displayItem LEVEL_Y_POS, LEVEL_X_POS, LEVEL_TITLE_HEIGHT, LEVEL_TITLE_WIDTH
