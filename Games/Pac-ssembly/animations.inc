@@ -47,6 +47,8 @@
 
 %macro ghosts_animations 0-* blinky, pinky, inky, clyde
     %rep 4
+        cmp byte [%1_in_fright_mode], TRUE
+        je %%fright_%1
         cmp word [%1Struc + entity.y_speed], 0
         jl %1_animationUp
         jg %1_animationDown
@@ -61,6 +63,9 @@
             animationSide %1, %1_animationDown, 4, 1, 3, 5, 7, 4
             jmp %%end_%1
             animationSide %1, %1_animationLeft, 6, 1, 3, 5, 7, 6
+            jmp %%end_%1
+        %%fright_%1:
+            animationSide %1, %1_animationFright, 0, 0, 2, 4, 6, 2
         %%end_%1:
         %rotate 1
     %endrep

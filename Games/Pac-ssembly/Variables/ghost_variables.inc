@@ -4,7 +4,10 @@ section .data
                  dw inky
                  dw clyde
 
-    in_fright_mode db FALSE
+    blinky_in_fright_mode db FALSE
+    pinky_in_fright_mode db FALSE
+    inky_in_fright_mode db FALSE
+    clyde_in_fright_mode db FALSE
 
     blinkyStruc:
         istruc entity

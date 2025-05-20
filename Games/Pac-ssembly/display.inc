@@ -67,8 +67,21 @@
 
         mov bx, ENTITY_SPRITE_WIDTH * ENTITY_SPRITE_HEIGHT
         mul bx
+        push ax
 
+        %ifidni %1, pacman
         mov si, %1
+        %else
+        mov ax, %1
+        cmp byte [%1_in_fright_mode], TRUE
+        jne %%skip_%1
+        mov ax, fright
+
+        %%skip_%1:
+        mov si, ax
+        %endif
+        
+        pop ax
         add si, ax
 
         displayItem [%1Struc + entity.y_pos], [%1Struc + entity.x_pos], ENTITY_SPRITE_HEIGHT, ENTITY_SPRITE_WIDTH 

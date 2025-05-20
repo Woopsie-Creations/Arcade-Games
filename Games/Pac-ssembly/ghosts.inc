@@ -82,6 +82,57 @@
     %endrep
 %endmacro
 
+%macro setGhostFrightMode 0-* blinky, pinky, inky, clyde
+    %rep %0
+        mov byte [%1_in_fright_mode], TRUE
+        mov byte [%1Struc + entity.animation_frame], 0
+        init_timer 7, time_start_fright, interval_ticks_fright, expected_time_fright, [has_init_timer_fright]
+        %rotate 1
+    %endrep
+%endmacro
+
+%macro resetGhostFrightMode 0-* blinky, pinky, inky, clyde
+    %rep %0
+        mov byte [%1_in_fright_mode], FALSE
+        mov byte [%1Struc + entity.animation_frame], 0
+        %rotate 1
+    %endrep
+%endmacro
+
+%macro checkForGhostFrightMode 0
+    checkTimer current_time_fright, expected_time_fright, resetFrightMode, [has_init_timer_fright]
+%endmacro
+
+%macro ghostDeath 0-* blinky, pinky, inky, clyde
+    mov bx, 0
+    %rep %0
+        cmp byte [%1Struc + entity.is_dead], TRUE
+        jne %%skip_%1
+
+        mov byte [%1_in_fright_mode], FALSE
+        mov byte [%1Struc + entity.is_dead], FALSE
+        mov word ax, [pinkyStruc + entity.initial_x_pos]
+        mov word [%1Struc + entity.x_pos], ax
+        mov word ax, [pinkyStruc + entity.initial_y_pos]
+        mov word [%1Struc + entity.y_pos], ax
+        mov word [%1Struc + entity.x_speed], -1
+        mov word [%1Struc + entity.y_speed], 0
+        mov word [%1Struc + entity.x_speed_buffer], 0
+        mov word [%1Struc + entity.y_speed_buffer], 0
+        mov byte [%1Struc + entity.movement_buffered], FALSE
+        mov byte [%1Struc + entity.animation_frame], 0
+        mov byte [ghost_waiting_in_cage+bx], TRUE
+        inc byte [cage_amount_of_ghosts]
+        push bx
+        init_timer 5, time_start_%1, interval_ticks_%1, expected_time_%1, [has_init_timer_%1]
+        pop bx
+
+        %%skip_%1:
+        inc bx
+        %rotate 1
+    %endrep
+%endmacro
+
 section .bss
     cage_amount_of_ghosts resb 1
 
@@ -90,6 +141,8 @@ section .bss
 
 section .text
     ghostBehavior:
+        ghostDeath
+        ghostsInCage
         checkGhostTimers
         call ghostPattern
         ret
@@ -98,10 +151,19 @@ section .text
         cmp byte [cage_amount_of_ghosts], 0
         je .earlyExit
 
-        ghostsInCage
         ghostsOutOfCage
 
         .earlyExit:
             ret
+    
+    setFrightMode:
+        setGhostFrightMode
+        ret
+    checkForFrightMode:
+        checkForGhostFrightMode
+        ret
+    resetFrightMode:
+        resetGhostFrightMode
+        ret
 
 %include "ghostPattern.inc"

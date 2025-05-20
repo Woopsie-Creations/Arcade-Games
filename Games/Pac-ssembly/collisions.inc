@@ -172,7 +172,7 @@
         endBoundTest_%1:
         cmp byte [%%in_bounds], 4
         jne nextBoundVerif_%1
-        cmp byte [in_fright_mode], TRUE
+        cmp byte [%1_in_fright_mode], TRUE
         jne pacmanDeath_%1
         mov byte [%1Struc + entity.is_dead], TRUE
         jmp nextBoundVerif_%1

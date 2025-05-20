@@ -182,18 +182,21 @@ section .text
         cmp byte [fruits_eaten], 2
         jl .checkFruit
         mov byte [fruit_should_be_displayed], FALSE
-        ret
+        jmp .checkFrightMode
+
         .checkFruit:
             cmp byte [fruits_eaten], 1
             jl .checkFruit1
             checkSpawnFruit 170
-            ret
+            jmp .checkFrightMode
             .checkFruit1:
             checkSpawnFruit 70
-            ret
+            jmp .checkFrightMode
         
         .checkForFruitTimer:
             checkTimer current_time_fruit, expected_time_fruit, eraseFruit, [has_init_timer_fruit]
+        .checkFrightMode:
+            call checkForFrightMode
             ret
     
     eraseFruit:

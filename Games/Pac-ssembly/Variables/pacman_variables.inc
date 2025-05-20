@@ -19,4 +19,4 @@ section .data
             at entity.left_bound, dw 0
         iend
 
-    pacman_lives db 0
+    pacman_lives db 3

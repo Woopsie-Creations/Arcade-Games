@@ -19,6 +19,7 @@ section .text
         .eraseSuperGum:
             dec byte [maze_remaining_gums]
             mov byte [maze+bx], 37
+            call setFrightMode
             addToScore 50
             jmp .exit
         .eraseGum:
@@ -48,6 +49,7 @@ section .text
         mov byte [level+1], 0
         mov byte [level+2], 1
         mov byte [current_fruit_case_index], 0
+        mov byte [pacman_lives], 3
         jmp init
         .skipGameOver:
         mov word ax, [pacmanStruc + entity.initial_x_pos]

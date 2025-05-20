@@ -23,6 +23,7 @@ org 100h
         mov word [%1Struc + entity.x_speed_buffer], 0
         mov word [%1Struc + entity.y_speed_buffer], 0
         mov byte [%1Struc + entity.movement_buffered], FALSE
+        mov byte [%1_in_fright_mode], FALSE
         %rotate 1
     %endrep
 %endmacro
@@ -41,6 +42,7 @@ section .text
     mov al, 13h     ; set screen 320x200 256colours
     int 10h         ;--------------------------------
 
+    createGhostsTimers
     call initViewport
 
     init:
@@ -88,7 +90,6 @@ section .text
         mov byte [pacmanStruc + entity.sprite_nb], 3
         mov byte [pacmanStruc + entity.animation_frame], 1
         mov byte [pacmanStruc + entity.is_dead], FALSE
-        mov byte [pacman_lives], 3
         ; ghosts
         initGhosts
         mov byte [blinkyStruc + entity.sprite_nb], 7

@@ -70,7 +70,6 @@
 %endmacro
 
 %macro initGhostTimers 0-* blinky, pinky, inky, clyde
-    createGhostsTimers
     mov bx, 0
     %rep 4
         push bx
@@ -100,3 +99,9 @@ section .bss
     interval_ticks_fruit resw 2
     expected_time_fruit resw 2
     current_time_fruit resw 2
+
+    has_init_timer_fright resb 1
+    time_start_fright resw 2
+    interval_ticks_fright resw 2
+    expected_time_fright resw 2
+    current_time_fright resw 2
