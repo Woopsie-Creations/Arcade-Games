@@ -53,6 +53,28 @@
     %%skip:
 %endmacro
 
+%macro ascii_to_digits 1
+    mov si, %1
+    mov cx, 7
+    .to_digit_loop:
+        mov al, [si]
+        sub al, '0'
+        mov [si], al
+        inc si
+        loop .to_digit_loop
+%endmacro
+
+%macro digits_to_ascii 1
+    mov si, %1
+    mov cx, 7
+    .to_ascii_loop:
+        mov al, [si]
+        add al, '0'
+        mov [si], al
+        inc si
+        loop .to_ascii_loop
+%endmacro
+
 section .data
     level db 0,0,1
     fruit_spawn_table:
@@ -81,8 +103,12 @@ section .data
                 dw 3000      ; Bell
                 dw 5000      ; Key
 
+    high_score_file db "hscore.bin", 0
+
 section .bss
     current_score resb 7
+    high_score resb 7
+    hscore_file_handle resw 1
 
 section .text
     updateDisplayedScore:
@@ -117,6 +143,43 @@ section .text
             mov ax, fontDot
             shl bx, 1
             mov [displayedNumbers + bx], ax
+
+            inc cx
+            jmp .loop
+        .done:
+            ret
+    
+    updateDisplayedHScore:
+        xor dx, dx ; high_score' count (7)
+        xor cx, cx ; displayedNumbers' count (7 + 2 dots)
+        .loop:
+            cmp cx, 9
+            jge .done
+            cmp cx, 1
+            je .insertDot
+            cmp cx, 5
+            je .insertDot
+
+            mov bx, dx ; get high_score' count
+            
+            movzx ax, byte [high_score + bx] ; get the number
+            shl ax, 1
+            mov bx, ax
+            mov ax, [displayNumbersFont + bx] ; use the number as an index to get sprite
+            mov bx, cx
+            shl bx, 1
+            mov [displayedHighscoreNumbers + bx], ax ; put the sprite
+
+            inc cx
+            inc dx
+            jmp .loop
+
+        .insertDot: ; when needed, insert a `.` instead of a number
+            mov bx, cx ; get displayedNumbers' count
+
+            mov ax, fontDot
+            shl bx, 1
+            mov [displayedHighscoreNumbers + bx], ax
 
             inc cx
             jmp .loop
@@ -204,3 +267,5 @@ section .text
         mov byte [fruit_should_be_displayed], FALSE
         mov byte [has_init_timer_fruit], FALSE
         ret
+
+%include "highscore.inc"

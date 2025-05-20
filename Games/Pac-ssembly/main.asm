@@ -46,6 +46,7 @@ section .text
     call initViewport
 
     init:
+        call getHighScore
         call initLevel
 
     gameLoop:

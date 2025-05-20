@@ -80,4 +80,5 @@ section .bss
     letter_x_pos resw 1
     letter_y_pos resw 1
     displayedNumbers resw 9
+    displayedHighscoreNumbers resw 9
     displayedLevel resw 3

@@ -40,6 +40,8 @@ section .text
             mov ah, 0x86
             int 0x15
         %endrep
+        ; update highscore
+        call compareScores
         mov bx, 0
         %rep 7
             mov byte [current_score+bx], 0

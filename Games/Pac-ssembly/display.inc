@@ -211,6 +211,12 @@ section .text
         printScore:
             call updateDisplayedScore
             textDisplay displayedNumbers, 9, SCORE_BOX_Y_POS+2, SCORE_BOX_X_POS+2, FONT_HEIGHT, FONT_WIDTH
+        printHScoreBox:
+            mov si, scoreNumberBox
+            displayItem SCORE_BOX_Y_POS+SCORE_TEXT_TITLE_HEIGHT+2, SCORE_BOX_X_POS, SCORE_TEXT_TITLE_HEIGHT, SCORE_BOX_WIDTH
+        printHScore:
+            call updateDisplayedHScore
+            textDisplay displayedHighscoreNumbers, 9, SCORE_BOX_Y_POS+SCORE_TEXT_TITLE_HEIGHT+4, SCORE_BOX_X_POS+2, FONT_HEIGHT, FONT_WIDTH
         printFruitTitle:
             mov si, fruitTitle
             displayItem FRUIT_TITLE_Y_POS, FRUIT_TITLE_X_POS, FRUIT_TITLE_HEIGHT, FRUIT_TITLE_WIDTH
