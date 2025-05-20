@@ -41,8 +41,9 @@ section .text
     mov al, 13h     ; set screen 320x200 256colours
     int 10h         ;--------------------------------
 
+    call initViewport
+
     init:
-        call initViewport
         call initLevel
 
     gameLoop:
@@ -54,42 +55,11 @@ section .text
         pacman_animations
         ghosts_animations
         call displayFrame
-        call pacDeath
+        cmp byte [pacmanStruc + entity.is_dead], TRUE
+        je pacDeath
         jmp readKeyboard
 
 ; ------------------------------
-    pacDeath:
-        cmp byte [pacmanStruc + entity.is_dead], TRUE
-        jne noDeath
-        mov word ax, [pacmanStruc + entity.initial_x_pos]
-        mov word [pacmanStruc + entity.x_pos], ax
-        mov word ax, [pacmanStruc + entity.initial_y_pos]
-        mov word [pacmanStruc + entity.y_pos], ax
-        mov word [pacmanStruc + entity.x_speed], 2
-        mov word [pacmanStruc + entity.y_speed], 0
-        mov word [pacmanStruc + entity.x_speed_buffer], 0
-        mov word [pacmanStruc + entity.y_speed_buffer], 0
-        mov byte [pacmanStruc + entity.movement_buffered], FALSE
-        mov byte [pacmanStruc + entity.sprite_nb], 3
-        mov byte [pacmanStruc + entity.animation_frame], 1
-        mov byte [pacmanStruc + entity.is_dead], FALSE
-
-        initGhosts
-        mov byte [blinkyStruc + entity.sprite_nb], 7
-        mov byte [pinkyStruc + entity.sprite_nb], 5
-        mov byte [inkyStruc + entity.sprite_nb], 0
-        mov byte [clydeStruc + entity.sprite_nb], 0
-
-        mov byte [cage_amount_of_ghosts], 3
-        mov byte [ghost_waiting_in_cage+0], FALSE
-        mov byte [ghost_waiting_in_cage+1], TRUE
-        mov byte [ghost_waiting_in_cage+2], TRUE
-        mov byte [ghost_waiting_in_cage+3], TRUE
-
-        call initUIAndTimer
-        noDeath:
-        ret
-
     goToNextLevel:
         call increaseLevel
         call initLevel
@@ -117,6 +87,8 @@ section .text
         mov byte [pacmanStruc + entity.movement_buffered], FALSE
         mov byte [pacmanStruc + entity.sprite_nb], 3
         mov byte [pacmanStruc + entity.animation_frame], 1
+        mov byte [pacmanStruc + entity.is_dead], FALSE
+        mov byte [pacman_lives], 3
         ; ghosts
         initGhosts
         mov byte [blinkyStruc + entity.sprite_nb], 7

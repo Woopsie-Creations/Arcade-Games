@@ -39,6 +39,9 @@ section .data
     FRUIT_SPAWN_X_POS equ MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - 6
     FRUIT_SPAWN_Y_POS equ MAZE_Y_POS + WALL_HEIGHT * 18 - 7
 
+    LIVES_X_POS equ (SCREEN_WIDTH-(MAZE_X_POS+WALL_WIDTH*COLUMN_NUMBER))/2
+    LIVES_Y_POS equ SCREEN_HEIGHT/2 - 12
+
     LEVEL_X_POS equ (MAZE_X_POS + (COLUMN_NUMBER * WALL_WIDTH)) + 8
     LEVEL_Y_POS equ (ROW_NUMBER * WALL_HEIGHT) - 32 - (LEVEL_TITLE_HEIGHT + LEVEL_NUMBER_HEIGHT + 2)
     LEVEL_BOX_Y_POS equ LEVEL_Y_POS + 11
@@ -55,6 +58,7 @@ section .data
     escText dw E, S, C, A, P, E
     readyText dw R, E, A, D, Y
     pauseText dw P, A, U, S, E
+    gameOverText dw G, A, M, E, space, O, V, E, R
 
     displayNumbersFont dw font0
                        dw font1

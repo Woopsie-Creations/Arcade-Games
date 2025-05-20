@@ -18,3 +18,5 @@ section .data
             at entity.bottom_bound, dw 0
             at entity.left_bound, dw 0
         iend
+
+    pacman_lives db 0
