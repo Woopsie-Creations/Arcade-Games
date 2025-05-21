@@ -50,13 +50,7 @@
     cmp al, 33
     je tunnelTeleport_%2
     cmp al, 35 ; super gum
-    je %1
-    cmp al, 36 ; gum
-    je %1
-    cmp al, 37
-    je %1
-    cmp al, 38
-    je %1
+    jge %1
     jmp skipMovement_%2
 %endmacro
 

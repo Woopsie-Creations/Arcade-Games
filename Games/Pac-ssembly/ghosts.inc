@@ -168,19 +168,14 @@ section .text
         resetGhostFrightMode
         ret
     scoreFromGhosts:
-        mov al, [ghosts_eaten_in_a_row]
-        xor ah, ah
-        mov bx, 100
+        mov ax, 100
+        mov cl, [ghosts_eaten_in_a_row]
+        mov bx, 2
         .scoreLoop:
-            push ax
-            mov ax, 2
             mul bx
-            mov bx, ax
-            pop ax
-            xor ah, ah
-            dec al
+            dec cl
             jnz .scoreLoop
-            addToScore bx
-            ret
+        addToScore ax
+        ret
 
 %include "ghostPattern.inc"
