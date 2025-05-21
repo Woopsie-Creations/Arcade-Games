@@ -110,10 +110,6 @@
         cmp byte [%1Struc + entity.is_dead], TRUE
         jne %%skip_%1
 
-        push bx
-        call scoreFromGhosts
-        pop bx
-
         mov byte [%1_in_fright_mode], FALSE
         mov byte [%1Struc + entity.is_dead], FALSE
         mov word ax, [pinkyStruc + entity.initial_x_pos]
@@ -129,6 +125,7 @@
         mov byte [ghost_waiting_in_cage+bx], TRUE
         inc byte [cage_amount_of_ghosts]
         push bx
+        call scoreFromGhosts
         init_timer 5, time_start_%1, interval_ticks_%1, expected_time_%1, [has_init_timer_%1]
         pop bx
 
