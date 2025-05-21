@@ -175,6 +175,7 @@
         cmp byte [%1_in_fright_mode], TRUE
         jne pacmanDeath_%1
         mov byte [%1Struc + entity.is_dead], TRUE
+        inc byte [ghosts_eaten_in_a_row]
         jmp nextBoundVerif_%1
         pacmanDeath_%1:
         mov byte [pacmanStruc + entity.is_dead], TRUE

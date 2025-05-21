@@ -86,12 +86,13 @@
     %rep %0
         mov byte [%1_in_fright_mode], TRUE
         mov byte [%1Struc + entity.animation_frame], 0
-        init_timer 7, time_start_fright, interval_ticks_fright, expected_time_fright, [has_init_timer_fright]
         %rotate 1
     %endrep
+    init_timer 7, time_start_fright, interval_ticks_fright, expected_time_fright, [has_init_timer_fright]
 %endmacro
 
 %macro resetGhostFrightMode 0-* blinky, pinky, inky, clyde
+    mov byte [ghosts_eaten_in_a_row], 0
     %rep %0
         mov byte [%1_in_fright_mode], FALSE
         mov byte [%1Struc + entity.animation_frame], 0
@@ -108,6 +109,10 @@
     %rep %0
         cmp byte [%1Struc + entity.is_dead], TRUE
         jne %%skip_%1
+
+        push bx
+        call scoreFromGhosts
+        pop bx
 
         mov byte [%1_in_fright_mode], FALSE
         mov byte [%1Struc + entity.is_dead], FALSE
@@ -164,6 +169,13 @@ section .text
         ret
     resetFrightMode:
         resetGhostFrightMode
+        ret
+    scoreFromGhosts:
+        mov ax, [ghosts_eaten_in_a_row]
+        mov bx, 200
+        mul bx
+        mov bx, ax
+        addToScore bx
         ret
 
 %include "ghostPattern.inc"

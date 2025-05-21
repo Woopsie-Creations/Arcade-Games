@@ -20,3 +20,4 @@ section .data
         iend
 
     pacman_lives db 3
+    ghosts_eaten_in_a_row db 0
