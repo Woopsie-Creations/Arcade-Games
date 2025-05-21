@@ -83,9 +83,9 @@
 %endmacro
 
 %macro setGhostFrightMode 0-* blinky, pinky, inky, clyde
+    mov byte [ghosts_eaten_in_a_row], 0
     %rep %0
         mov byte [%1_in_fright_mode], TRUE
-        mov byte [%1Struc + entity.animation_frame], 0
         %rotate 1
     %endrep
     init_timer 7, time_start_fright, interval_ticks_fright, expected_time_fright, [has_init_timer_fright]
@@ -95,7 +95,6 @@
     mov byte [ghosts_eaten_in_a_row], 0
     %rep %0
         mov byte [%1_in_fright_mode], FALSE
-        mov byte [%1Struc + entity.animation_frame], 0
         %rotate 1
     %endrep
 %endmacro
@@ -124,6 +123,7 @@
         mov byte [%1Struc + entity.animation_frame], 0
         mov byte [ghost_waiting_in_cage+bx], TRUE
         inc byte [cage_amount_of_ghosts]
+        inc byte [ghosts_eaten_in_a_row]
         push bx
         call scoreFromGhosts
         init_timer 5, time_start_%1, interval_ticks_%1, expected_time_%1, [has_init_timer_%1]
@@ -168,11 +168,19 @@ section .text
         resetGhostFrightMode
         ret
     scoreFromGhosts:
-        mov ax, [ghosts_eaten_in_a_row]
-        mov bx, 200
-        mul bx
-        mov bx, ax
-        addToScore bx
-        ret
+        mov al, [ghosts_eaten_in_a_row]
+        xor ah, ah
+        mov bx, 100
+        .scoreLoop:
+            push ax
+            mov ax, 2
+            mul bx
+            mov bx, ax
+            pop ax
+            xor ah, ah
+            dec al
+            jnz .scoreLoop
+            addToScore bx
+            ret
 
 %include "ghostPattern.inc"

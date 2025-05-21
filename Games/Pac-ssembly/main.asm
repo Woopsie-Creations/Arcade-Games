@@ -24,6 +24,7 @@ org 100h
         mov word [%1Struc + entity.y_speed_buffer], 0
         mov byte [%1Struc + entity.movement_buffered], FALSE
         mov byte [%1_in_fright_mode], FALSE
+        mov byte [ghosts_eaten_in_a_row], 0
         %rotate 1
     %endrep
 %endmacro
