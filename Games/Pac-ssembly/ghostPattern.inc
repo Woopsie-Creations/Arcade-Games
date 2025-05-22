@@ -129,7 +129,56 @@ section .text
         je .skipGhost
 
         mov bx, clydeStruc
+
+        call rng
         
-        jmp goRight
+        cmp dl, 0
+        je .goUp
+        cmp dl, 1
+        je .goRight
+        cmp dl, 2
+        je .goDown
+        cmp dl, 3
+        je .goLeft
+        jmp clydePattern
+
+        .goUp:
+            cmp word [bx + entity.y_speed], 2
+            je .skipGhost
+            mov byte [bx + entity.movement_buffered], TRUE
+            mov word [bx + entity.x_speed_buffer], 0
+            mov word [bx + entity.y_speed_buffer], -2
+            jmp .skipGhost
+
+        .goRight:
+            cmp word [bx + entity.x_speed], -2
+            je .skipGhost
+            mov byte [bx + entity.movement_buffered], TRUE
+            mov word [bx + entity.x_speed_buffer], 2
+            mov word [bx + entity.y_speed_buffer], 0
+            jmp .skipGhost
+
+        .goDown:
+            cmp word [bx + entity.y_speed], -2
+            je .skipGhost
+            mov byte [bx + entity.movement_buffered], TRUE
+            mov word [bx + entity.x_speed_buffer], 0
+            mov word [bx + entity.y_speed_buffer], 2
+            jmp .skipGhost
+
+        .goLeft:
+            cmp word [bx + entity.x_speed], 2
+            je .skipGhost
+            mov byte [bx + entity.movement_buffered], TRUE
+            mov word [bx + entity.x_speed_buffer], -2
+            mov word [bx + entity.y_speed_buffer], 0
+            
         .skipGhost:
+        ret
+    
+    rng:
+        mov ah, 0
+        int 1Ah
+        add dl, cl
+        and dl, 3 ; from 0 to 3 -> 4 diff num
         ret
