@@ -261,6 +261,9 @@ section .text
         printLevelNb:
             call updateDisplayedLevel
             textDisplay displayedLevel, 3, LEVEL_BOX_Y_POS+3, LEVEL_X_POS+3, FONT_HEIGHT, FONT_WIDTH
+        printSmalWoopsie:
+            mov si, smalWoopsie
+            displayItem SMAL_WOOPSIE_Y_POS, SMAL_WOOPSIE_X_POS, SMAL_WOOPSIE_HEIGHT, SMAL_WOOPSIE_WIDTH
         pressArrows:
             textDisplay pressText, 5, PRESS_ARROWS_Y_POS, PRESS_ARROWS_X_POS, FONT_HEIGHT, FONT_WIDTH
             arrows:

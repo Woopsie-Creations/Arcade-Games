@@ -53,6 +53,11 @@ section .data
     STATE_TEXT_X_POS equ MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2-2) - 2
     STATE_TEXT_Y_POS equ MAZE_Y_POS + WALL_HEIGHT * 18 - 5
 
+    SMAL_WOOPSIE_X_POS equ PRESS_ARROWS_X_POS - SMAL_WOOPSIE_WIDTH - 10
+    SMAL_WOOPSIE_Y_POS equ (ROW_NUMBER * WALL_HEIGHT) - 4 - (PRESS_ARROWS_HEIGHT + FONT_HEIGHT + 4)
+    SMAL_WOOPSIE_WIDTH equ 20
+    SMAL_WOOPSIE_HEIGHT equ 14
+
     pressText dw P, R, E, S, S
     enterText dw E, N, T, E, R
     escText dw E, S, C, A, P, E
