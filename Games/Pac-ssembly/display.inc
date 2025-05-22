@@ -235,15 +235,11 @@ section .text
                 mov ax, [DYNAMIC_SCORE_Y_POS]
                 mov bx, [DYNAMIC_SCORE_X_POS]
                 textDisplay displayedDynamicNumbers, 4, ax, bx, FONT_HEIGHT, FONT_WIDTH
-                jmp printHScore
+                jmp printHScoreBox
                 
         skipPrintDynamicScore:
-            mov word [expected_time_score], -1
             mov byte [dynamic_score], FALSE
-            mov byte [dynamic_score_amount], 0
-            mov byte [dynamic_score_amount+1], 0
-            mov byte [dynamic_score_amount+2], 0
-            mov byte [dynamic_score_amount+3], 0
+            call resetDynamicScore
 
         printHScoreBox:
             mov si, scoreNumberBox

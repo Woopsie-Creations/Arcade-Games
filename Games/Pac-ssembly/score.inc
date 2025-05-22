@@ -227,6 +227,14 @@ section .text
         .checkFrightMode:
             call checkForFrightMode
             ret
+
+    resetDynamicScore:
+        mov word [expected_time_score], -1
+        mov byte [dynamic_score_amount], 0
+        mov byte [dynamic_score_amount+1], 0
+        mov byte [dynamic_score_amount+2], 0
+        mov byte [dynamic_score_amount+3], 0
+        ret
     
     eraseFruit:
         inc byte [fruits_eaten]

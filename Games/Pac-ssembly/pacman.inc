@@ -18,6 +18,7 @@ section .text
             addToScore current_score, [fruit_score_table+bx], 3, 4, 5
             pop bx
             mov byte [dynamic_score], TRUE
+            call resetDynamicScore
             addToScore dynamic_score_amount, [fruit_score_table+bx], 0, 1, 2
             jmp .exit
         .eraseSuperGum:
