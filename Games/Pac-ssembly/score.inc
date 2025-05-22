@@ -5,16 +5,15 @@
     mov byte [%1+bx], 0
     dec bx
     ; recheck the overflow to be sure
-    cmp byte [%1+bx], 9
-    je %%checking
+    jmp %%checking
     %%skip: 
     ; update
     inc byte [%1+bx] 
 %endmacro
 
-%macro addToScore 1
+%macro addToScore 5
     ; increment number in ax
-    mov ax, %1
+    mov ax, %2
     %%start:
     cmp ax, 0
     je %%end
@@ -26,20 +25,20 @@
     jae %%tens
 
     %%thousands:
-        mov bx, 3
-        addDigitWithoutOverflow current_score
+        mov bx, %3
+        addDigitWithoutOverflow %1
         sub ax, 1000
         jmp %%start
 
     %%hundreds:
-        mov bx, 4
-        addDigitWithoutOverflow current_score
+        mov bx, %4
+        addDigitWithoutOverflow %1
         sub ax, 100
         jmp %%start
 
     %%tens:
-        mov bx, 5
-        addDigitWithoutOverflow current_score
+        mov bx, %5
+        addDigitWithoutOverflow %1
         sub ax, 10
         jmp %%start
     %%end:
@@ -51,6 +50,48 @@
     mov byte [fruit_should_be_displayed], TRUE
     init_timer 10, time_start_fruit, interval_ticks_fruit, expected_time_fruit, [has_init_timer_fruit]
     %%skip:
+%endmacro
+
+%macro updateDisplayedScore 4
+    xor dx, dx ; score' count (7)
+    xor cx, cx ; displayedNumbers' count (7 + 2 dots)
+    %%loop:
+        cmp cx, %3
+        jge %%done
+        mov bx, TRUE
+        cmp bx, %4
+        je %%noNeedDot
+        cmp cx, 1
+        je %%insertDot
+        cmp cx, 5
+        je %%insertDot
+
+        %%noNeedDot:
+
+        mov bx, dx ; get high_score' count
+        
+        movzx ax, byte [%1 + bx] ; get the number
+        shl ax, 1
+        mov bx, ax
+        mov ax, [displayNumbersFont + bx] ; use the number as an index to get sprite
+        mov bx, cx
+        shl bx, 1
+        mov [%2 + bx], ax ; put the sprite
+
+        inc cx
+        inc dx
+        jmp %%loop
+
+    %%insertDot: ; when needed, insert a `.` instead of a number
+        mov bx, cx ; get displayedNumbers' count
+
+        mov ax, fontDot
+        shl bx, 1
+        mov [%2 + bx], ax
+
+        inc cx
+        jmp %%loop
+    %%done:
 %endmacro
 
 %macro ascii_to_digits 1
@@ -111,81 +152,6 @@ section .bss
     hscore_file_handle resw 1
 
 section .text
-    updateDisplayedScore:
-        xor dx, dx ; current_score' count (7)
-        xor cx, cx ; displayedNumbers' count (7 + 2 dots)
-        ; addToScore 10 ; testing purpose
-        .loop:
-            cmp cx, 9
-            jge .done
-            cmp cx, 1
-            je .insertDot
-            cmp cx, 5
-            je .insertDot
-
-            mov bx, dx ; get current_score' count
-            
-            movzx ax, byte [current_score + bx] ; get the number
-            shl ax, 1
-            mov bx, ax
-            mov ax, [displayNumbersFont + bx] ; use the number as an index to get sprite
-            mov bx, cx
-            shl bx, 1
-            mov [displayedNumbers + bx], ax ; put the sprite
-
-            inc cx
-            inc dx
-            jmp .loop
-
-        .insertDot: ; when needed, insert a `.` instead of a number
-            mov bx, cx ; get displayedNumbers' count
-
-            mov ax, fontDot
-            shl bx, 1
-            mov [displayedNumbers + bx], ax
-
-            inc cx
-            jmp .loop
-        .done:
-            ret
-    
-    updateDisplayedHScore:
-        xor dx, dx ; high_score' count (7)
-        xor cx, cx ; displayedNumbers' count (7 + 2 dots)
-        .loop:
-            cmp cx, 9
-            jge .done
-            cmp cx, 1
-            je .insertDot
-            cmp cx, 5
-            je .insertDot
-
-            mov bx, dx ; get high_score' count
-            
-            movzx ax, byte [high_score + bx] ; get the number
-            shl ax, 1
-            mov bx, ax
-            mov ax, [displayNumbersFont + bx] ; use the number as an index to get sprite
-            mov bx, cx
-            shl bx, 1
-            mov [displayedHighscoreNumbers + bx], ax ; put the sprite
-
-            inc cx
-            inc dx
-            jmp .loop
-
-        .insertDot: ; when needed, insert a `.` instead of a number
-            mov bx, cx ; get displayedNumbers' count
-
-            mov ax, fontDot
-            shl bx, 1
-            mov [displayedHighscoreNumbers + bx], ax
-
-            inc cx
-            jmp .loop
-        .done:
-            ret
-
     increaseLevel:
         mov bx, 2
         addDigitWithoutOverflow level

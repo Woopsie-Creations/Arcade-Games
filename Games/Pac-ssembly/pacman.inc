@@ -14,18 +14,22 @@ section .text
             ; -- WHICH FRUIT --
             mov bx, [current_fruit_case_index]
             shl bx, 1
-            addToScore [fruit_score_table+bx]
+            push bx
+            addToScore current_score, [fruit_score_table+bx], 3, 4, 5
+            pop bx
+            mov byte [dynamic_score], TRUE
+            addToScore dynamic_score_amount, [fruit_score_table+bx], 0, 1, 2
             jmp .exit
         .eraseSuperGum:
             dec byte [maze_remaining_gums]
             mov byte [maze+bx], 37
             call setFrightMode
-            addToScore 50
+            addToScore current_score, 50, 3, 4, 5
             jmp .exit
         .eraseGum:
             dec byte [maze_remaining_gums]
             mov byte [maze+bx], 37
-            addToScore 10
+            addToScore current_score, 10, 3, 4, 5
         .exit:
             ret
 

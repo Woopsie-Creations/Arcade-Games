@@ -175,7 +175,11 @@ section .text
             mul bx
             dec cl
             jnz .scoreLoop
-        addToScore ax
+        push ax
+        addToScore current_score, ax, 3, 4, 5
+        pop ax
+        addToScore dynamic_score_amount, ax, 0, 1, 2
+        mov byte [dynamic_score], TRUE
         ret
 
 %include "ghostPattern.inc"

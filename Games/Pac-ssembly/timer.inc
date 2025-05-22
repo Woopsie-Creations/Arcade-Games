@@ -105,3 +105,9 @@ section .bss
     interval_ticks_fright resw 2
     expected_time_fright resw 2
     current_time_fright resw 2
+
+    has_init_timer_score resb 1
+    time_start_score resw 2
+    interval_ticks_score resw 2
+    expected_time_score resw 2
+    current_time_score resw 2

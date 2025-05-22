@@ -209,13 +209,47 @@ section .text
             mov si, scoreNumberBox
             displayItem SCORE_BOX_Y_POS, SCORE_BOX_X_POS, SCORE_TEXT_TITLE_HEIGHT, SCORE_BOX_WIDTH
         printScore:
-            call updateDisplayedScore
+            updateDisplayedScore current_score, displayedNumbers, 9, FALSE
             textDisplay displayedNumbers, 9, SCORE_BOX_Y_POS+2, SCORE_BOX_X_POS+2, FONT_HEIGHT, FONT_WIDTH
+        printDynamicScore:
+            cmp byte [dynamic_score], FALSE
+            je skipPrintDynamicScore
+
+            cmp word [expected_time_score], -1
+            je .initScore
+
+            checkTimer current_time_score, expected_time_score, skipPrintDynamicScore, [has_init_timer_score]
+            jmp .display
+
+            .initScore:
+            updateDisplayedScore dynamic_score_amount, displayedDynamicNumbers, 4, TRUE
+            mov ax, [pacmanStruc + entity.y_pos]
+            sub ax, 5
+            mov word [DYNAMIC_SCORE_Y_POS], ax
+            mov ax, [pacmanStruc + entity.x_pos]
+            sub ax, 6
+            mov word [DYNAMIC_SCORE_X_POS], ax
+            init_timer 1, time_start_score, interval_ticks_score, expected_time_score, [has_init_timer_score]
+
+            .display:
+                mov ax, [DYNAMIC_SCORE_Y_POS]
+                mov bx, [DYNAMIC_SCORE_X_POS]
+                textDisplay displayedDynamicNumbers, 4, ax, bx, FONT_HEIGHT, FONT_WIDTH
+                jmp printHScore
+                
+        skipPrintDynamicScore:
+            mov word [expected_time_score], -1
+            mov byte [dynamic_score], FALSE
+            mov byte [dynamic_score_amount], 0
+            mov byte [dynamic_score_amount+1], 0
+            mov byte [dynamic_score_amount+2], 0
+            mov byte [dynamic_score_amount+3], 0
+
         printHScoreBox:
             mov si, scoreNumberBox
             displayItem SCORE_BOX_Y_POS+SCORE_TEXT_TITLE_HEIGHT+2, SCORE_BOX_X_POS, SCORE_TEXT_TITLE_HEIGHT, SCORE_BOX_WIDTH
         printHScore:
-            call updateDisplayedHScore
+            updateDisplayedScore high_score, displayedHighscoreNumbers, 9, FALSE
             textDisplay displayedHighscoreNumbers, 9, SCORE_BOX_Y_POS+SCORE_TEXT_TITLE_HEIGHT+4, SCORE_BOX_X_POS+2, FONT_HEIGHT, FONT_WIDTH
         printFruitTitle:
             mov si, fruitTitle

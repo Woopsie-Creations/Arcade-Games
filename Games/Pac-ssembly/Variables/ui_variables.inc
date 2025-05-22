@@ -87,3 +87,8 @@ section .bss
     displayedNumbers resw 9
     displayedHighscoreNumbers resw 9
     displayedLevel resw 3
+    dynamic_score resb 1
+    dynamic_score_amount resb 4
+    displayedDynamicNumbers resw 4
+    DYNAMIC_SCORE_Y_POS resw 1
+    DYNAMIC_SCORE_X_POS resw 1
