@@ -21,3 +21,4 @@ section .data
 
     pacman_lives db 3
     ghosts_eaten_in_a_row db 0
+    got_a_bonus_life db 0

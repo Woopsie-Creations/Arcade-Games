@@ -203,6 +203,13 @@ section .text
         ; gums
         cmp byte [maze_remaining_gums], 0
         je goToNextLevel
+        cmp byte [got_a_bonus_life], TRUE
+        je .checkForFruits
+        cmp byte [current_score+2], 1
+        jne .checkForFruits
+        mov byte [got_a_bonus_life], TRUE
+        inc byte [pacman_lives]
+        .checkForFruits:
         ; fruits
         cmp byte [has_init_timer_fruit], TRUE
         je .checkForFruitTimer
