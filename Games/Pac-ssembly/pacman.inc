@@ -47,6 +47,7 @@ section .text
         %endrep
         ; update highscore
         call compareScores
+        call getHighScore
         mov bx, 0
         %rep 7
             mov byte [current_score+bx], 0
