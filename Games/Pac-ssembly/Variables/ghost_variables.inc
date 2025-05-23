@@ -9,6 +9,11 @@ section .data
     inky_in_fright_mode db FALSE
     clyde_in_fright_mode db FALSE
 
+    blinky_stuck db FALSE
+    pinky_stuck db FALSE
+    inky_stuck db FALSE
+    clyde_stuck db FALSE
+
     blinkyStruc:
         istruc entity
             at entity.initial_x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - WALL_WIDTH - 1

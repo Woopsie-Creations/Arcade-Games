@@ -100,6 +100,10 @@
                 cmp byte [buffered_col_test], TRUE
                 je continueDirection_%1
                 mov byte [%1Struc + entity.animation_frame], 4
+                %ifidni %1, pacman
+                %else
+                mov byte [%1_stuck], TRUE
+                %endif
                 jmp endMovement_%1
             tunnelTeleport_%1:
                 inc byte [%1Struc + entity.animation_frame]

@@ -18,7 +18,7 @@ org 100h
         mov word ax, [%1Struc + entity.initial_y_pos]
         mov word [%1Struc + entity.y_pos], ax
 
-        mov word [%1Struc + entity.x_speed], -1
+        mov word [%1Struc + entity.x_speed], -2
         mov word [%1Struc + entity.y_speed], 0
         mov word [%1Struc + entity.x_speed_buffer], 0
         mov word [%1Struc + entity.y_speed_buffer], 0

@@ -1,6 +1,6 @@
-%macro behaviorTestCol 1
+%macro behaviorTestCol 2
     push bx
-    colTest [bx + entity.y_pos], [bx + entity.y_speed_buffer], MAZE_Y_POS, WALL_HEIGHT
+    colTest [bx + entity.y_pos], [bx + entity.%1], MAZE_Y_POS, WALL_HEIGHT
     mov bx, COLUMN_NUMBER
     xor dx, dx
     mul bx
@@ -8,68 +8,94 @@
     push bx
     push ax
 
-    colTest [bx + entity.x_pos], [bx + entity.x_speed_buffer], MAZE_X_POS, WALL_WIDTH
+    colTest [bx + entity.x_pos], [bx + entity.%2], MAZE_X_POS, WALL_WIDTH
     mov bx, ax
     pop ax
     add bx, ax
     mov al, [maze+bx]
     pop bx
-
-    cmp al, 35
-    jge %%continueDirection
-    
-    cmp word [bx + entity.x_speed_buffer], 0
-    je %1.xCoordTest
-    cmp word [bx + entity.y_speed_buffer], 0
-    je %1.yCoordTest
-
-    %%continueDirection:
 %endmacro
 
 section .text
     goUp:
-        cmp word [bx + entity.y_speed_buffer], 2
-        je .skip
-        cmp word [bx + entity.y_speed], 2
-        je .skip
+        cmp word [bx + entity.y_speed], 0
+        jne blinkyPattern.skipGhost
+        cmp word [bx + entity.x_speed], 0
+        je .testCol
         mov byte [bx + entity.movement_buffered], TRUE
         mov word [bx + entity.x_speed_buffer], 0
         mov word [bx + entity.y_speed_buffer], -2
-        .skip:
-        ret
+        cmp byte [blinky_stuck], TRUE
+        je .testCol
+        jmp blinkyPattern.skipGhost
+        .testCol:
+        behaviorTestCol y_speed_buffer, x_speed_buffer
+        cmp al, 35
+        jl goDown
+        mov word [bx + entity.x_speed], 0
+        mov word [bx + entity.y_speed], -2
+        mov byte [blinky_stuck], FALSE
+        jmp blinkyPattern.skipGhost
 
     goRight:
-        cmp word [bx + entity.x_speed_buffer], -2
-        je .skip
-        cmp word [bx + entity.x_speed], -2
-        je .skip
+        cmp word [bx + entity.x_speed], 0
+        jne blinkyPattern.yCoordTest
+        cmp word [bx + entity.y_speed], 0
+        je .testCol
         mov byte [bx + entity.movement_buffered], TRUE
         mov word [bx + entity.x_speed_buffer], 2
         mov word [bx + entity.y_speed_buffer], 0
-        .skip:
-        ret
+        cmp byte [blinky_stuck], TRUE
+        je .testCol
+        jmp blinkyPattern.yCoordTest
+        .testCol:
+        behaviorTestCol y_speed_buffer, x_speed_buffer
+        cmp al, 35
+        jl goLeft
+        mov word [bx + entity.x_speed], 2
+        mov word [bx + entity.y_speed], 0
+        mov byte [blinky_stuck], FALSE
+        jmp blinkyPattern.yCoordTest
 
     goDown:
-        cmp word [bx + entity.y_speed_buffer], -2
-        je .skip
-        cmp word [bx + entity.y_speed], -2
-        je .skip
+        cmp word [bx + entity.y_speed], 0
+        jne blinkyPattern.skipGhost
+        cmp word [bx + entity.x_speed], 0
+        je .testCol
         mov byte [bx + entity.movement_buffered], TRUE
         mov word [bx + entity.x_speed_buffer], 0
         mov word [bx + entity.y_speed_buffer], 2
-        .skip:
-        ret
+        cmp byte [blinky_stuck], TRUE
+        je .testCol
+        jmp blinkyPattern.skipGhost
+        .testCol:
+        behaviorTestCol y_speed_buffer, x_speed_buffer
+        cmp al, 35
+        jl goUp
+        mov word [bx + entity.x_speed], 0
+        mov word [bx + entity.y_speed], 2
+        mov byte [blinky_stuck], FALSE
+        jmp blinkyPattern.skipGhost
 
     goLeft:
-        cmp word [bx + entity.x_speed_buffer], 2
-        je .skip
-        cmp word [bx + entity.x_speed], 2
-        je .skip
+        cmp word [bx + entity.x_speed], 0
+        jne blinkyPattern.yCoordTest
+        cmp word [bx + entity.y_speed], 0
+        je .testCol
         mov byte [bx + entity.movement_buffered], TRUE
         mov word [bx + entity.x_speed_buffer], -2
         mov word [bx + entity.y_speed_buffer], 0
-        .skip:
-        ret 
+        cmp byte [blinky_stuck], TRUE
+        je .testCol
+        jmp blinkyPattern.yCoordTest
+        .testCol:
+        behaviorTestCol y_speed_buffer, x_speed_buffer
+        cmp al, 35
+        jl goRight
+        mov word [bx + entity.x_speed], -2
+        mov word [bx + entity.y_speed], 0
+        mov byte [blinky_stuck], FALSE
+        jmp blinkyPattern.yCoordTest
 
     ghostPattern:
         call blinkyPattern
@@ -83,23 +109,24 @@ section .text
         je .skipGhost
 
         mov bx, blinkyStruc
-        behaviorTestCol blinkyPattern
         
         .xCoordTest:
+        cmp byte [blinky_stuck], TRUE
+        je goLeft
         mov word ax, [blinkyStruc + entity.x_pos]
         mov word dx, [pacmanStruc + entity.x_pos]
         cmp dx, ax
         jl goLeft
         jg goRight
-        je .yCoordTest
         
         .yCoordTest:
+        cmp byte [blinky_stuck], TRUE
+        je goUp
         mov word ax, [blinkyStruc + entity.y_pos]
         mov word dx, [pacmanStruc + entity.y_pos]
         cmp dx, ax
         jl goUp
         jg goDown
-        je .xCoordTest
 
         .skipGhost:
         ret
@@ -110,7 +137,8 @@ section .text
 
         mov bx, pinkyStruc
         
-        jmp goRight
+        mov word [bx + entity.x_speed], 2
+        mov word [bx + entity.y_speed], 0
         .skipGhost:
         ret
 
@@ -120,7 +148,8 @@ section .text
 
         mov bx, inkyStruc
         
-        jmp goLeft
+        mov word [bx + entity.x_speed], -2
+        mov word [bx + entity.y_speed], 0
         .skipGhost:
         ret
 
