@@ -16,10 +16,13 @@ section .text
             cmp al, bl
             ; if current_score > high_score, then update high_score
             ja updateHighscore
+            ; if not equal, we skip because we already know current_score < high_score
+            jb .early
 
             inc si
             inc di
             loop .compare_loop
+            .early:
             ret
 
     updateHighscore:
