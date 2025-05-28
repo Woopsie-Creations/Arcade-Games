@@ -86,6 +86,10 @@
     mov byte [ghosts_eaten_in_a_row], 0
     %rep %0
         mov byte [%1_in_fright_mode], TRUE
+        neg word [%1Struc + entity.x_speed]
+        neg word [%1Struc + entity.y_speed]
+        neg word [%1Struc + entity.x_speed_buffer]
+        neg word [%1Struc + entity.y_speed_buffer]
         %rotate 1
     %endrep
     init_timer 7, time_start_fright, interval_ticks_fright, expected_time_fright, [has_init_timer_fright]
