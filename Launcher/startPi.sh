@@ -32,7 +32,7 @@ while true; do
     clear
 
     # Execute in DOSBox
-    "$DOSBOX_BIN" -c "MOUNT c $ROOT_DIR/$GAME_DIR" -c "c:" -c "$GAME_FILE" -c "exit"
+    "$DOSBOX_BIN" -c "MOUNT c $ROOT_DIR/$GAME_DIR" -c "c:" -c "loadhigh $GAME_FILE" -c "exit"
     
     clear
 
