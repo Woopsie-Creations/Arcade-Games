@@ -75,7 +75,7 @@
         push bx
         init_timer bx, time_start_%1, interval_ticks_%1, expected_time_%1, [has_init_timer_%1]
         pop bx
-        add bx, 5
+        add bx, 2
         %rotate 1
     %endrep
 %endmacro

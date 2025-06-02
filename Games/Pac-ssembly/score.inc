@@ -48,7 +48,7 @@
     cmp byte [maze_remaining_gums], MAZE_AMOUNT_OF_GUMS-%1
     jne %%skip
     mov byte [fruit_should_be_displayed], TRUE
-    init_timer 10, time_start_fruit, interval_ticks_fruit, expected_time_fruit, [has_init_timer_fruit]
+    init_timer 5, time_start_fruit, interval_ticks_fruit, expected_time_fruit, [has_init_timer_fruit]
     %%skip:
 %endmacro
 
