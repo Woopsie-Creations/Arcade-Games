@@ -130,26 +130,22 @@
     %endrep
 %endmacro
 
-%macro displayPixelBlock 0-* ax, ah, al, bx, bh, bl, cx, ch, cl, dx, dh, dl
+%macro displayPixelBlock 0-* eax
     ; go to the memory block for the viewport to then take the colour of the selected pixel of the viewport
     mov ax, [viewport_memory_block_pos]
     mov es, ax
-    %rep 4
-        xor %1, %1  ; clear the register ax because we will only use the lower part (al) for the colour
-        mov %2, [es:di]
-        mov %3, [es:di+1]
-        push %1
-        add di, 2
-        %rotate 3
+    %rep 4 ; you're probably wondering how i ended up in this situation
+        xor eax, eax  ; clear the register ax because we will only use the lower part (al) for the colour
+        mov eax, dword [es:di]
+        push eax
+        add di, 4
     %endrep
     mov ax, 0xA000
     mov es, ax
-    %rep 4
-        pop %1
-        mov byte [es:di-2], %2
-        mov byte [es:di-1], %3
-        sub di, 2
-        %rotate 3
+    %rep 4 ; you're probably wondering how i ended up in this situation
+        pop eax
+        mov dword [es:di-4], eax
+        sub di, 4
     %endrep
 %endmacro
 
@@ -166,7 +162,6 @@ section .text
         ret
 
     displayFrame:
-        ; call clearViewport
         call printMaze
         call spawnCurrentFruit
         printEntities
@@ -187,7 +182,6 @@ section .text
             inc di
             cmp di, SCREEN_HEIGHT * SCREEN_WIDTH
             jne .clearEachPixels
-        ; clearEntities
         ret
 
     displayViewport:
@@ -195,7 +189,7 @@ section .text
         mov di, 0
         .eachPixel:
             displayPixelBlock
-            add di, 8
+            add di, 16 ; you're probably wondering how i ended up in this situation
             cmp di, SCREEN_HEIGHT * SCREEN_WIDTH
             jne .eachPixel
         ret

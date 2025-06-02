@@ -52,7 +52,6 @@ section .text
 
     gameLoop:
         call events
-        call waitForNextFrame
         call ghostBehavior
         movements
         colBetweenEntities
@@ -114,13 +113,6 @@ section .text
         call waitForEnterPress
         updateCurrentStateText pauseText
         initGhostTimers
-        ret
-
-    waitForNextFrame:
-        ; will not stay like this, it works for now by being kind of a 30 fps loop, but it is juts a sleep function, not even dynamic
-        mov dx, 10000
-        mov ah, 0x86
-        int 0x15
         ret
 
     clearScreen:
