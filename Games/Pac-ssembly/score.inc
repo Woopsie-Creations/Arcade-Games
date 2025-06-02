@@ -1,4 +1,4 @@
-%macro addDigitWithoutOverflow 1
+%macro addDigitWithoutOverflow 2
     %%checking:
     cmp byte [%1+bx], 9
     jne %%skip
@@ -8,7 +8,8 @@
     jmp %%checking
     %%skip: 
     ; update
-    inc byte [%1+bx] 
+    inc byte [%1+bx]
+    sub ax, %2
 %endmacro
 
 %macro addToScore 5
@@ -26,20 +27,17 @@
 
     %%thousands:
         mov bx, %3
-        addDigitWithoutOverflow %1
-        sub ax, 1000
+        addDigitWithoutOverflow %1, 1000
         jmp %%start
 
     %%hundreds:
         mov bx, %4
-        addDigitWithoutOverflow %1
-        sub ax, 100
+        addDigitWithoutOverflow %1, 100
         jmp %%start
 
     %%tens:
         mov bx, %5
-        addDigitWithoutOverflow %1
-        sub ax, 10
+        addDigitWithoutOverflow %1, 10
         jmp %%start
     %%end:
 %endmacro
@@ -48,7 +46,7 @@
     cmp byte [maze_remaining_gums], MAZE_AMOUNT_OF_GUMS-%1
     jne %%skip
     mov byte [fruit_should_be_displayed], TRUE
-    init_timer 10, time_start_fruit, interval_ticks_fruit, expected_time_fruit, [has_init_timer_fruit]
+    init_timer 5, time_start_fruit, interval_ticks_fruit, expected_time_fruit, [has_init_timer_fruit]
     %%skip:
 %endmacro
 
@@ -139,10 +137,10 @@ section .data
                 dw 300      ; Strawberry
                 dw 500      ; Orange
                 dw 700      ; Apple
-                dw 1000      ; Melon
-                dw 2000      ; Galaxian
-                dw 3000      ; Bell
-                dw 5000      ; Key
+                dw 1000     ; Melon
+                dw 2000     ; Galaxian
+                dw 3000     ; Bell
+                dw 5000     ; Key
 
     high_score_file db "hscore.bin", 0
 
@@ -154,15 +152,14 @@ section .bss
 section .text
     increaseLevel:
         mov bx, 2
-        addDigitWithoutOverflow level
+        addDigitWithoutOverflow level, 0
         ; update fruit to spawn
         mov bx, [level+2]
         cmp byte [level+0], 1
         jge .isKey
         cmp byte [level+1], 1
-        je .moreThanTen
-        cmp byte [level+1], 1
         jg .isKey
+        je .moreThanTen
         mov bx, [fruit_spawn_table+bx]
         jmp .end
         .moreThanTen:
@@ -181,8 +178,7 @@ section .text
     updateDisplayedLevel:
         xor cx, cx ; displayedLevel' count (3)
         mov bx, 2
-        ; addDigitWithoutOverflow level ; testing purpose
-        .loop:
+        .eachLevelDigit:
             cmp cx, 3
             jge .done
 
@@ -196,7 +192,7 @@ section .text
             mov [displayedLevel + bx], ax ; put the sprite
 
             inc cx
-            jmp .loop
+            jmp .eachLevelDigit
         .done:
             ret
     events:
@@ -231,6 +227,7 @@ section .text
         
         .checkForFruitTimer:
             checkTimer current_time_fruit, expected_time_fruit, eraseFruit, [has_init_timer_fruit]
+            ret
         .checkFrightMode:
             call checkForFrightMode
             ret

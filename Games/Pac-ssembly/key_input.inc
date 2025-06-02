@@ -26,6 +26,7 @@ section .text
         cmp ah, ESCAPE_KEY
         je waitForEnterPress
         ret
+
     waitForEnterPress:
         ; change display to 'press enter'
         mov byte [isPause], TRUE

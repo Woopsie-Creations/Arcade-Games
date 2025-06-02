@@ -6,7 +6,7 @@ ROOT_DIR="$(dirname "$ROOT_DIR")"
 NASM="/opt/homebrew/bin/nasm"
 GAME_DIR="$ROOT_DIR/Pac-ssembly"
 GAME_BIN="$GAME_DIR/Bin"
-DOSBOX_BIN="/Users/$USER/Documents/dosbox.app/Contents/MacOS/DOSBox"
+DOSBOX_BIN="/Users/$USER/Desktop/dosbox.app/Contents/MacOS/DOSBox"
 
 # Assemble the game
 "$NASM" "$GAME_DIR/main.asm" -f bin -o "$GAME_BIN/PS.com"

@@ -20,5 +20,7 @@ section .data
         iend
 
     pacman_lives db 3
-    ghosts_eaten_in_a_row db 0
-    got_a_bonus_life db 0
+
+section .bss
+    ghosts_eaten_in_a_row resb 1
+    got_a_bonus_life resb 1
