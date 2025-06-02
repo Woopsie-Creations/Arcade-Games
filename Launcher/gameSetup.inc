@@ -15,11 +15,6 @@ section .data
 
 section .bss
     file_handle dw ?
-    program_to_execute resw 1
-
-    current_game resw 1
-    current_game_x_pos resb 1
-    current_game_y_pos resb 1
 
 section .text
     change_current_game:

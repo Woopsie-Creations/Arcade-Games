@@ -52,7 +52,7 @@ section .text
 
     gameLoop:
         call events
-        call waitForNextFrame
+        ; call waitForNextFrame
         call ghostBehavior
         movements
         colBetweenEntities
