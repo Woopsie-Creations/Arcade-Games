@@ -65,7 +65,7 @@
             animationSide %1, %1_animationLeft, 6, 1, 3, 5, 7, 6
             jmp %%end_%1
         %%fright_%1:
-            animationSide %1, %1_animationFright, 0, 0, 2, 4, 6, 2
+            animationSide %1, %1_animationFright, 0, 1, 3, 5, 7, 2
         %%end_%1:
         %rotate 1
     %endrep
