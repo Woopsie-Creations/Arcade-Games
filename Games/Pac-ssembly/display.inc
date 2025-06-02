@@ -130,6 +130,29 @@
     %endrep
 %endmacro
 
+%macro displayPixelBlock 0-* ax, ah, al, bx, bh, bl, cx, ch, cl, dx, dh, dl
+    ; go to the memory block for the viewport to then take the colour of the selected pixel of the viewport
+    mov ax, [viewport_memory_block_pos]
+    mov es, ax
+    %rep 4
+        xor %1, %1  ; clear the register ax because we will only use the lower part (al) for the colour
+        mov %2, [es:di]
+        mov %3, [es:di+1]
+        push %1
+        add di, 2
+        %rotate 3
+    %endrep
+    mov ax, 0xA000
+    mov es, ax
+    %rep 4
+        pop %1
+        mov byte [es:di-2], %2
+        mov byte [es:di-1], %3
+        sub di, 2
+        %rotate 3
+    %endrep
+%endmacro
+
 section .text
     initViewport:
         mov bx, 4000        ; nb of 16bytes sections we want to allocate
@@ -171,19 +194,8 @@ section .text
         ; set the position to the first pixel
         mov di, 0
         .eachPixel:
-            ; go to the memory block for the viewport to then take the colour of the selected pixel of the viewport
-            mov ax, [viewport_memory_block_pos]
-            mov es, ax
-            xor ax, ax  ; clear the register ax because we will only use the lower part (al) for the colour
-            mov al, [es:di]
-            push ax     ; then save the colour
-            ; then go the memory block for the screen, retrieve the colour and place it (same pixel position as the viewport because they have the same size)
-            mov ax, 0xA000
-            mov es, ax
-            pop ax
-            mov byte [es:di], al
-            ; loop until it has done every pixels
-            inc di
+            displayPixelBlock
+            add di, 8
             cmp di, SCREEN_HEIGHT * SCREEN_WIDTH
             jne .eachPixel
         ret
