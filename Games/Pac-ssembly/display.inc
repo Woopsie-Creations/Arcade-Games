@@ -1,4 +1,4 @@
-%macro displayItem  4
+%macro displayItem 4
     mov ax, [viewport_memory_block_pos]
     mov es, ax
     ; calculate the position of the item
@@ -15,8 +15,14 @@
             xor ax, ax
             ; get the colour of the sprite at said position in the memory by the register si
             mov al, [si]
+            cmp byte [is_displaying_black], TRUE
+            je %%keepColor
             cmp al, 0x00
             je %%skipTransparent      ; skip the colour placement if transparent
+            cmp byte [blinkColor], TRUE
+            je %%keepColor
+            mov byte [es:di], 0x0F
+            %%keepColor:
             mov byte [es:di], al     ; place the pixel on the viewport
             %%skipTransparent:
             ; go to the next pixel
@@ -89,6 +95,41 @@
     %endrep
 %endmacro
 
+%macro clearItem 4
+        mov ax, [viewport_memory_block_pos]
+        mov es, ax
+        ; calculate the position of the item
+        mov ax, %1
+        mov bx, 320
+        mul bx
+        add ax, %2
+        mov di, ax
+        ; draw the item
+        mov dx, %3 ;[item_height]
+        %%eachItemRow:
+            mov cx, %4 ;[item_width]
+            %%eachItemColumn:
+                mov byte [es:di], 0x00  ; place the pixel on the viewport
+                ; go to the next pixel
+                inc di
+                ; if it hasn't reached the end of the line, loop
+                dec cx
+                jnz %%eachItemColumn
+            ; go to the next row
+            add di, SCREEN_WIDTH
+            sub di, %4 ;[item_width]
+            ; if it hasn't reached the last row, loop
+            dec dx
+            jnz %%eachItemRow
+%endmacro
+
+%macro clearEntities 0-* pacman, blinky, pinky, inky, clyde
+    %rep %0
+        clearItem [%1Struc + entity.y_pos], [%1Struc + entity.x_pos], ENTITY_SPRITE_HEIGHT, ENTITY_SPRITE_WIDTH
+        %rotate 1
+    %endrep
+%endmacro
+
 section .text
     initViewport:
         mov bx, 4000        ; nb of 16bytes sections we want to allocate
@@ -102,12 +143,11 @@ section .text
         ret
 
     displayFrame:
-        call clearViewport
+        ; call clearViewport
         call printMaze
         call spawnCurrentFruit
         printEntities
         call printUI
-        ; call drawPixel
         call displayViewport
         ret
 
@@ -124,6 +164,7 @@ section .text
             inc di
             cmp di, SCREEN_HEIGHT * SCREEN_WIDTH
             jne .clearEachPixels
+        ; clearEntities
         ret
 
     displayViewport:
@@ -149,6 +190,7 @@ section .text
 
     printMaze:
         ; init coordinates
+        mov byte [is_displaying_black], TRUE
         mov word [wall_x_pos], MAZE_X_POS
         mov word [wall_y_pos], MAZE_Y_POS
         ; draw maze
@@ -158,6 +200,7 @@ section .text
             push dx
             mov dx, 0
             .eachMazeColumn:
+
                 push dx
                 xor ax, ax
                 mov al, [bx]
@@ -180,6 +223,7 @@ section .text
             inc dx
             cmp dx, ROW_NUMBER
             jne .eachMazeRow
+            mov byte [is_displaying_black], FALSE
         ret
 
     spawnCurrentFruit:
@@ -196,6 +240,7 @@ section .text
         ret
 
     printUI:
+        mov byte [is_displaying_black], TRUE
         gameTitle:
             mov si, topleft
             displayItem TITLE_Y_POS, TITLE_X_POS, TITLE_HEIGHT, TITLE_WIDTH
@@ -268,19 +313,27 @@ section .text
         printLives:
             mov bx, [pacman_lives]
             xor bh, bh
-            cmp bx, 0
-            je printLevel
+            mov cx, 4
             mov dx, LIVES_Y_POS
             .everyLives:
                 mov si, pacman
                 add si, 3 * (ENTITY_SPRITE_HEIGHT * ENTITY_SPRITE_WIDTH)
+                push cx
                 push bx
                 push dx
+                cmp bx, 0
+                jle .clearLives
                 displayItem dx, LIVES_X_POS, ENTITY_SPRITE_HEIGHT, ENTITY_SPRITE_WIDTH
+                jmp .skipClearLives
+                .clearLives:
+                clearItem dx, LIVES_X_POS, ENTITY_SPRITE_HEIGHT, ENTITY_SPRITE_WIDTH
+                .skipClearLives:
                 pop dx
                 add dx, ENTITY_SPRITE_HEIGHT
                 pop bx
                 dec bx
+                pop cx
+                dec cx
                 jnz .everyLives
         printLevel:
             mov si, levelTitle
@@ -304,10 +357,10 @@ section .text
             cmp byte [isPause], TRUE
             je .displayEnterText
             .displayEscText:
-                textDisplay escText, 6, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
+                textDisplay escText, 3, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
             jmp .end
             .displayEnterText:
-                textDisplay enterText, 5, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
+                textDisplay enterText, 3, PRESS_ENTER_Y_POS + FONT_HEIGHT + 4, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
             .end:
         ReadyPause:
             displayStateText:
@@ -315,13 +368,5 @@ section .text
                 je .end
                 textDisplay current_state_text, 5, STATE_TEXT_Y_POS, STATE_TEXT_X_POS, FONT_HEIGHT, FONT_WIDTH
                 .end:
+        mov byte [is_displaying_black], FALSE
         ret
-
-        ; ; testing purpose
-        ; drawPixel:
-        ;     mov word [item_width], 1
-        ;     mov word [item_height], 1
-        ;     mov ax, 2
-        ;     mov word [item_x_pos], ax
-        ;     mov ax, 2
-        ;     ret
