@@ -105,7 +105,7 @@ section .text
         mov byte [ghost_waiting_in_cage+2], TRUE
         mov byte [ghost_waiting_in_cage+3], TRUE
 
-        call clearScreen
+        call clearViewport
         call initUIAndTimer
         ret
 

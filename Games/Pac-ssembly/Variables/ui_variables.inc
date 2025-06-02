@@ -59,8 +59,8 @@ section .data
     SMAL_WOOPSIE_HEIGHT equ 14
 
     pressText dw P, R, E, S, S
-    enterText dw E, N, T, E, R
-    escText dw E, S, C, A, P, E
+    enterText dw R, E, T
+    escText dw E, S, C
     readyText dw R, E, A, D, Y
     pauseText dw P, A, U, S, E
     gameOverText dw G, A, M, E, space, O, V, E, R
