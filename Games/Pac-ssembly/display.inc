@@ -276,11 +276,21 @@ section .text
             mov word [DYNAMIC_SCORE_X_POS], ax
             init_timer 1, time_start_score, interval_ticks_score, expected_time_score, [has_init_timer_score]
 
+            cmp word [pacmanStruc + entity.x_pos], MAZE_X_POS + WALL_WIDTH
+            jnle .checkOtherSide
+            add word [DYNAMIC_SCORE_X_POS], 5
+            jmp .display
+            
+            .checkOtherSide:
+            cmp word [pacmanStruc + entity.x_pos], MAZE_X_POS + (COLUMN_NUMBER-3)*WALL_WIDTH
+            jnge .display
+            sub word [DYNAMIC_SCORE_X_POS], 5
+
             .display:
-                mov ax, [DYNAMIC_SCORE_Y_POS]
-                mov bx, [DYNAMIC_SCORE_X_POS]
-                textDisplay displayedDynamicNumbers, 4, ax, bx, FONT_HEIGHT, FONT_WIDTH
-                jmp printHScoreBox
+            mov ax, [DYNAMIC_SCORE_Y_POS]
+            mov bx, [DYNAMIC_SCORE_X_POS]
+            textDisplay displayedDynamicNumbers, 4, ax, bx, FONT_HEIGHT, FONT_WIDTH
+            jmp printHScoreBox
                 
         skipPrintDynamicScore:
             mov byte [dynamic_score], FALSE
