@@ -34,7 +34,7 @@ section .text
         mov ah, 00h
         int 16h
         cmp ah, ESCAPE_KEY
-        je exitProgram
+        je mainmenu
         cmp ah, ENTER_KEY 
         jne waitForEnterPress
         ; change display to 'press esc'

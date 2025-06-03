@@ -9,17 +9,39 @@ org 100h
 %include "animations.inc"
 %include "timer.inc"
 
+section .bss
+    current_mode resb 1 ; 0 = 1P / 1 = 2P --- default 1P
+
 section .text
     mov ah, 00h     ;--------------------------------
     mov al, 13h     ; set screen 320x200 256colours
     int 10h         ;--------------------------------
-
-    createGhostsTimers
     call initViewport
+    jmp mainmenu
+    
+    initFromMenu:
+        mov byte [pacman_lives], 3
+        mov byte [level+0], 0
+        mov byte [level+1], 0
+        mov byte [level+2], 1
+        mov byte [current_score+0], 0
+        mov byte [current_score+1], 0
+        mov byte [current_score+2], 0
+        mov byte [current_score+3], 0
+        mov byte [current_score+4], 0
+        mov byte [current_score+5], 0
+        mov byte [current_score+6], 0
+        mov byte [fruits_eaten], 0
+        mov byte [isPause], 0
+        mov byte [fruit_should_be_displayed], 0
+        mov byte [current_fruit_case_index], 0
+
+        createGhostsTimers
 
     init:
         call getHighScore
         call initLevel
+        call initUIAndTimer
 
     gameLoop:
         call events
@@ -36,8 +58,7 @@ section .text
 ; ------------------------------
     goToNextLevel:
         call increaseLevel
-        call initLevel
-        jmp gameLoop
+        jmp init
 
     resetRegisters:
         xor ax, ax
@@ -65,6 +86,7 @@ section .text
 %include "init.inc"
 %include "score.inc"
 %include "display.inc"
+%include "menu.inc"
 %include "key_input.inc"
 %include "pacman.inc"
 %include "ghosts.inc"

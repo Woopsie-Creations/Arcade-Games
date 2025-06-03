@@ -62,7 +62,6 @@
         mov byte [ghost_waiting_in_cage+3], TRUE
 
         call clearViewport
-        call initUIAndTimer
         ret
 
     initUIAndTimer:
