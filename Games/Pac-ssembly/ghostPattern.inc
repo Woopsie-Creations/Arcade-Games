@@ -9,6 +9,8 @@ section .text
     blinkyPattern:
         cmp byte [ghost_waiting_in_cage+0], TRUE
         je .skipGhost
+        cmp byte [current_mode], 1
+        je .skipGhost
 
         mov bx, blinkyStruc
 

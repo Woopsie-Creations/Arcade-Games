@@ -1,11 +1,11 @@
-%macro applyKeyPress 4
-    cmp word [pacmanStruc + entity.%1], %2
+%macro applyKeyPress 6
+    cmp word [%1Struc + entity.%2], %3
     je gameLoop
 
-    mov word [pacmanStruc + entity.x_speed_buffer], %3
-    mov word [pacmanStruc + entity.y_speed_buffer], %4
-    mov byte [pacmanStruc + entity.movement_buffered], TRUE
-    jmp gameLoop
+    mov word [%1Struc + entity.x_speed_buffer], %4
+    mov word [%1Struc + entity.y_speed_buffer], %5
+    mov byte [%1Struc + entity.movement_buffered], TRUE
+    jmp %6
 %endmacro
 
 %define LEFT_ARROW 4Bh
@@ -51,7 +51,21 @@ section .text
         mov ah, 00h
         int 16h
         call pauseMenu
+
+        cmp byte [current_mode], 0
+        je .firstPlayer
+
+        ; second player
+        cmp ah, W_KEY 
+        je wKey
+        cmp ah, D_KEY
+        je dKey
+        cmp ah, S_KEY
+        je sKey
+        cmp ah, A_KEY
+        je aKey
         
+        .firstPlayer:
         cmp ah, UP_ARROW 
         je upKey
         cmp ah, RIGHT_ARROW
@@ -64,13 +78,33 @@ section .text
         jmp gameLoop
 
     upKey:
-        applyKeyPress y_speed, -2, 0, -2
+        applyKeyPress pacman, y_speed, -2, 0, -2, gameLoop
 
     rightKey:
-        applyKeyPress x_speed, 2, 2, 0
+        applyKeyPress pacman, x_speed, 2, 2, 0, gameLoop
 
     downKey:
-        applyKeyPress y_speed, 2, 0, 2
+        applyKeyPress pacman, y_speed, 2, 0, 2, gameLoop
 
     leftKey:
-        applyKeyPress x_speed, -2, -2, 0
+        applyKeyPress pacman, x_speed, -2, -2, 0, gameLoop
+
+    wKey:
+        cmp word [blinkyStruc + entity.y_speed], 2
+        je readKeyboard.firstPlayer
+        applyKeyPress blinky, y_speed, -2, 0, -2, readKeyboard.firstPlayer
+
+    dKey:
+        cmp word [blinkyStruc + entity.x_speed], -2
+        je readKeyboard.firstPlayer
+        applyKeyPress blinky, x_speed, 2, 2, 0, readKeyboard.firstPlayer
+
+    sKey:
+        cmp word [blinkyStruc + entity.y_speed], -2
+        je readKeyboard.firstPlayer
+        applyKeyPress blinky, y_speed, 2, 0, 2, readKeyboard.firstPlayer
+
+    aKey:
+        cmp word [blinkyStruc + entity.x_speed], 2
+        je readKeyboard.firstPlayer
+        applyKeyPress blinky, x_speed, -2, -2, 0, readKeyboard.firstPlayer
