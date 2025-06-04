@@ -8,6 +8,12 @@
     jmp %6
 %endmacro
 
+%macro ghostKeyMoveCheck 7 
+    cmp word [%1Struc + entity.%2], %3
+    je readKeyboard.firstPlayer
+    applyKeyPress %1, %2, %4, %5, %6, %7
+%endmacro
+
 %define LEFT_ARROW 4Bh
 %define RIGHT_ARROW 4Dh
 %define UP_ARROW 48h
@@ -17,6 +23,7 @@
 %define A_KEY 1Eh
 %define S_KEY 1Fh
 %define D_KEY 20h
+%define C_KEY 2Eh
 
 %define ESCAPE_KEY 01h
 %define ENTER_KEY 1Ch
@@ -56,6 +63,8 @@ section .text
         je .firstPlayer
 
         ; second player
+        cmp ah, C_KEY 
+        je changeCurrentGhost
         cmp ah, W_KEY 
         je wKey
         cmp ah, D_KEY
@@ -90,21 +99,12 @@ section .text
         applyKeyPress pacman, x_speed, -2, -2, 0, gameLoop
 
     wKey:
-        cmp word [blinkyStruc + entity.y_speed], 2
-        je readKeyboard.firstPlayer
-        applyKeyPress blinky, y_speed, -2, 0, -2, readKeyboard.firstPlayer
-
+        ghostKeyMoveCheck current_player_ghost, y_speed, 2, -2, 0, -2, readKeyboard.firstPlayer
     dKey:
-        cmp word [blinkyStruc + entity.x_speed], -2
-        je readKeyboard.firstPlayer
-        applyKeyPress blinky, x_speed, 2, 2, 0, readKeyboard.firstPlayer
+        ghostKeyMoveCheck current_player_ghost, x_speed, -2, 2, 2, 0, readKeyboard.firstPlayer
 
     sKey:
-        cmp word [blinkyStruc + entity.y_speed], -2
-        je readKeyboard.firstPlayer
-        applyKeyPress blinky, y_speed, 2, 0, 2, readKeyboard.firstPlayer
+        ghostKeyMoveCheck current_player_ghost, y_speed, -2, 2, 0, 2, readKeyboard.firstPlayer
 
     aKey:
-        cmp word [blinkyStruc + entity.x_speed], 2
-        je readKeyboard.firstPlayer
-        applyKeyPress blinky, x_speed, -2, -2, 0, readKeyboard.firstPlayer
+        ghostKeyMoveCheck current_player_ghost, x_speed, 2, -2, -2, 0, readKeyboard.firstPlayer

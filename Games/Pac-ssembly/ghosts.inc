@@ -141,7 +141,6 @@
 
 section .bss
     cage_amount_of_ghosts resb 1
-
     ghost_waiting_in_cage resb 4 ; 4 ghosts
     ghost_needs_to_leave resb 4 ; 4 ghosts
 
@@ -186,5 +185,9 @@ section .text
         addToScore dynamic_score_amount, ax, 0, 1, 2
         mov byte [dynamic_score], TRUE
         ret
+    
+    changeCurrentGhost:
+        ; should change the current_player_ghost
+        jmp readKeyboard.firstPlayer
 
 %include "ghostPattern.inc"
