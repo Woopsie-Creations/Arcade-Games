@@ -1,15 +1,15 @@
 %macro applyKeyPress 6
-    cmp word [%1Struc + entity.%2], %3
+    cmp word [%1 + entity.%2], %3
     je gameLoop
 
-    mov word [%1Struc + entity.x_speed_buffer], %4
-    mov word [%1Struc + entity.y_speed_buffer], %5
-    mov byte [%1Struc + entity.movement_buffered], TRUE
+    mov word [%1 + entity.x_speed_buffer], %4
+    mov word [%1 + entity.y_speed_buffer], %5
+    mov byte [%1 + entity.movement_buffered], TRUE
     jmp %6
 %endmacro
 
 %macro ghostKeyMoveCheck 7 
-    cmp word [%1Struc + entity.%2], %3
+    cmp word [%1 + entity.%2], %3
     je readKeyboard.firstPlayer
     applyKeyPress %1, %2, %4, %5, %6, %7
 %endmacro
@@ -87,24 +87,28 @@ section .text
         jmp gameLoop
 
     upKey:
-        applyKeyPress pacman, y_speed, -2, 0, -2, gameLoop
+        applyKeyPress pacmanStruc, y_speed, -2, 0, -2, gameLoop
 
     rightKey:
-        applyKeyPress pacman, x_speed, 2, 2, 0, gameLoop
+        applyKeyPress pacmanStruc, x_speed, 2, 2, 0, gameLoop
 
     downKey:
-        applyKeyPress pacman, y_speed, 2, 0, 2, gameLoop
+        applyKeyPress pacmanStruc, y_speed, 2, 0, 2, gameLoop
 
     leftKey:
-        applyKeyPress pacman, x_speed, -2, -2, 0, gameLoop
+        applyKeyPress pacmanStruc, x_speed, -2, -2, 0, gameLoop
 
     wKey:
-        ghostKeyMoveCheck current_player_ghost, y_speed, 2, -2, 0, -2, readKeyboard.firstPlayer
+        mov si, [current_player_ghost]
+        ghostKeyMoveCheck si, y_speed, 2, -2, 0, -2, readKeyboard.firstPlayer
     dKey:
-        ghostKeyMoveCheck current_player_ghost, x_speed, -2, 2, 2, 0, readKeyboard.firstPlayer
+        mov si, [current_player_ghost]
+        ghostKeyMoveCheck si, x_speed, -2, 2, 2, 0, readKeyboard.firstPlayer
 
     sKey:
-        ghostKeyMoveCheck current_player_ghost, y_speed, -2, 2, 0, 2, readKeyboard.firstPlayer
+        mov si, [current_player_ghost]
+        ghostKeyMoveCheck si, y_speed, -2, 2, 0, 2, readKeyboard.firstPlayer
 
     aKey:
-        ghostKeyMoveCheck current_player_ghost, x_speed, 2, -2, -2, 0, readKeyboard.firstPlayer
+        mov si, [current_player_ghost]
+        ghostKeyMoveCheck si, x_speed, 2, -2, -2, 0, readKeyboard.firstPlayer

@@ -11,9 +11,8 @@ section .text
         je .skipGhost
         cmp byte [current_mode], 0
         je .onePlayerMode
-        %if current_player_ghost = blinky
-        jmp .skipGhost
-        %endif
+        cmp word [current_player_ghost], blinkyStruc
+        je .skipGhost
 
         .onePlayerMode:
         mov bx, blinkyStruc
@@ -70,9 +69,8 @@ section .text
         je .skipGhost
         cmp byte [current_mode], 0
         je .onePlayerMode
-        %if current_player_ghost = pinky
-        jmp .skipGhost
-        %endif
+        cmp word [current_player_ghost], pinkyStruc
+        je .skipGhost
 
         .onePlayerMode:
         mov bx, pinkyStruc
@@ -128,9 +126,8 @@ section .text
         je .skipGhost
         cmp byte [current_mode], 0
         je .onePlayerMode
-        %if current_player_ghost = inky
-        jmp .skipGhost
-        %endif
+        cmp word [current_player_ghost], inkyStruc
+        je .skipGhost
 
         .onePlayerMode:
         mov bx, inkyStruc
@@ -186,9 +183,8 @@ section .text
         je .skipGhost
         cmp byte [current_mode], 0
         je .onePlayerMode
-        %if current_player_ghost = clyde
-        jmp .skipGhost
-        %endif
+        cmp word [current_player_ghost], clydeStruc
+        je .skipGhost
 
         .onePlayerMode:
         mov bx, clydeStruc

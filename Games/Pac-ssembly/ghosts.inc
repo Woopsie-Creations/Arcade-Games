@@ -188,6 +188,25 @@ section .text
     
     changeCurrentGhost:
         ; should change the current_player_ghost
+        cmp word [current_player_ghost], blinkyStruc
+        je .setPinky
+        cmp word [current_player_ghost], pinkyStruc
+        je .setInky
+        cmp word [current_player_ghost], inkyStruc
+        je .setClyde
+        .setBlinky:
+            mov ax, blinkyStruc
+            jmp .end
+        .setPinky:
+            mov ax, pinkyStruc
+            jmp .end
+        .setInky:
+            mov ax, inkyStruc
+            jmp .end
+        .setClyde:
+            mov ax, clydeStruc
+        .end:
+            mov word [current_player_ghost], ax
         jmp readKeyboard.firstPlayer
 
 %include "ghostPattern.inc"

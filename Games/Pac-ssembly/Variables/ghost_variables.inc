@@ -14,7 +14,7 @@ section .data
     inky_stuck db FALSE
     clyde_stuck db FALSE
 
-    %define current_player_ghost blinky
+    current_player_ghost: dw blinkyStruc
 
     blinkyStruc:
         istruc entity

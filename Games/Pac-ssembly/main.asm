@@ -20,6 +20,7 @@ section .text
     jmp mainmenu
     
     initFromMenu:
+        mov word [current_player_ghost], blinkyStruc
         mov byte [pacman_lives], 3
         mov byte [level+0], 0
         mov byte [level+1], 0
