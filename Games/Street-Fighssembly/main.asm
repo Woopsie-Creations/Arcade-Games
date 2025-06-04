@@ -4,7 +4,7 @@ section .data
     ; constant initialization
     WINDOW_TOP_BORDER equ 10
     WINDOW_LEFT_BORDER equ 10
-    WINDOW_RIGHT_BORDER equ 310
+    WINDOW_RIGHT_BORDER equ 307
     WINDOW_DOWN_BORDER equ 190
 
     DELAY_WAITLOOP equ 2000
@@ -14,8 +14,9 @@ section .data
     INIT_Y_POS_1 equ 50
     INIT_Y_POS_2 equ 50
 
-    SPRITE_WIDTH equ 64
-    SPRITE_HEIGHT equ 92
+    SPRITE_WIDTH equ 57
+    SPRITE_HEIGHT equ 106
+    SPRITE_SIZE equ SPRITE_WIDTH * SPRITE_HEIGHT
 
     %define FRAME_RATE 30
 
@@ -32,16 +33,24 @@ section .text
     int 10h
     jmp init
 
-
 ; -----------------------------------------------
 init:
-    call clearScreen
-    call positionSetup
 
+    ; Open file
+    call positionSetup
+    call clearScreen
+
+    ; load inital sprite
+    lea ax, [ryuIdle0]
+    mov [player_current_sprite1], ax
+    lea ax, [ryuIdleLeft0]
+    mov [player_current_sprite2], ax 
 
 gameLoop:
     call applyGravity
     call setViewport
+    call place_second_player
+    call place_first_player
     call displayViewport
 
     call waitForNextFrame  ; Delay for consistent frame timing
@@ -107,5 +116,6 @@ exitProgram:
 
 %include "KeyboardInput.inc"
 %include "Physic.inc"
+%include "loadFromFile.inc"
+%include "animations.inc"
 %include "Display.inc"
-%include "sprite.inc"
