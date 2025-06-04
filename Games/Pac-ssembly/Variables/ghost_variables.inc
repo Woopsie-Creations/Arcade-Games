@@ -14,6 +14,8 @@ section .data
     inky_stuck db FALSE
     clyde_stuck db FALSE
 
+    current_player_ghost: dw blinkyStruc
+
     blinkyStruc:
         istruc entity
             at entity.initial_x_pos, dw MAZE_X_POS + WALL_WIDTH * (COLUMN_NUMBER / 2) - WALL_WIDTH - 1

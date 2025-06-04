@@ -1,5 +1,3 @@
-clear
-
 # Set up paths
 ROOT_DIR="$(dirname "$(realpath "$0")")"
 ROOT_DIR="$(dirname "$ROOT_DIR")"
@@ -8,6 +6,8 @@ GAME_DIR="$ROOT_DIR/Launcher"
 GAME_BIN="$GAME_DIR/Bin"
 DOSBOX_BIN="/Users/$USER/Desktop/dosbox.app/Contents/MacOS/DOSBox"
 FILE_PATH="$GAME_BIN/file.txt"
+
+clear 
 
 # Assemble the game
 "$NASM" "$GAME_DIR/launcher.asm" -f bin -o "$GAME_BIN/launcher.com"
@@ -31,3 +31,5 @@ clear
 
 # Execute in DOSBox
 "$DOSBOX_BIN" -c "MOUNT c $ROOT_DIR/$GAME_DIR" -c "c:" -c "loadhigh $GAME_FILE" -c "exit"
+
+./startMac.sh

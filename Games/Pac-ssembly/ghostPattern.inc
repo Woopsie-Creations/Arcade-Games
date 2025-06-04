@@ -9,7 +9,12 @@ section .text
     blinkyPattern:
         cmp byte [ghost_waiting_in_cage+0], TRUE
         je .skipGhost
+        cmp byte [current_mode], 0
+        je .onePlayerMode
+        cmp word [current_player_ghost], blinkyStruc
+        je .skipGhost
 
+        .onePlayerMode:
         mov bx, blinkyStruc
 
         call rng
@@ -62,7 +67,12 @@ section .text
     pinkyPattern:
         cmp byte [ghost_waiting_in_cage+1], TRUE
         je .skipGhost
+        cmp byte [current_mode], 0
+        je .onePlayerMode
+        cmp word [current_player_ghost], pinkyStruc
+        je .skipGhost
 
+        .onePlayerMode:
         mov bx, pinkyStruc
         
         call rng
@@ -114,7 +124,12 @@ section .text
     inkyPattern:
         cmp byte [ghost_waiting_in_cage+2], TRUE
         je .skipGhost
+        cmp byte [current_mode], 0
+        je .onePlayerMode
+        cmp word [current_player_ghost], inkyStruc
+        je .skipGhost
 
+        .onePlayerMode:
         mov bx, inkyStruc
         
         call rng
@@ -166,7 +181,12 @@ section .text
     clydePattern:
         cmp byte [ghost_waiting_in_cage+3], TRUE
         je .skipGhost
+        cmp byte [current_mode], 0
+        je .onePlayerMode
+        cmp word [current_player_ghost], clydeStruc
+        je .skipGhost
 
+        .onePlayerMode:
         mov bx, clydeStruc
 
         call rng

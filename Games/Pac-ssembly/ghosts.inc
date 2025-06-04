@@ -141,7 +141,6 @@
 
 section .bss
     cage_amount_of_ghosts resb 1
-
     ghost_waiting_in_cage resb 4 ; 4 ghosts
     ghost_needs_to_leave resb 4 ; 4 ghosts
 
@@ -186,5 +185,28 @@ section .text
         addToScore dynamic_score_amount, ax, 0, 1, 2
         mov byte [dynamic_score], TRUE
         ret
+    
+    changeCurrentGhost:
+        ; should change the current_player_ghost
+        cmp word [current_player_ghost], blinkyStruc
+        je .setPinky
+        cmp word [current_player_ghost], pinkyStruc
+        je .setInky
+        cmp word [current_player_ghost], inkyStruc
+        je .setClyde
+        .setBlinky:
+            mov ax, blinkyStruc
+            jmp .end
+        .setPinky:
+            mov ax, pinkyStruc
+            jmp .end
+        .setInky:
+            mov ax, inkyStruc
+            jmp .end
+        .setClyde:
+            mov ax, clydeStruc
+        .end:
+            mov word [current_player_ghost], ax
+        jmp readKeyboard.firstPlayer
 
 %include "ghostPattern.inc"

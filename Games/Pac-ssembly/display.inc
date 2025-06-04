@@ -368,6 +368,16 @@ section .text
             arrows:
                 mov si, bottomleft
                 displayItem PRESS_ARROWS_Y_POS + FONT_HEIGHT + 4, PRESS_ARROWS_X_POS + 1, PRESS_ARROWS_HEIGHT, PRESS_ARROWS_WIDTH
+        printGhostArrow:
+            cmp byte [current_mode], 0
+            je pressEnter
+            mov si, [current_player_ghost]
+            mov bx, word [si + entity.y_pos]
+            sub bx, 3
+            mov cx, word [si + entity.x_pos]
+            add cx, 4
+            mov si, current_ghost_arrow
+            displayItem bx, cx, 2, 4
         pressEnter:
             textDisplay pressText, 5, PRESS_ENTER_Y_POS, PRESS_ENTER_X_POS, FONT_HEIGHT, FONT_WIDTH
             cmp byte [isPause], TRUE
