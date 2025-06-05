@@ -1,0 +1,21 @@
+section .bss
+    viewport_memory_block_pos resw 1
+    save_color resb 1
+
+section .data
+    SCREEN_WIDTH equ 320
+    SCREEN_HEIGHT equ 200
+
+    FRONT_SPRITE_WIDTH equ 56
+    FRONT_SPRITE_HEIGHT equ 56
+    FRONT_SPRITE_SIZE equ FRONT_SPRITE_WIDTH * FRONT_SPRITE_HEIGHT
+    BACK_SPRITE_WIDTH equ 48
+    BACK_SPRITE_HEIGHT equ 48
+    BACK_SPRITE_SIZE equ BACK_SPRITE_WIDTH * BACK_SPRITE_HEIGHT
+
+    is_displaying_black db FALSE
+
+    FIRST_PLAYER_POKE_X_POS equ 200
+    FIRST_PLAYER_POKE_Y_POS equ 15
+    SECOND_PLAYER_POKE_X_POS equ 50
+    SECOND_PLAYER_POKE_Y_POS equ 75
