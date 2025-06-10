@@ -1,25 +1,42 @@
 section .data
-    
+    FIRST_POKE_NAME_X_POS equ 200
+    FIRST_POKE_NAME_Y_POS equ 93
+    SECOND_POKE_NAME_X_POS equ 5
+    SECOND_POKE_NAME_Y_POS equ 2
 
     HP_BAR_HEIGHT equ 6
     HP_BAR_WIDTH equ 68
-    FIRST_PLAYER_HP_BAR_X_POS equ 200
-    FIRST_PLAYER_HP_BAR_Y_POS equ 100
-    SECOND_PLAYER_HP_BAR_X_POS equ 13
-    SECOND_PLAYER_HP_BAR_Y_POS equ 10
+    FIRST_PLAYER_HP_BAR_X_POS equ FIRST_POKE_NAME_X_POS
+    FIRST_PLAYER_HP_BAR_Y_POS equ FIRST_POKE_NAME_Y_POS + FONT_HEIGHT + 2
+    SECOND_PLAYER_HP_BAR_X_POS equ SECOND_POKE_NAME_X_POS + 8
+    SECOND_PLAYER_HP_BAR_Y_POS equ SECOND_POKE_NAME_Y_POS + 8
 
     HP_ARROW_HEIGHT equ 23
     HP_ARROW_WIDTH equ 80
     FIRST_PLAYER_HP_ARROW_X_POS equ 196
     FIRST_PLAYER_HP_ARROW_Y_POS equ 100
-    SECOND_PLAYER_HP_ARROW_X_POS equ 5
-    SECOND_PLAYER_HP_ARROW_Y_POS equ 10
+    SECOND_PLAYER_HP_ARROW_X_POS equ SECOND_POKE_NAME_X_POS
+    SECOND_PLAYER_HP_ARROW_Y_POS equ SECOND_POKE_NAME_Y_POS + 8
+
+    displayNumbersFont dw font0
+                       dw font1
+                       dw font2
+                       dw font3
+                       dw font4
+                       dw font5
+                       dw font6
+                       dw font7
+                       dw font8
+                       dw font9
 
     hp_color_table:
         db 0x2F
-        db 0x2C
+        db 0x2B
         db 0x28
 
 section .bss
+    letter_x_pos resw 1
+    letter_y_pos resw 1
+    displayedLevel resw 3
     current_hp_width resb 1
     current_hp_color resb 1

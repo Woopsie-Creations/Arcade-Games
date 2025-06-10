@@ -38,7 +38,8 @@
     mov word [letter_y_pos], %3
     mov bx, 0
         %%eachLetter:
-        mov si, [%1+bx]
+        mov si, %1
+        mov si, [si+bx]
         push bx
         displayItem [letter_y_pos], [letter_x_pos], %5, %6
         pop bx
@@ -180,6 +181,20 @@
         jnz %%eachItemRow
 %endmacro
 
+%macro displayPokeName 3
+    mov si, %1
+    mov bl, [si + trainer.current_poke]
+    xor bh, bh
+    shl bx, 1
+    add bx, trainer.pokemons
+    mov bx, [si + bx]
+    
+    mov ax, [bx + pokemon.name]
+    mov word [current_poke_name], ax
+
+    textDisplay [current_poke_name], 10, %2, %3, FONT_HEIGHT, FONT_WIDTH
+%endmacro
+
 section .text
     initViewport:
         mov bx, 4000        ; nb of 16bytes sections we want to allocate
@@ -236,13 +251,18 @@ section .text
         ret
 
     displayUI:
-        displayHpBarFront:
+        displaySecond:
+            ; updateDisplayedLevel second_trainerStruc
+            ; textDisplay displayedLevel, 3, 50, 50, FONT_HEIGHT, FONT_WIDTH
+            displayPokeName second_trainerStruc, SECOND_POKE_NAME_Y_POS, SECOND_POKE_NAME_X_POS
             mov si, hp_arrow_front
             displayItem SECOND_PLAYER_HP_ARROW_Y_POS, SECOND_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
             mov si, hp_bar
             displayItem SECOND_PLAYER_HP_BAR_Y_POS, SECOND_PLAYER_HP_BAR_X_POS, HP_BAR_HEIGHT, HP_BAR_WIDTH
             displayHpBar SECOND_PLAYER_HP_BAR_Y_POS + 2, SECOND_PLAYER_HP_BAR_X_POS + 16, second_trainerStruc
-        displayHpBarBack:
+
+        displayFirst:
+            displayPokeName first_trainerStruc, FIRST_POKE_NAME_Y_POS, FIRST_POKE_NAME_X_POS
             mov si, hp_arrow_back
             displayItem FIRST_PLAYER_HP_ARROW_Y_POS, FIRST_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
             mov si, hp_bar

@@ -1,3 +1,6 @@
 section .data
-    pokemon_names: ; index to get pokemon names, in the order of the pokedex
-        dw "BULBASAUR"
+    bulbasaurName dw B,U,L,B,A,S,A,U,R,space
+    ivysaurName dw I,V,Y,S,A,U,R,space,space,space
+
+section .bss
+    current_poke_name resw 1

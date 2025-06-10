@@ -1,9 +1,9 @@
 section .data
     struc pokemon
-        .name: resb 1
+        .name: resw 1
         .type: resb 2 ; 2 types
         .sprite: resw 1
-        .level: resb 1
+        .level: resb 3
         .genre: resb 1
         .hp: resw 1
         .max_hp: resw 1
@@ -17,10 +17,10 @@ section .data
 
     first_onepokemonStruc:
         istruc pokemon
-            at pokemon.name, db 0
+            at pokemon.name, dw bulbasaurName
             at pokemon.type, db 2, 7 
             at pokemon.sprite, dw BULBASAURB
-            at pokemon.level, db 50
+            at pokemon.level, db 0,2,5
             at pokemon.genre, db 1
             at pokemon.hp, dw 45
             at pokemon.max_hp, dw 45
@@ -33,10 +33,10 @@ section .data
         iend
     first_twopokemonStruc:
         istruc pokemon
-            at pokemon.name, db 1
+            at pokemon.name, dw ivysaurName
             at pokemon.type, db 2, 7 
             at pokemon.sprite, dw IVYSAURB
-            at pokemon.level, db 50
+            at pokemon.level, db 0,5,0
             at pokemon.genre, db 1
             at pokemon.hp, dw 60
             at pokemon.max_hp, dw 60
@@ -50,10 +50,10 @@ section .data
 
     second_onepokemonStruc:
         istruc pokemon
-            at pokemon.name, db 0
+            at pokemon.name, dw bulbasaurName
             at pokemon.type, db 2, 7 
             at pokemon.sprite, dw BULBASAURF
-            at pokemon.level, db 50
+            at pokemon.level, db 0,2,5
             at pokemon.genre, db 1
             at pokemon.hp, dw 45
             at pokemon.max_hp, dw 45
@@ -66,10 +66,10 @@ section .data
         iend
     second_twopokemonStruc:
         istruc pokemon
-            at pokemon.name, db 1
+            at pokemon.name, dw ivysaurName
             at pokemon.type, db 2, 7 
             at pokemon.sprite, dw IVYSAURF
-            at pokemon.level, db 50
+            at pokemon.level, db 0,5,0
             at pokemon.genre, db 1
             at pokemon.hp, dw 60
             at pokemon.max_hp, dw 60
