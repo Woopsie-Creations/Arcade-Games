@@ -99,9 +99,16 @@
     %endrep
 %endmacro
 
-%macro displayCurrentPokes 0-* poke, buffer1, FIRST_PLAYER_POKE_Y_POS, FIRST_PLAYER_POKE_X_POS, FRONT_SPRITE_HEIGHT, FRONT_SPRITE_WIDTH, FRONT_SPRITE_SIZE, poke2, buffer2, SECOND_PLAYER_POKE_Y_POS, SECOND_PLAYER_POKE_X_POS, BACK_SPRITE_HEIGHT, BACK_SPRITE_WIDTH, BACK_SPRITE_SIZE
+%macro displayCurrentPokes 0-* first_trainerStruc, buffer1, FIRST_PLAYER_POKE_Y_POS, FIRST_PLAYER_POKE_X_POS, BACK_SPRITE_HEIGHT, BACK_SPRITE_WIDTH, BACK_SPRITE_SIZE, second_trainerStruc, buffer2, SECOND_PLAYER_POKE_Y_POS, SECOND_PLAYER_POKE_X_POS, FRONT_SPRITE_HEIGHT, FRONT_SPRITE_WIDTH, FRONT_SPRITE_SIZE
     %rep 2
-        mov dx, %1 ; appropriate poke sprite
+        mov si, %1
+        mov bl, [si + trainer.current_poke]
+        xor bh, bh
+        shl bx, 1
+        add bx, trainer.pokemons
+        mov bx, [si + bx]
+
+        mov dx, [bx + pokemon.sprite]
         loadBuffer %2, %7
         mov si, %2
         displayItem %3, %4, %5, %6

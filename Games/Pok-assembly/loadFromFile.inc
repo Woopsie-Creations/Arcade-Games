@@ -25,8 +25,8 @@ section .data
     read_msg db "Failed to read file!$"
 
 section .bss
-    buffer1 resb FRONT_SPRITE_SIZE
-    buffer2 resb BACK_SPRITE_SIZE
+    buffer1 resb BACK_SPRITE_SIZE
+    buffer2 resb FRONT_SPRITE_SIZE
     filehandle resw 1
 
 section .text

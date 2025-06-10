@@ -2,18 +2,23 @@ org 100h
 
 %define TRUE 1
 %define FALSE 0
+%define NULL 0
 
 %include "Sprites/include_sprites.inc"
 %include "Variables/include_variables.inc"
+%include "init_pokemon.inc"
 
 section .text
     mov ah, 00h     ;--------------------------------
     mov al, 13h     ; set screen 320x200 256 colors
     int 10h         ;--------------------------------
+
     call initViewport
+    initPokes first_trainerStruc, first_onepokemonStruc, first_twopokemonStruc
+    initPokes second_trainerStruc, second_onepokemonStruc, second_twopokemonStruc
+    call displayFrame
 
     gameLoop:
-        call displayFrame
         jmp readKeyboard
 
 ; ------------------------------

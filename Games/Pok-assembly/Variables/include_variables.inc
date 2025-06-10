@@ -1,1 +1,5 @@
 %include "Variables/display_variables.inc"
+%include "Variables/attack_variables.inc"
+%include "Variables/pokemon_names.inc"
+%include "Variables/pokemon_variables.inc"
+%include "Variables/trainer_variables.inc"
