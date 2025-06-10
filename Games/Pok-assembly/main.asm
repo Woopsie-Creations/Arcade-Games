@@ -6,10 +6,6 @@ org 100h
 %include "Sprites/include_sprites.inc"
 %include "Variables/include_variables.inc"
 
-section .data
-    poke db "Sprites/BULBASAF.bin", 0
-    poke2 db "Sprites/BULBASAB.bin", 0
-
 section .text
     mov ah, 00h     ;--------------------------------
     mov al, 13h     ; set screen 320x200 256 colors
@@ -18,7 +14,7 @@ section .text
 
     gameLoop:
         call displayFrame
-        jmp gameLoop
+        jmp readKeyboard
 
 ; ------------------------------
     resetRegisters:
@@ -36,3 +32,4 @@ section .text
 
 %include "loadFromFile.inc"
 %include "display.inc"
+%include "key_input.inc"
