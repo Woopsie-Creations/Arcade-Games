@@ -122,8 +122,11 @@
     mov bx, [si + bx]
 
     mov ax, [bx + pokemon.hp] ; containing pokemon hp
-    push bx
+    cmp ax, 0
+    je %%skipHpbar
 
+    push bx
+    
     ; multiply by 50 cuz the max_width of the hpbar is 50
     mov bx, 50
     mul bx
@@ -139,18 +142,18 @@
     mov byte [current_hp_width], al
 
     cmp al, 13
-    jle .red
+    jle %%red
     cmp al, 25
-    jle .yellow
+    jle %%yellow
     mov al, [hp_color_table+0]
-    jmp .end
-    .red:
+    jmp %%end
+    %%red:
     mov al, [hp_color_table+2]
-    jmp .end
-    .yellow:
+    jmp %%end
+    %%yellow:
     mov al, [hp_color_table+1]
 
-    .end:
+    %%end:
     mov byte [current_hp_color], al
 
     %%display:
@@ -179,6 +182,7 @@
         sub di, ax
         dec dx
         jnz %%eachItemRow
+    %%skipHpbar:
 %endmacro
 
 %macro displayPokeName 3

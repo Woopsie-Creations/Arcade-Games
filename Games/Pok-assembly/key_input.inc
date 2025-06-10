@@ -11,18 +11,6 @@
 %define ESCAPE_KEY 01h
 %define ENTER_KEY 1Ch
 
-%macro changePoke 1
-    cmp byte [%1 + trainer.current_poke], 1
-    je %%isOne
-    mov byte [%1 + trainer.current_poke], 1
-    jmp %%end
-    %%isOne:
-    mov byte [%1 + trainer.current_poke], 0
-    %%end:
-    call displayFrame
-    jmp gameLoop
-%endmacro
-
 section .text    
     readKeyboard:
         ; is key pressed ?
@@ -37,19 +25,20 @@ section .text
         cmp ah, ESCAPE_KEY
         je exitProgram
         
+        ; testing purposes
         cmp ah, LEFT_ARROW
         je changePoke_first
         cmp ah, RIGHT_ARROW
         je changePoke_first
+        cmp ah, UP_ARROW
+        je hit_second
 
+        ; testing purposes
         cmp ah, A_KEY
         je changePoke_second
         cmp ah, D_KEY
         je changePoke_second
+        cmp ah, W_KEY
+        je hit_first
         
         jmp gameLoop
-
-    changePoke_first:
-        changePoke first_trainerStruc
-    changePoke_second:
-        changePoke second_trainerStruc

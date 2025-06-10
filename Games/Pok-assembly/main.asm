@@ -37,4 +37,5 @@ section .text
 
 %include "loadFromFile.inc"
 %include "display.inc"
+%include "events.inc"
 %include "key_input.inc"
