@@ -252,8 +252,6 @@ section .text
 
     displayUI:
         displaySecond:
-            ; updateDisplayedLevel second_trainerStruc
-            ; textDisplay displayedLevel, 3, 50, 50, FONT_HEIGHT, FONT_WIDTH
             displayPokeName second_trainerStruc, SECOND_POKE_NAME_Y_POS, SECOND_POKE_NAME_X_POS
             mov si, hp_arrow_front
             displayItem SECOND_PLAYER_HP_ARROW_Y_POS, SECOND_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
@@ -268,4 +266,9 @@ section .text
             mov si, hp_bar
             displayItem FIRST_PLAYER_HP_BAR_Y_POS, FIRST_PLAYER_HP_BAR_X_POS, HP_BAR_HEIGHT, HP_BAR_WIDTH
             displayHpBar FIRST_PLAYER_HP_BAR_Y_POS + 2, FIRST_PLAYER_HP_BAR_X_POS + 16, first_trainerStruc
+        displayUICase:
+            mov si, battle_case
+            displayItem FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+            mov si, battle_case
+            displayItem SECOND_BATTLE_CASE_Y_POS, SECOND_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
         ret
