@@ -15,12 +15,8 @@
             xor ax, ax
             ; get the colour of the sprite at said position in the memory by the register si
             mov al, [si]
-            cmp byte [is_displaying_black], TRUE
-            je %%keepColor
-            cmp al, 0x00
+            cmp al, 0x0F
             je %%skipTransparent      ; skip the colour placement if transparent
-            mov byte [es:di], 0x0F
-            %%keepColor:
             mov byte [es:di], al     ; place the pixel on the viewport
             %%skipTransparent:
             ; go to the next pixel
@@ -66,7 +62,7 @@
         %%eachItemRow:
             mov cx, %4 ;[item_width]
             %%eachItemColumn:
-                mov byte [es:di], 0x00  ; place the pixel on the viewport
+                mov byte [es:di], 0x0F  ; place the pixel on the viewport
                 ; go to the next pixel
                 inc di
                 ; if it hasn't reached the end of the line, loop
@@ -116,6 +112,74 @@
     %endrep
 %endmacro
 
+%macro displayHpBar 3
+    mov si, %3
+    mov bl, [si + trainer.current_poke]
+    xor bh, bh
+    shl bx, 1
+    add bx, trainer.pokemons
+    mov bx, [si + bx]
+
+    mov ax, [bx + pokemon.hp] ; containing pokemon hp
+    push bx
+
+    ; multiply by 50 cuz the max_width of the hpbar is 50
+    mov bx, 50
+    mul bx
+
+    pop bx
+    push bx
+    ; divide my max_hp
+    mov bx, [bx + pokemon.max_hp]
+    div bx
+    
+    ; so now we have the percentage of hp
+    pop bx
+    mov byte [current_hp_width], al
+
+    cmp al, 13
+    jle .red
+    cmp al, 25
+    jle .yellow
+    mov al, [hp_color_table+0]
+    jmp .end
+    .red:
+    mov al, [hp_color_table+2]
+    jmp .end
+    .yellow:
+    mov al, [hp_color_table+1]
+
+    .end:
+    mov byte [current_hp_color], al
+
+    %%display:
+    mov ax, [viewport_memory_block_pos]
+    mov es, ax
+    ; calculate the position of the item
+    mov ax, %1
+    mov bx, 320
+    mul bx
+    add ax, %2
+    mov di, ax
+    mov dx, 2 ; hp_bar height
+    %%eachItemRow:
+        xor cx, cx
+        mov cl, [current_hp_width]
+        %%eachItemColumn:
+            xor ax, ax
+            mov al, [current_hp_color]
+            mov byte [es:di], al     ; place the pixel on the viewport
+            inc di
+            dec cl
+            jnz %%eachItemColumn
+        add di, SCREEN_WIDTH
+        xor ax, ax
+        mov al, [current_hp_width]
+        sub di, ax
+        dec dx
+        jnz %%eachItemRow
+%endmacro
+
 section .text
     initViewport:
         mov bx, 4000        ; nb of 16bytes sections we want to allocate
@@ -131,6 +195,7 @@ section .text
     displayFrame:
         ; place everything and then display
         call clearViewport
+        call displayUI
         displayCurrentPokes
         call displayViewport
         ret
@@ -168,4 +233,19 @@ section .text
         mov ah, 49h
         int 21h
         jc gameLoop ; return to the gameloop in case of failure (just to verify for now, will probably change)
+        ret
+
+    displayUI:
+        displayHpBarFront:
+            mov si, hp_arrow_front
+            displayItem SECOND_PLAYER_HP_ARROW_Y_POS, SECOND_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
+            mov si, hp_bar
+            displayItem SECOND_PLAYER_HP_BAR_Y_POS, SECOND_PLAYER_HP_BAR_X_POS, HP_BAR_HEIGHT, HP_BAR_WIDTH
+            displayHpBar SECOND_PLAYER_HP_BAR_Y_POS + 2, SECOND_PLAYER_HP_BAR_X_POS + 16, second_trainerStruc
+        displayHpBarBack:
+            mov si, hp_arrow_back
+            displayItem FIRST_PLAYER_HP_ARROW_Y_POS, FIRST_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
+            mov si, hp_bar
+            displayItem FIRST_PLAYER_HP_BAR_Y_POS, FIRST_PLAYER_HP_BAR_X_POS, HP_BAR_HEIGHT, HP_BAR_WIDTH
+            displayHpBar FIRST_PLAYER_HP_BAR_Y_POS + 2, FIRST_PLAYER_HP_BAR_X_POS + 16, first_trainerStruc
         ret

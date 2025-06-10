@@ -5,7 +5,8 @@ section .data
         .sprite: resw 1
         .level: resb 1
         .genre: resb 1
-        .hp_stat: resw 1
+        .hp: resw 1
+        .max_hp: resw 1
         .attack_stat: resw 1
         .def_stat: resw 1
         .speattack_stat: resw 1
@@ -21,7 +22,8 @@ section .data
             at pokemon.sprite, dw BULBASAURB
             at pokemon.level, db 50
             at pokemon.genre, db 1
-            at pokemon.hp_stat, dw 45
+            at pokemon.hp, dw 45
+            at pokemon.max_hp, dw 45
             at pokemon.attack_stat, dw 49
             at pokemon.def_stat, dw 49
             at pokemon.speattack_stat, dw 65
@@ -36,7 +38,8 @@ section .data
             at pokemon.sprite, dw IVYSAURB
             at pokemon.level, db 50
             at pokemon.genre, db 1
-            at pokemon.hp_stat, dw 60
+            at pokemon.hp, dw 60
+            at pokemon.max_hp, dw 60
             at pokemon.attack_stat, dw 62
             at pokemon.def_stat, dw 63
             at pokemon.speattack_stat, dw 80
@@ -52,7 +55,8 @@ section .data
             at pokemon.sprite, dw BULBASAURF
             at pokemon.level, db 50
             at pokemon.genre, db 1
-            at pokemon.hp_stat, dw 45
+            at pokemon.hp, dw 45
+            at pokemon.max_hp, dw 45
             at pokemon.attack_stat, dw 49
             at pokemon.def_stat, dw 49
             at pokemon.speattack_stat, dw 65
@@ -67,7 +71,8 @@ section .data
             at pokemon.sprite, dw IVYSAURF
             at pokemon.level, db 50
             at pokemon.genre, db 1
-            at pokemon.hp_stat, dw 60
+            at pokemon.hp, dw 60
+            at pokemon.max_hp, dw 60
             at pokemon.attack_stat, dw 62
             at pokemon.def_stat, dw 63
             at pokemon.speattack_stat, dw 80
