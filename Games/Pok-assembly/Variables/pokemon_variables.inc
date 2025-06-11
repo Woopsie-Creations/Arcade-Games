@@ -114,9 +114,9 @@ section .data
 
     second_onepokemonStruc:
         istruc pokemon
-            at pokemon.name, dw bulbasaurName
+            at pokemon.name, dw ivysaurName
             at pokemon.type, db 4, 7 
-            at pokemon.sprite, dw BULBASAURF
+            at pokemon.sprite, dw IVYSAURF
             at pokemon.level, db 25
             at pokemon.genre, db 1
             at pokemon.hp, dw 45
@@ -129,6 +129,70 @@ section .data
             at pokemon.attacks, dw NULL, NULL, NULL, NULL
         iend
     second_twopokemonStruc:
+        istruc pokemon
+            at pokemon.name, dw ivysaurName
+            at pokemon.type, db 4, 7 
+            at pokemon.sprite, dw IVYSAURF
+            at pokemon.level, db 50
+            at pokemon.genre, db 1
+            at pokemon.hp, dw 60
+            at pokemon.max_hp, dw 60
+            at pokemon.attack_stat, dw 62
+            at pokemon.def_stat, dw 63
+            at pokemon.speattack_stat, dw 80
+            at pokemon.spedef_stat, dw 80
+            at pokemon.speed_stat, dw 60
+            at pokemon.attacks, dw NULL, NULL, NULL, NULL
+        iend
+    second_threepokemonStruc:
+        istruc pokemon
+            at pokemon.name, dw ivysaurName
+            at pokemon.type, db 4, 7 
+            at pokemon.sprite, dw IVYSAURF
+            at pokemon.level, db 50
+            at pokemon.genre, db 1
+            at pokemon.hp, dw 60
+            at pokemon.max_hp, dw 60
+            at pokemon.attack_stat, dw 62
+            at pokemon.def_stat, dw 63
+            at pokemon.speattack_stat, dw 80
+            at pokemon.spedef_stat, dw 80
+            at pokemon.speed_stat, dw 60
+            at pokemon.attacks, dw NULL, NULL, NULL, NULL
+        iend
+    second_fourpokemonStruc:
+        istruc pokemon
+            at pokemon.name, dw ivysaurName
+            at pokemon.type, db 4, 7 
+            at pokemon.sprite, dw IVYSAURF
+            at pokemon.level, db 50
+            at pokemon.genre, db 1
+            at pokemon.hp, dw 60
+            at pokemon.max_hp, dw 60
+            at pokemon.attack_stat, dw 62
+            at pokemon.def_stat, dw 63
+            at pokemon.speattack_stat, dw 80
+            at pokemon.spedef_stat, dw 80
+            at pokemon.speed_stat, dw 60
+            at pokemon.attacks, dw NULL, NULL, NULL, NULL
+        iend
+    second_fivepokemonStruc:
+        istruc pokemon
+            at pokemon.name, dw ivysaurName
+            at pokemon.type, db 4, 7 
+            at pokemon.sprite, dw IVYSAURF
+            at pokemon.level, db 50
+            at pokemon.genre, db 1
+            at pokemon.hp, dw 60
+            at pokemon.max_hp, dw 60
+            at pokemon.attack_stat, dw 62
+            at pokemon.def_stat, dw 63
+            at pokemon.speattack_stat, dw 80
+            at pokemon.spedef_stat, dw 80
+            at pokemon.speed_stat, dw 60
+            at pokemon.attacks, dw NULL, NULL, NULL, NULL
+        iend
+    second_sixpokemonStruc:
         istruc pokemon
             at pokemon.name, dw ivysaurName
             at pokemon.type, db 4, 7 

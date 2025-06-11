@@ -186,6 +186,41 @@
 %endmacro
 
 %macro displayPokeName 4
+    textDisplay %1, %4, %2, %3, FONT_HEIGHT, FONT_WIDTH
+%endmacro
+
+%macro displayTeamPokeName 6
+    %assign _label_id 0
+    %assign %3 %6
+    %assign %2 %5
+
+    mov bx, 0
+    %rep 2
+        %rep 3
+            ; need to check for current poke on bottomleft
+            push bx
+            xor bh, bh
+            shl bx, 1
+            add bx, trainer.pokemons
+            mov bx, [%1 + bx]
+            mov ax, [bx + pokemon.name]
+            mov word [current_poke_name], ax
+
+            displayPokeName [current_poke_name], %2, %3, %4
+            pop bx
+            inc bx
+            %assign _label_id _label_id + 1
+            %assign %3 %3+BATTLE_LITTLE_CASE_WIDTH+2
+        %endrep
+        %assign %3 %6
+        %assign %2 %2-BATTLE_LITTLE_CASE_HEIGHT-2
+    %endrep
+
+    %assign %3 %6
+    %assign %2 %5
+%endmacro
+
+%macro displayCurrentPokeName 4
     mov si, %1
     mov bl, [si + trainer.current_poke]
     xor bh, bh
@@ -195,8 +230,7 @@
     
     mov ax, [bx + pokemon.name]
     mov word [current_poke_name], ax
-
-    textDisplay [current_poke_name], %4, %2, %3, FONT_HEIGHT, FONT_WIDTH
+    displayPokeName [current_poke_name], %2, %3, %4
 %endmacro
 
 %macro displayCaseBg 3
@@ -241,18 +275,25 @@
 %endmacro
 
 %macro displayLittleCases 5
+    %assign _label_id 0
     %assign %2 %4+10
     %assign %1 %3+15
 
-    cmp byte [%5 + trainer.battle_tab], 0
-    jne %%skipCaseBg
-    displayCaseBg %1, %2, %5
-
-    %%skipCaseBg:
     %rep 2
         %rep 3
+            %if _label_id = 0
+            jmp %%skipCaseBg%+_label_id
+            %elif _label_id = 3
+            jmp %%skipCaseBg%+_label_id
+            %endif
+            cmp byte [%5 + trainer.battle_tab], 0
+            jne %%skipCaseBg%+_label_id
+            displayCaseBg %1, %2, %5
+            %%skipCaseBg%+_label_id:
             mov si, little_case
             displayItem %1, %2, BATTLE_LITTLE_CASE_HEIGHT, BATTLE_LITTLE_CASE_WIDTH
+
+            %assign _label_id _label_id + 1
             %assign %2 %2+BATTLE_LITTLE_CASE_WIDTH+2
         %endrep
         %assign %2 %4+10
@@ -262,6 +303,7 @@
     %assign %2 %4
     %assign %1 %3
 %endmacro
+
 
 section .text
     initViewport:
@@ -320,7 +362,7 @@ section .text
 
     displayUI:
         displaySecond:
-            displayPokeName second_trainerStruc, SECOND_POKE_NAME_Y_POS, SECOND_POKE_NAME_X_POS, 10
+            displayCurrentPokeName second_trainerStruc, SECOND_POKE_NAME_Y_POS, SECOND_POKE_NAME_X_POS, 10
             mov si, hp_arrow_front
             displayItem SECOND_PLAYER_HP_ARROW_Y_POS, SECOND_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
             mov si, hp_bar
@@ -328,7 +370,7 @@ section .text
             displayHpBar SECOND_PLAYER_HP_BAR_Y_POS + 2, SECOND_PLAYER_HP_BAR_X_POS + 16, second_trainerStruc
 
         displayFirst:
-            displayPokeName first_trainerStruc, FIRST_POKE_NAME_Y_POS, FIRST_POKE_NAME_X_POS, 10
+            displayCurrentPokeName first_trainerStruc, FIRST_POKE_NAME_Y_POS, FIRST_POKE_NAME_X_POS, 10
             mov si, hp_arrow_back
             displayItem FIRST_PLAYER_HP_ARROW_Y_POS, FIRST_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
             mov si, hp_bar
@@ -348,7 +390,7 @@ section .text
                 textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
                 jmp .next
             .pokemonTab:
-                displayPokeName first_trainerStruc, FIRST_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20, FIRST_BATTLE_CASE_X_POS+14, 6
+                displayTeamPokeName first_trainerStruc, FIRST_TEAM_POKE_NAME_Y_POS, FIRST_TEAM_POKE_NAME_X_POS, 6, FIRST_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20, FIRST_BATTLE_CASE_X_POS+14
                 textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
                 jmp .next
             .bagTab: ; not implemented yet
@@ -367,6 +409,7 @@ section .text
                 textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
                 jmp .next
             .pokemonTab:
+                displayTeamPokeName second_trainerStruc, SECOND_TEAM_POKE_NAME_Y_POS, SECOND_TEAM_POKE_NAME_X_POS, 6, SECOND_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20, SECOND_BATTLE_CASE_X_POS+14
                 textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
                 jmp .next
             .bagTab: ; not implemented yet

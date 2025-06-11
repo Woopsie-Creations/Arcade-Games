@@ -14,8 +14,8 @@ section .text
     int 10h         ;--------------------------------
 
     call initViewport
-    initPokes first_trainerStruc, first_onepokemonStruc, first_twopokemonStruc
-    initPokes second_trainerStruc, second_onepokemonStruc, second_twopokemonStruc
+    initPokes first_trainerStruc, first_onepokemonStruc, first_twopokemonStruc, first_threepokemonStruc, first_fourpokemonStruc, first_fivepokemonStruc, first_sixpokemonStruc
+    initPokes second_trainerStruc, second_onepokemonStruc, second_twopokemonStruc, second_threepokemonStruc, second_fourpokemonStruc, second_fivepokemonStruc, second_sixpokemonStruc
     call displayFrame
 
     gameLoop:
