@@ -185,7 +185,7 @@
     %%skipHpbar:
 %endmacro
 
-%macro displayPokeName 3
+%macro displayPokeName 4
     mov si, %1
     mov bl, [si + trainer.current_poke]
     xor bh, bh
@@ -196,7 +196,71 @@
     mov ax, [bx + pokemon.name]
     mov word [current_poke_name], ax
 
-    textDisplay [current_poke_name], 10, %2, %3, FONT_HEIGHT, FONT_WIDTH
+    textDisplay [current_poke_name], %4, %2, %3, FONT_HEIGHT, FONT_WIDTH
+%endmacro
+
+%macro displayCaseBg 3
+    mov si, %3
+    mov bl, [si + trainer.current_poke]
+    xor bh, bh
+    shl bx, 1
+    add bx, trainer.pokemons
+    mov bx, [si + bx]
+    
+    ; testing purposes
+    mov bl, byte [bx + pokemon.type]
+    xor bh, bh
+    mov al, byte [case_color_table+bx]
+    mov byte [current_case_color], al
+
+    mov ax, [viewport_memory_block_pos]
+    mov es, ax
+    ; calculate the position of the item
+    mov ax, %1+4
+    mov bx, 320
+    mul bx
+    add ax, %2+3
+    mov di, ax
+    mov dx, BATTLE_LITTLE_CASE_HEIGHT-8 ; case height
+    %%eachItemRow:
+        xor cx, cx
+        mov cl, BATTLE_LITTLE_CASE_WIDTH-6 ; case width
+        %%eachItemColumn:
+            xor ax, ax
+            mov al, [current_case_color]
+            mov byte [es:di], al     ; place the pixel on the viewport
+            inc di
+            dec cl
+            jnz %%eachItemColumn
+        add di, SCREEN_WIDTH
+        xor ax, ax
+        mov al, BATTLE_LITTLE_CASE_WIDTH-6 ; case width
+        sub di, ax
+        dec dx
+        jnz %%eachItemRow 
+%endmacro
+
+%macro displayLittleCases 5
+    %assign %2 %4+10
+    %assign %1 %3+15
+
+    cmp byte [%5 + trainer.battle_tab], 0
+    jne %%skipCaseBg
+    displayCaseBg %1, %2, %5
+
+    %%skipCaseBg:
+    %rep 2
+        %rep 3
+            mov si, little_case
+            displayItem %1, %2, BATTLE_LITTLE_CASE_HEIGHT, BATTLE_LITTLE_CASE_WIDTH
+            %assign %2 %2+BATTLE_LITTLE_CASE_WIDTH+2
+        %endrep
+        %assign %2 %4+10
+        %assign %1 %1+BATTLE_LITTLE_CASE_HEIGHT+2
+    %endrep
+
+    %assign %2 %4
+    %assign %1 %3
 %endmacro
 
 section .text
@@ -256,7 +320,7 @@ section .text
 
     displayUI:
         displaySecond:
-            displayPokeName second_trainerStruc, SECOND_POKE_NAME_Y_POS, SECOND_POKE_NAME_X_POS
+            displayPokeName second_trainerStruc, SECOND_POKE_NAME_Y_POS, SECOND_POKE_NAME_X_POS, 10
             mov si, hp_arrow_front
             displayItem SECOND_PLAYER_HP_ARROW_Y_POS, SECOND_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
             mov si, hp_bar
@@ -264,7 +328,7 @@ section .text
             displayHpBar SECOND_PLAYER_HP_BAR_Y_POS + 2, SECOND_PLAYER_HP_BAR_X_POS + 16, second_trainerStruc
 
         displayFirst:
-            displayPokeName first_trainerStruc, FIRST_POKE_NAME_Y_POS, FIRST_POKE_NAME_X_POS
+            displayPokeName first_trainerStruc, FIRST_POKE_NAME_Y_POS, FIRST_POKE_NAME_X_POS, 10
             mov si, hp_arrow_back
             displayItem FIRST_PLAYER_HP_ARROW_Y_POS, FIRST_PLAYER_HP_ARROW_X_POS, HP_ARROW_HEIGHT, HP_ARROW_WIDTH
             mov si, hp_bar
@@ -276,6 +340,7 @@ section .text
             mov si, battle_case_arrows
             displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
             displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayLittleCases FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS, FIRST_PLAYER_POKE_Y_POS + BACK_SPRITE_HEIGHT + 3, 2, first_trainerStruc
             cmp byte [first_trainerStruc + trainer.battle_tab], 1
             je .pokemonTab
             jg .bagTab
@@ -283,6 +348,7 @@ section .text
                 textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
                 jmp .next
             .pokemonTab:
+                displayPokeName first_trainerStruc, FIRST_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20, FIRST_BATTLE_CASE_X_POS+14, 6
                 textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
                 jmp .next
             .bagTab: ; not implemented yet
@@ -293,6 +359,7 @@ section .text
             mov si, battle_case_arrows
             displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
             displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayLittleCases SECOND_BATTLE_CASE_Y_POS, SECOND_BATTLE_CASE_X_POS, FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS + BATTLE_CASE_WIDTH + 2, second_trainerStruc
             cmp byte [second_trainerStruc + trainer.battle_tab], 1
             je .pokemonTab
             jg .bagTab

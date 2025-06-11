@@ -42,6 +42,9 @@ section .data
     SECOND_BATTLE_CASE_ARROW_LEFT_X_POS equ SECOND_BATTLE_CASE_X_POS+4
     SECOND_BATTLE_CASE_ARROW_RIGHT_X_POS equ SECOND_BATTLE_CASE_X_POS+BATTLE_CASE_WIDTH-BATTLE_CASE_ARROW_WIDTH-4
 
+    BATTLE_LITTLE_CASE_HEIGHT equ BATTLE_CASE_HEIGHT/2-FONT_HEIGHT-6 ; 25
+    BATTLE_LITTLE_CASE_WIDTH equ BATTLE_CASE_WIDTH/3-8 ; 44
+
     displayNumbersFont dw font0
                        dw font1
                        dw font2
@@ -58,8 +61,28 @@ section .data
         db 0x2B
         db 0x28
 
+    case_color_table:
+        db 0x0F ; normal
+        db 0x28 ; fire
+        db 0x35 ; water
+        db 0x2C ; electrik
+        db 0x2F ; grass
+        db 0x0B ; ice
+        db 0x29 ; fighting
+        db 0x23 ; poison
+        db 0x2B ; ground
+        db 0x66 ; flying
+        db 0x0D ; psychic
+        db 0x2D ; bug
+        db 0x06 ; rock
+        db 0x22 ; ghost
+        db 0x37 ; dragon
+        db 0x15 ; dark
+        db 0x07 ; steel
+
 section .bss
     letter_x_pos resw 1
     letter_y_pos resw 1
     current_hp_width resb 1
     current_hp_color resb 1
+    current_case_color resb 1
