@@ -126,7 +126,7 @@
     je %%skipHpbar
 
     push bx
-    
+
     ; multiply by 50 cuz the max_width of the hpbar is 50
     mov bx, 50
     mul bx
@@ -270,9 +270,38 @@ section .text
             mov si, hp_bar
             displayItem FIRST_PLAYER_HP_BAR_Y_POS, FIRST_PLAYER_HP_BAR_X_POS, HP_BAR_HEIGHT, HP_BAR_WIDTH
             displayHpBar FIRST_PLAYER_HP_BAR_Y_POS + 2, FIRST_PLAYER_HP_BAR_X_POS + 16, first_trainerStruc
-        displayUICase:
+        displayUICaseFirst:
             mov si, battle_case
             displayItem FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+            mov si, battle_case_arrows
+            displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            cmp byte [first_trainerStruc + trainer.battle_tab], 1
+            je .pokemonTab
+            jg .bagTab
+            .attacksTab:
+                textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                jmp .next
+            .pokemonTab:
+                textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                jmp .next
+            .bagTab: ; not implemented yet
+            .next:
+        displayUICaseSecond:
             mov si, battle_case
             displayItem SECOND_BATTLE_CASE_Y_POS, SECOND_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+            mov si, battle_case_arrows
+            displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            cmp byte [second_trainerStruc + trainer.battle_tab], 1
+            je .pokemonTab
+            jg .bagTab
+            .attacksTab:
+                textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                jmp .next
+            .pokemonTab:
+                textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                jmp .next
+            .bagTab: ; not implemented yet
+            .next:
         ret

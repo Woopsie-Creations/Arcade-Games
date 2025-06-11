@@ -30,12 +30,53 @@
     call displayFrame
 %endmacro
 
+%macro changeTab 1 
+    cmp byte [%1 + trainer.battle_tab], 0
+    je %%pokemon
+    ; bag not implemented
+    ; cmp byte [%1 + trainer.battle_tab], 1
+    ; je %%bag
+    mov al, 0
+    jmp %%end
+    %%pokemon:
+    mov al, 1
+    jmp %%end
+    %%bag:
+    mov al, 2
+    %%end:
+    mov byte [%1 + trainer.battle_tab], al
+    call displayFrame
+%endmacro
+
+%macro events 2
+    cmp ah, %2
+    je %%input
+    jmp %%end
+
+    %%input:
+    cmp byte [%1 + trainer.battle_tab], 0
+    je %%hit
+    cmp byte [%1 + trainer.battle_tab], 1
+    je %%change
+    ; bag not implemented
+
+    %%hit:
+    %ifidni %1, first_trainerStruc
+    jmp hit_second
+    %else
+    jmp hit_first
+    %endif
+    %%change:
+    changePoke %1
+    %%end:
+%endmacro
+
 section .text
-    changePoke_first:
-        changePoke first_trainerStruc
+    changeTab_first:
+        changeTab first_trainerStruc
         jmp gameLoop
-    changePoke_second:
-        changePoke second_trainerStruc
+    changeTab_second:
+        changeTab second_trainerStruc
         jmp gameLoop
     hit_first:
         hit first_trainerStruc, 2

@@ -25,20 +25,18 @@ section .text
         cmp ah, ESCAPE_KEY
         je exitProgram
         
-        ; testing purposes
         cmp ah, LEFT_ARROW
-        je changePoke_first
+        je changeTab_first
         cmp ah, RIGHT_ARROW
-        je changePoke_first
-        cmp ah, UP_ARROW
-        je hit_second
+        je changeTab_first
 
-        ; testing purposes
+        events first_trainerStruc, UP_ARROW
+
         cmp ah, A_KEY
-        je changePoke_second
+        je changeTab_second
         cmp ah, D_KEY
-        je changePoke_second
-        cmp ah, W_KEY
-        je hit_first
+        je changeTab_second
         
+        events second_trainerStruc, W_KEY
+
         jmp gameLoop
