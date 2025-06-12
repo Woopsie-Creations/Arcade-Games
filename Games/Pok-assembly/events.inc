@@ -42,6 +42,15 @@
     call displayFrame
 %endmacro
 
+%macro switchPoke 2 
+    add bl, %2
+    cmp bl, 6
+    jl %%changePoke
+    sub bl, 6
+    %%changePoke:
+    changePoke %1, bl
+%endmacro
+
 %macro events 6
     cmp ah, %2
     je %%input
@@ -84,41 +93,19 @@
     je %%sixth
 
     %%fourth:
-    add bl, 3
-    cmp bl, 6
-    jl %%changePoke
-    sub bl, 6
-    jmp %%changePoke
-
+    switchPoke %1, 3
+    jmp %%end
     %%second:
-    add bl, 1
-    cmp bl, 6
-    jl %%changePoke
-    sub bl, 6
-    jmp %%changePoke
-
+    switchPoke %1, 1
+    jmp %%end
     %%fifth:
-    add bl, 4
-    cmp bl, 6
-    jl %%changePoke
-    sub bl, 6
-    jmp %%changePoke
-
+    switchPoke %1, 4
+    jmp %%end
     %%third:
-    add bl, 2
-    cmp bl, 6
-    jl %%changePoke
-    sub bl, 6
-    jmp %%changePoke
-
+    switchPoke %1, 2
+    jmp %%end
     %%sixth:
-    add bl, 5
-    cmp bl, 6
-    jl %%changePoke
-    sub bl, 6
-    
-    %%changePoke:
-    changePoke %1, bl
+    switchPoke %1, 5
     %%end:
 %endmacro
 
