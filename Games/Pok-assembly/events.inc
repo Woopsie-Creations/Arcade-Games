@@ -19,14 +19,8 @@
     call displayFrame
 %endmacro
 
-%macro changePoke 1
-    cmp byte [%1 + trainer.current_poke], 5
-    je %%isOne
-    inc byte [%1 + trainer.current_poke]
-    jmp %%end
-    %%isOne:
-    mov byte [%1 + trainer.current_poke], 0
-    %%end:
+%macro changePoke 2
+    mov byte [%1 + trainer.current_poke], %2
     call displayFrame
 %endmacro
 
@@ -48,8 +42,16 @@
     call displayFrame
 %endmacro
 
-%macro events 2
+%macro events 6
     cmp ah, %2
+    je %%input
+    cmp ah, %3
+    je %%input
+    cmp ah, %4
+    je %%input
+    cmp ah, %5
+    je %%input
+    cmp ah, %6
     je %%input
     jmp %%end
 
@@ -66,8 +68,57 @@
     %else
     jmp hit_first
     %endif
+
     %%change:
-    changePoke %1
+    xor bx, bx
+    mov bl, [%1 + trainer.current_poke]
+    cmp ah, %2
+    je %%fourth
+    cmp ah, %3
+    je %%second
+    cmp ah, %4
+    je %%fifth
+    cmp ah, %5
+    je %%third
+    cmp ah, %6
+    je %%sixth
+
+    %%fourth:
+    add bl, 3
+    cmp bl, 6
+    jl %%changePoke
+    sub bl, 6
+    jmp %%changePoke
+
+    %%second:
+    add bl, 1
+    cmp bl, 6
+    jl %%changePoke
+    sub bl, 6
+    jmp %%changePoke
+
+    %%fifth:
+    add bl, 4
+    cmp bl, 6
+    jl %%changePoke
+    sub bl, 6
+    jmp %%changePoke
+
+    %%third:
+    add bl, 2
+    cmp bl, 6
+    jl %%changePoke
+    sub bl, 6
+    jmp %%changePoke
+
+    %%sixth:
+    add bl, 5
+    cmp bl, 6
+    jl %%changePoke
+    sub bl, 6
+    
+    %%changePoke:
+    changePoke %1, bl
     %%end:
 %endmacro
 
