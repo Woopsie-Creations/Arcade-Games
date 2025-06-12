@@ -194,21 +194,27 @@
     %assign %3 %6
     %assign %2 %5
 
-    mov bx, 0
+    mov bx, [%1 + trainer.current_poke]
     %rep 2
         %rep 3
-            ; need to check for current poke on bottomleft
-            push bx
+            %%beginning%+_label_id:
             xor bh, bh
+            push bx
             shl bx, 1
             add bx, trainer.pokemons
             mov bx, [%1 + bx]
             mov ax, [bx + pokemon.name]
             mov word [current_poke_name], ax
-
             displayPokeName [current_poke_name], %2, %3, %4
             pop bx
+            ; need to check for current poke index
+            cmp bx, 5
+            je %%setToZero%+_label_id
             inc bx
+            jmp %%end%+_label_id
+            %%setToZero%+_label_id:
+            mov bx, 0
+            %%end%+_label_id:
             %assign _label_id _label_id + 1
             %assign %3 %3+BATTLE_LITTLE_CASE_WIDTH+2
         %endrep

@@ -20,9 +20,9 @@
 %endmacro
 
 %macro changePoke 1
-    cmp byte [%1 + trainer.current_poke], 1
+    cmp byte [%1 + trainer.current_poke], 5
     je %%isOne
-    mov byte [%1 + trainer.current_poke], 1
+    inc byte [%1 + trainer.current_poke]
     jmp %%end
     %%isOne:
     mov byte [%1 + trainer.current_poke], 0
