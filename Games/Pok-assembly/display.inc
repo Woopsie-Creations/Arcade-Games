@@ -385,9 +385,15 @@ section .text
         displayUICaseFirst:
             mov si, battle_case
             displayItem FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+            cmp byte [first_trainerStruc + trainer.has_chosen], FALSE
+            je .content
+            textDisplay PLAYER_ONE_HAS_CHOSEN_TEXT, PLAYER_HAS_CHOSEN_TEXT_WIDTH, PLAYER_ONE_HAS_CHOSEN_TEXT_Y_POS, PLAYER_ONE_HAS_CHOSEN_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+            jmp displayUICaseSecond
+
+            .content:
             mov si, battle_case_arrows
-            displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
-            displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
             displayLittleCases FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS, FIRST_PLAYER_POKE_Y_POS + BACK_SPRITE_HEIGHT + 3, 2, first_trainerStruc
             cmp byte [first_trainerStruc + trainer.battle_tab], 1
             je .pokemonTab
@@ -401,12 +407,19 @@ section .text
                 jmp .next
             .bagTab: ; not implemented yet
             .next:
+
         displayUICaseSecond:
             mov si, battle_case
             displayItem SECOND_BATTLE_CASE_Y_POS, SECOND_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+            cmp byte [second_trainerStruc + trainer.has_chosen], FALSE
+            je .content
+            textDisplay PLAYER_TWO_HAS_CHOSEN_TEXT, PLAYER_HAS_CHOSEN_TEXT_WIDTH, PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS, PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+            jmp .next
+
+            .content:
             mov si, battle_case_arrows
-            displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
-            displayItem BATTLE_CASE_ARROW_Y_POS, FIRST_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_LEFT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
+            displayItem BATTLE_CASE_ARROW_Y_POS, SECOND_BATTLE_CASE_ARROW_RIGHT_X_POS, BATTLE_CASE_ARROW_HEIGHT, BATTLE_CASE_ARROW_WIDTH
             displayLittleCases SECOND_BATTLE_CASE_Y_POS, SECOND_BATTLE_CASE_X_POS, FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS + BATTLE_CASE_WIDTH + 2, second_trainerStruc
             cmp byte [second_trainerStruc + trainer.battle_tab], 1
             je .pokemonTab

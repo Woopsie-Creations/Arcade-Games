@@ -1,31 +1,22 @@
-%define LEFT_ARROW 4Bh
-%define RIGHT_ARROW 4Dh
-%define UP_ARROW 48h
-%define DOWN_ARROW 50h
-; BUTTONS 1ST
-%define U_KEY 16h
-%define I_KEY 17h
-%define J_KEY 24h
-%define K_KEY 25h
-%define N_KEY 31h
-%define M_KEY 32h
+%macro checkKeys 6
+    cmp ah, %2
+    je %%change
+    cmp ah, %3
+    je %%change
+    cmp ah, %4
+    je %%change
+    cmp ah, %5
+    je %%change
+    cmp ah, %6
+    je %%change
+    jmp %%end
+    %%change:
+        mov byte [%1 + trainer.action_key_pressed], ah
+        mov byte [%1 + trainer.has_chosen], TRUE
+    %%end:
+%endmacro
 
-%define W_KEY 11h
-%define A_KEY 1Eh
-%define S_KEY 1Fh
-%define D_KEY 20h
-; BUTTONS 2ND
-%define R_KEY 13h
-%define T_KEY 14h
-%define F_KEY 21h
-%define G_KEY 22h
-%define C_KEY 2Eh
-%define V_KEY 2Fh
-
-%define ESCAPE_KEY 01h
-%define ENTER_KEY 1Ch
-
-section .text    
+section .text
     readKeyboard:
         ; is key pressed ?
         mov ah, 01h 
@@ -43,14 +34,15 @@ section .text
         je changeTab_first
         cmp ah, RIGHT_ARROW
         je changeTab_first
+        
+        checkKeys first_trainerStruc, I_KEY, J_KEY, K_KEY, N_KEY, M_KEY
 
-        events first_trainerStruc, I_KEY, J_KEY, K_KEY, N_KEY, M_KEY
-
+        .second_player:
         cmp ah, A_KEY
         je changeTab_second
         cmp ah, D_KEY
         je changeTab_second
-        
-        events second_trainerStruc, T_KEY, F_KEY, G_KEY, C_KEY, V_KEY
+
+        checkKeys second_trainerStruc, T_KEY, F_KEY, G_KEY, C_KEY, V_KEY
 
         jmp gameLoop

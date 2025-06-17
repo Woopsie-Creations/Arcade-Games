@@ -21,6 +21,8 @@
 
 %macro changePoke 2
     mov byte [%1 + trainer.current_poke], %2
+    mov byte [%1 + trainer.has_chosen], FALSE
+    mov byte [%1 + trainer.action_key_pressed], 00h
     call displayFrame
 %endmacro
 
@@ -52,6 +54,10 @@
 %endmacro
 
 %macro events 6
+    mov ah, [%1 + trainer.action_key_pressed]
+    cmp ah, 00h
+    je %%end
+
     cmp ah, %2
     je %%input
     cmp ah, %3
@@ -107,18 +113,37 @@
     %%sixth:
     switchPoke %1, 5
     %%end:
+    mov byte [%1 + trainer.has_chosen], FALSE
+    mov byte [%1 + trainer.action_key_pressed], 00h
 %endmacro
 
 section .text
     changeTab_first:
         changeTab first_trainerStruc
-        jmp gameLoop
+        jmp readKeyboard.second_player
     changeTab_second:
         changeTab second_trainerStruc
         jmp gameLoop
-    hit_first:
-        hit first_trainerStruc, 2
-        jmp gameLoop
+        
+    executeEvents:
+        cmp byte [first_trainerStruc + trainer.has_chosen], FALSE
+        je .end 
+        cmp byte [second_trainerStruc + trainer.has_chosen], FALSE
+        je .end
+        ; should decide which one should go first, but default P1
+        events first_trainerStruc, I_KEY, J_KEY, K_KEY, N_KEY, M_KEY
+        .second:
+        events second_trainerStruc, T_KEY, F_KEY, G_KEY, C_KEY, V_KEY
+        .end:
+        ret
+
     hit_second:
-        hit second_trainerStruc, 2
-        jmp gameLoop
+        hit second_trainerStruc, 100
+        mov byte [first_trainerStruc + trainer.has_chosen], FALSE
+        mov byte [first_trainerStruc + trainer.action_key_pressed], 00h
+        jmp executeEvents.second
+    hit_first:
+        hit first_trainerStruc, 8
+        mov byte [second_trainerStruc + trainer.has_chosen], FALSE
+        mov byte [second_trainerStruc + trainer.action_key_pressed], 00h
+        ret

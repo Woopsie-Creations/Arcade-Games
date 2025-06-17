@@ -19,6 +19,8 @@ section .text
     call displayFrame
 
     gameLoop:
+        call displayFrame
+        call executeEvents
         jmp readKeyboard
 
 ; ------------------------------

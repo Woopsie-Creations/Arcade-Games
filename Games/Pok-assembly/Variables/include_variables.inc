@@ -1,3 +1,4 @@
+%include "Variables/keys_variables.inc"
 %include "Variables/display_variables.inc"
 %include "Variables/ui_variables.inc"
 %include "Variables/attack_variables.inc"
