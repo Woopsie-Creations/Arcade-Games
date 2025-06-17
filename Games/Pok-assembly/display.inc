@@ -33,7 +33,7 @@
         jnz %%eachItemRow
 %endmacro
 
-%macro textDisplay 6
+%macro textDisplay 7
     mov word [letter_x_pos], %4
     mov word [letter_y_pos], %3
     mov bx, 0
@@ -42,11 +42,27 @@
         mov si, [si+bx]
         push bx
         displayItem [letter_y_pos], [letter_x_pos], %5, %6
+        cmp byte [has_written_fancy_text], TRUE
+        je %%skip
+        mov al, %7
+        cmp al, FALSE
+        je %%skip
+        call displayViewport
+        mov dx, 50000
+        mov ah, 0x86
+        int 0x15
+        %%skip:
         pop bx
         add word [letter_x_pos], %6 + 1
         add bx, 2
         cmp bx, %2 * 2
         jne %%eachLetter
+    mov bx, word [letter_x_pos]
+    mov al, %7
+    cmp al, FALSE
+    je %%end
+    mov byte [has_written_fancy_text], TRUE
+    %%end:
 %endmacro
 
 %macro clearItem 4
@@ -186,7 +202,7 @@
 %endmacro
 
 %macro displayPokeName 4
-    textDisplay %1, %4, %2, %3, FONT_HEIGHT, FONT_WIDTH
+    textDisplay %1, %4, %2, %3, FONT_HEIGHT, FONT_WIDTH, FALSE
 %endmacro
 
 %macro displayTeamPokeName 6
@@ -247,7 +263,6 @@
     add bx, trainer.pokemons
     mov bx, [si + bx]
     
-    ; testing purposes
     mov bl, byte [bx + pokemon.type]
     xor bh, bh
     mov al, byte [case_color_table+bx]
@@ -310,6 +325,36 @@
     %assign %1 %3
 %endmacro
 
+%macro displayCurrentAction 3
+    mov byte [has_written_fancy_text], FALSE
+    call displayFrame
+
+    mov si, %1
+    mov bl, [si + trainer.current_poke]
+    xor bh, bh
+    shl bx, 1
+    add bx, trainer.pokemons
+    mov bx, [si + bx]
+    
+    mov ax, word [bx + pokemon.name]
+    mov word [current_action_pokemon_name_text], ax
+
+    textDisplay [current_action_pokemon_name_text], 10, %2, %3, FONT_HEIGHT, FONT_WIDTH, TRUE
+    mov ax, %2
+    mov byte [has_written_fancy_text], FALSE
+    cmp byte [%1 + trainer.battle_tab], 1
+    je %%pokemon_tab
+    textDisplay ACTION_TEXT, ACTION_TEXT_WIDTH, ax, bx, FONT_HEIGHT, FONT_WIDTH, TRUE
+    je %%end
+    %%pokemon_tab:
+    textDisplay SWITCH_TEXT, SWITCH_TEXT_WIDTH, ax, bx, FONT_HEIGHT, FONT_WIDTH, TRUE
+    %%end:
+    %rep 15
+        mov dx, 50000
+        mov ah, 0x86
+        int 0x15
+    %endrep
+%endmacro
 
 section .text
     initViewport:
@@ -326,8 +371,8 @@ section .text
     displayFrame:
         ; place everything and then display
         call clearViewport
-        call displayUI
         displayCurrentPokes
+        call displayUI
         call displayViewport
         ret
 
@@ -382,12 +427,20 @@ section .text
             mov si, hp_bar
             displayItem FIRST_PLAYER_HP_BAR_Y_POS, FIRST_PLAYER_HP_BAR_X_POS, HP_BAR_HEIGHT, HP_BAR_WIDTH
             displayHpBar FIRST_PLAYER_HP_BAR_Y_POS + 2, FIRST_PLAYER_HP_BAR_X_POS + 16, first_trainerStruc
+
+        mov si, battle_case
+        displayItem FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+        mov si, battle_case
+        displayItem SECOND_BATTLE_CASE_Y_POS, SECOND_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+
         displayUICaseFirst:
-            mov si, battle_case
-            displayItem FIRST_BATTLE_CASE_Y_POS, FIRST_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+            cmp byte [in_execution], TRUE
+            je .next
             cmp byte [first_trainerStruc + trainer.has_chosen], FALSE
             je .content
-            textDisplay PLAYER_ONE_HAS_CHOSEN_TEXT, PLAYER_HAS_CHOSEN_TEXT_WIDTH, PLAYER_ONE_HAS_CHOSEN_TEXT_Y_POS, PLAYER_ONE_HAS_CHOSEN_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+            cmp byte [second_trainerStruc + trainer.has_chosen], TRUE
+            je .next
+            textDisplay PLAYER_ONE_HAS_CHOSEN_TEXT, PLAYER_HAS_CHOSEN_TEXT_WIDTH, PLAYER_ONE_HAS_CHOSEN_TEXT_Y_POS, PLAYER_ONE_HAS_CHOSEN_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT, FALSE
             jmp displayUICaseSecond
 
             .content:
@@ -399,21 +452,23 @@ section .text
             je .pokemonTab
             jg .bagTab
             .attacksTab:
-                textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT, FALSE
                 jmp .next
             .pokemonTab:
                 displayTeamPokeName first_trainerStruc, FIRST_TEAM_POKE_NAME_Y_POS, FIRST_TEAM_POKE_NAME_X_POS, 6, FIRST_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20, FIRST_BATTLE_CASE_X_POS+14
-                textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, FIRST_BATTLE_CASE_TEXT_Y_POS, FIRST_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT, FALSE
                 jmp .next
             .bagTab: ; not implemented yet
             .next:
 
         displayUICaseSecond:
-            mov si, battle_case
-            displayItem SECOND_BATTLE_CASE_Y_POS, SECOND_BATTLE_CASE_X_POS, BATTLE_CASE_HEIGHT, BATTLE_CASE_WIDTH
+            cmp byte [in_execution], TRUE
+            je .next
             cmp byte [second_trainerStruc + trainer.has_chosen], FALSE
             je .content
-            textDisplay PLAYER_TWO_HAS_CHOSEN_TEXT, PLAYER_HAS_CHOSEN_TEXT_WIDTH, PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS, PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+            cmp byte [first_trainerStruc + trainer.has_chosen], TRUE
+            je .next
+            textDisplay PLAYER_TWO_HAS_CHOSEN_TEXT, PLAYER_HAS_CHOSEN_TEXT_WIDTH, PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS, PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT, FALSE
             jmp .next
 
             .content:
@@ -425,11 +480,11 @@ section .text
             je .pokemonTab
             jg .bagTab
             .attacksTab:
-                textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                textDisplay ATTACKS_TEXT, ATTACKS_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT, FALSE
                 jmp .next
             .pokemonTab:
                 displayTeamPokeName second_trainerStruc, SECOND_TEAM_POKE_NAME_Y_POS, SECOND_TEAM_POKE_NAME_X_POS, 6, SECOND_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20, SECOND_BATTLE_CASE_X_POS+14
-                textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT
+                textDisplay POKEMON_TEXT, POKEMON_TEXT_WIDTH, SECOND_BATTLE_CASE_TEXT_Y_POS, SECOND_BATTLE_CASE_TEXT_X_POS, FONT_WIDTH, FONT_HEIGHT, FALSE
                 jmp .next
             .bagTab: ; not implemented yet
             .next:
