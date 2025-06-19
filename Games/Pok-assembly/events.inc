@@ -131,12 +131,20 @@ section .text
         cmp byte [second_trainerStruc + trainer.has_chosen], FALSE
         je .end
         mov byte [in_execution], TRUE
-        ; should decide which one should go first, but default P1
+        ; should decide which one should go first
+        cmp byte [second_trainerStruc + trainer.battle_tab], 1
+        je .second
+        .first:
         displayCurrentAction first_trainerStruc, PLAYER_ONE_HAS_CHOSEN_TEXT_Y_POS, PLAYER_ONE_HAS_CHOSEN_TEXT_X_POS
         events first_trainerStruc, I_KEY, J_KEY, K_KEY, N_KEY, M_KEY
+        cmp byte [second_trainerStruc + trainer.has_chosen], FALSE
+        je .end
         .second:
         displayCurrentAction second_trainerStruc, PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS, PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS
         events second_trainerStruc, T_KEY, F_KEY, G_KEY, C_KEY, V_KEY
+        cmp byte [first_trainerStruc + trainer.has_chosen], TRUE
+        je .first
+
         .end:
         call displayFrame
         mov byte [in_execution], FALSE
@@ -146,11 +154,16 @@ section .text
         hit second_trainerStruc, 8
         mov byte [first_trainerStruc + trainer.has_chosen], FALSE
         mov byte [first_trainerStruc + trainer.action_key_pressed], 00h
-        jmp executeEvents.second
+        cmp byte [second_trainerStruc + trainer.has_chosen], TRUE
+        je executeEvents.second
+        ret 
     hit_first:
         hit first_trainerStruc, 8
         mov byte [second_trainerStruc + trainer.has_chosen], FALSE
         mov byte [second_trainerStruc + trainer.action_key_pressed], 00h
+        cmp byte [first_trainerStruc + trainer.has_chosen], TRUE
+        je executeEvents.first
+        
         call displayFrame
         mov byte [in_execution], FALSE
         ret
