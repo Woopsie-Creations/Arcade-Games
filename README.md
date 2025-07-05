@@ -107,13 +107,15 @@ And *On Raspberry Pi*:
 
 ### Completed Games
 
-...
+[**Pac-ssembly**](https://github.com/EnzoGuillouche/Assembly-games/tree/main/Games/Pac-ssembly): An arcade Pac-Man.
 
 ### In Progress
 
-[**Street Fighssembly**](https://github.com/EnzoGuillouche/Assembly-games/tree/main/Games/Street-Fighssembly): A Street Fighter demake.
+[**Pok-assembly**](https://github.com/EnzoGuillouche/Assembly-games/tree/main/Games/Pok-assembly): A Pokemon fight simulator.
 
-[**Pac-ssembly**](https://github.com/EnzoGuillouche/Assembly-games/tree/main/Games/Pac-ssembly): An arcade Pac-Man.
+### Dropped
+
+[**Street Fighssembly**](https://github.com/EnzoGuillouche/Assembly-games/tree/main/Games/Street-Fighssembly): A Street Fighter demake.
 
 ---
 
