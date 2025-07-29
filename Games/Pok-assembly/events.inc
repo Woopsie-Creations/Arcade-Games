@@ -22,12 +22,36 @@
     ; serves as animation
     push ax
     push bx
+    cmp word ax, 0
+    je %%next
+    cmp word [bx + pokemon.hp], 0
+    je %%next
     dec word [bx + pokemon.hp]
     call displayFrame
     pop bx
     pop ax
+
+    
     cmp word [bx + pokemon.hp], ax
     jne %%progressively
+    jmp %%end
+
+    %%next:
+    pop bx
+    pop ax
+    mov word [bx + pokemon.hp], 0
+    call displayFrame
+    ; yes we are waiters
+    wait 50000
+    wait 50000
+    wait 50000
+    wait 50000
+    wait 50000
+
+    mov al, byte [%1 + trainer.current_poke]
+    inc al
+    changePoke %1, al
+    %%end:
 %endmacro
 
 %macro changePoke 2
