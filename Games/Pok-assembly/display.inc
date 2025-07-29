@@ -114,6 +114,12 @@
 
 %macro displayCurrentPokes 0-* first_trainerStruc, buffer1, FIRST_PLAYER_POKE_Y_POS, FIRST_PLAYER_POKE_X_POS, BACK_SPRITE_HEIGHT, BACK_SPRITE_WIDTH, BACK_SPRITE_SIZE, second_trainerStruc, buffer2, SECOND_PLAYER_POKE_Y_POS, SECOND_PLAYER_POKE_X_POS, FRONT_SPRITE_HEIGHT, FRONT_SPRITE_WIDTH, FRONT_SPRITE_SIZE
     %rep 2
+        push bx
+        cmp bx, 0
+        je %%do_%1
+        cmp bx, 1
+        je %%skip_%1
+        %%do_%1:
         mov si, %1
         mov bl, [si + trainer.current_poke]
         xor bh, bh
@@ -125,6 +131,9 @@
         loadBuffer %2, %7
         mov si, %2
         displayItem %3, %4, %5, %6
+        %%skip_%1:
+        pop bx
+        dec bx
         %rotate 7
     %endrep
 %endmacro
@@ -371,6 +380,7 @@ section .text
     displayFrame:
         ; place everything and then display
         call clearViewport
+        mov bx, 0
         displayCurrentPokes
         call displayUI
         call displayViewport

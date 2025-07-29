@@ -1,3 +1,5 @@
+%include "animations.inc"
+
 %macro hit 2
     mov si, %1
     mov bl, [si + trainer.current_poke]
@@ -151,6 +153,8 @@ section .text
         ret
 
     hit_second:
+        hitAnimation 2
+
         hit second_trainerStruc, 8
         mov byte [first_trainerStruc + trainer.has_chosen], FALSE
         mov byte [first_trainerStruc + trainer.action_key_pressed], 00h
@@ -158,6 +162,8 @@ section .text
         je executeEvents.second
         ret 
     hit_first:
+        hitAnimation 1
+
         hit first_trainerStruc, 8
         mov byte [second_trainerStruc + trainer.has_chosen], FALSE
         mov byte [second_trainerStruc + trainer.action_key_pressed], 00h
