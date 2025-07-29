@@ -11,14 +11,23 @@
     mov ax, [bx + pokemon.hp]
     cmp ax, %2
     jle %%setToZero
-    sub word [bx + pokemon.hp], %2
-    jmp %%end
+
+    sub word ax, %2
+    jmp %%progressively
 
     %%setToZero:
-    mov word [bx + pokemon.hp], 0
+    mov word ax, 0
 
-    %%end:
+    %%progressively:
+    ; serves as animation
+    push ax
+    push bx
+    dec word [bx + pokemon.hp]
     call displayFrame
+    pop bx
+    pop ax
+    cmp word [bx + pokemon.hp], ax
+    jne %%progressively
 %endmacro
 
 %macro changePoke 2
@@ -155,7 +164,7 @@ section .text
     hit_second:
         hitAnimation 2
 
-        hit second_trainerStruc, 8
+        hit second_trainerStruc, 28
         mov byte [first_trainerStruc + trainer.has_chosen], FALSE
         mov byte [first_trainerStruc + trainer.action_key_pressed], 00h
         cmp byte [second_trainerStruc + trainer.has_chosen], TRUE
