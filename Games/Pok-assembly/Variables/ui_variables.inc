@@ -80,7 +80,7 @@ section .data
         db 0x2B
         db 0x28
 
-    case_color_table:
+    type_color_table:
         db 0x0F ; normal
         db 0x28 ; fire
         db 0x35 ; water
