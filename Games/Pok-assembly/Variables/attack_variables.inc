@@ -1,3 +1,6 @@
+section .bss
+    current_attack_damage resw 1
+
 section .data
     struc attack
         .name: resw 1

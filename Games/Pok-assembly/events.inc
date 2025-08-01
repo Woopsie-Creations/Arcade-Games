@@ -1,18 +1,19 @@
 %include "animations.inc"
 
-%macro hit 2
+%macro hit 1
     mov si, %1
     mov bl, [si + trainer.current_poke]
     xor bh, bh
     shl bx, 1
     add bx, trainer.pokemons
     mov bx, [si + bx]
-    
     mov ax, [bx + pokemon.hp]
-    cmp ax, %2
-    jle %%setToZero
+    ; ax contains the enemy pokemon hp
 
-    sub word ax, %2
+    cmp word [current_attack_damage], ax
+    jge %%setToZero
+
+    sub word ax, [current_attack_damage]
     jmp %%progressively
 
     %%setToZero:
@@ -23,20 +24,19 @@
     push ax
     push bx
     cmp word ax, 0
-    je %%next
+    je %%this_is_the_end
     cmp word [bx + pokemon.hp], 0
-    je %%next
+    je %%this_is_the_end
     dec word [bx + pokemon.hp]
     call displayFrame
     pop bx
     pop ax
-
     
     cmp word [bx + pokemon.hp], ax
     jne %%progressively
     jmp %%end
 
-    %%next:
+    %%this_is_the_end:
     pop bx
     pop ax
     mov word [bx + pokemon.hp], 0
@@ -111,8 +111,45 @@
     cmp byte [%1 + trainer.battle_tab], 1
     je %%change
     ; bag not implemented
+    
+    %%middleBotKey:
+    mov bx, 0
+    jmp %%executeHit
+    %%rightBotKey:
+    mov bx, 1
+    jmp %%executeHit
+    %%middleTopKey:
+    mov bx, 2
+    jmp %%executeHit
+    %%rightTopKey:
+    mov bx, 3
+    jmp %%executeHit
 
     %%hit:
+    xor bx, bx
+    cmp ah, %3
+    je %%middleBotKey
+    cmp ah, %5
+    je %%rightBotKey
+    cmp ah, %4
+    je %%middleTopKey
+    cmp ah, %6
+    je %%rightTopKey
+
+    %%executeHit:
+    shl bx, 1
+    push bx
+    mov si, first_trainerStruc
+    mov bl, [si + trainer.current_poke]
+    xor bh, bh
+    shl bx, 1
+    add bx, trainer.pokemons
+    mov bx, [si + bx]
+    pop si
+    mov bx, [bx + pokemon.attacks + si]
+    mov ax, [bx + attack.damage]
+    mov word [current_attack_damage], ax
+
     %ifidni %1, first_trainerStruc
     jmp hit_second
     %else
@@ -186,18 +223,26 @@ section .text
         ret
 
     hit_second:
+        cmp word [current_attack_damage], 0
+        je .skip
+        ; got index of attack previously in bx
         hitAnimation 2
-
-        hit second_trainerStruc, 28
+        hit second_trainerStruc
+        
+        .skip:
         mov byte [first_trainerStruc + trainer.has_chosen], FALSE
         mov byte [first_trainerStruc + trainer.action_key_pressed], 00h
         cmp byte [second_trainerStruc + trainer.has_chosen], TRUE
         je executeEvents.second
         ret 
     hit_first:
+        cmp word [current_attack_damage], 0
+        je .skip
+        ; got index of attack previously in bx
         hitAnimation 1
+        hit first_trainerStruc
 
-        hit first_trainerStruc, 8
+        .skip:
         mov byte [second_trainerStruc + trainer.has_chosen], FALSE
         mov byte [second_trainerStruc + trainer.action_key_pressed], 00h
         cmp byte [first_trainerStruc + trainer.has_chosen], TRUE

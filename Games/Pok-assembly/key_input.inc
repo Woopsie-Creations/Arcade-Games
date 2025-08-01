@@ -1,6 +1,6 @@
 %macro checkKeys 6
     cmp ah, %2
-    je %%change
+    je %%check
     cmp ah, %3
     je %%change
     cmp ah, %4
@@ -10,6 +10,9 @@
     cmp ah, %6
     je %%change
     jmp %%end
+    %%check:
+        cmp byte [%1 + trainer.battle_tab], 0
+        je %%end
     %%change:
         mov byte [%1 + trainer.action_key_pressed], ah
         mov byte [%1 + trainer.has_chosen], TRUE
