@@ -1,5 +1,12 @@
+%define ATTACK_SIZE 9
+
 section .bss
     current_attack_damage resw 1
+    
+    pokemonAttackCopy1: resb ATTACK_SIZE
+    pokemonAttackCopy2: resb ATTACK_SIZE
+    pokemonAttackCopy3: resb ATTACK_SIZE
+    pokemonAttackCopy4: resb ATTACK_SIZE
 
 section .data
     struc attack

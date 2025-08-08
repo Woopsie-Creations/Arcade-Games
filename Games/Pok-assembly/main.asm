@@ -14,10 +14,10 @@ section .text
     int 10h         ;--------------------------------
 
     call initViewport
-    initPokeAttacks first_onepokemonStruc, attack_tackle, attack_tailwhip, attack_bulletseed, attack_tackle
+    initPokeAttacks first_onepokemonStruc, attack_tackle, attack_tailwhip, attack_bulletseed, attack_tackle, pokemonAttackCopy1, pokemonAttackCopy2, pokemonAttackCopy3, pokemonAttackCopy4
     initPokes first_trainerStruc, first_onepokemonStruc, first_twopokemonStruc, first_threepokemonStruc, first_fourpokemonStruc, first_fivepokemonStruc, first_sixpokemonStruc
-
-    initPokeAttacks second_onepokemonStruc, attack_bulletseed, attack_bulletseed, attack_tackle, attack_tailwhip
+    
+    initPokeAttacks second_onepokemonStruc, attack_bulletseed, attack_bulletseed, attack_tackle, attack_tailwhip, pokemonAttackCopy1, pokemonAttackCopy2, pokemonAttackCopy3, pokemonAttackCopy4
     initPokes second_trainerStruc, second_onepokemonStruc, second_twopokemonStruc, second_threepokemonStruc, second_fourpokemonStruc, second_fivepokemonStruc, second_sixpokemonStruc
     call displayFrame
 
