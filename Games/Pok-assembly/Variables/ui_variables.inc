@@ -108,5 +108,7 @@ section .bss
     current_hp_color resb 1
     current_case_color resb 1
     current_action_pokemon_name_text resw 10
+    concatenatedNumbers resb 2
+    displayedNumbers resw 2
     has_written_fancy_text resb 1
     in_execution resb 1

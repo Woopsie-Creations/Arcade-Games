@@ -112,6 +112,30 @@
     %endrep
 %endmacro
 
+; updateDisplayedScore number, displayedNumbers, count
+
+%macro updateDisplayedScore 3
+    xor cx, cx ; displayedNumbers' count
+    %%loop:
+        cmp cx, %3
+        jge %%done
+
+        mov bx, cx ; get numbers' count
+        
+        movzx ax, byte [%1 + bx] ; get the number
+        shl ax, 1
+        mov bx, ax
+        mov ax, word [displayNumbersFont + bx] ; use the number as an index to get sprite
+
+        mov bx, cx
+        shl bx, 1
+        mov word [%2 + bx], ax ; put the sprite
+
+        inc cx
+        jmp %%loop
+    %%done:
+%endmacro
+
 %macro displayCurrentPokes 0-* first_trainerStruc, buffer1, FIRST_PLAYER_POKE_Y_POS, FIRST_PLAYER_POKE_X_POS, BACK_SPRITE_HEIGHT, BACK_SPRITE_WIDTH, BACK_SPRITE_SIZE, second_trainerStruc, buffer2, SECOND_PLAYER_POKE_Y_POS, SECOND_PLAYER_POKE_X_POS, FRONT_SPRITE_HEIGHT, FRONT_SPRITE_WIDTH, FRONT_SPRITE_SIZE
     %rep 2
         push bx
@@ -214,6 +238,21 @@
     textDisplay %1, %4, %2, %3, FONT_HEIGHT, FONT_WIDTH, FALSE
 %endmacro
 
+%macro displayPP 3
+    ; got bx from previous operations
+    push bx
+    mov al, [bx + attack.%1]
+
+    xor dx, dx
+    mov bl, 10
+    div bl ; AX / 10 → AL = quotient (1st digit), AH = remainder (2nd digit)
+    mov byte [concatenatedNumbers], al
+    mov byte [concatenatedNumbers+1], ah
+    updateDisplayedScore concatenatedNumbers, displayedNumbers, 2
+    textDisplay displayedNumbers, 2, %2+FONT_HEIGHT*2, %3+FONT_WIDTH/2, FONT_HEIGHT, FONT_WIDTH, FALSE
+    pop bx
+%endmacro
+
 %macro displayPokeAttack 4
     %assign %%_label_id 0
     %assign %%x_pos %4
@@ -232,10 +271,15 @@
             push si
             shl si, 1
             mov bx, [bx + pokemon.attacks + si] ; and its attack
+            push bx
 
             mov ax, [bx + attack.name]
             mov word [current_attack_name], ax
             displayPokeName [current_attack_name], %%y_pos, %%x_pos, %2
+            
+            pop bx
+            displayPP pp, %%y_pos, %%x_pos
+            displayPP max_pp, %%y_pos, %%x_pos+FONT_WIDTH*4
 
             pop bx
             cmp bx, 3
@@ -367,10 +411,11 @@
             pop bx
             inc bx
             push bx
+            mov si, fontSlash
+            displayItem %1+FONT_HEIGHT*3, %2+BATTLE_LITTLE_CASE_WIDTH/2-FONT_WIDTH+2, FONT_HEIGHT, FONT_WIDTH
             %%skipCaseBg%+%%_label_id:
             mov si, little_case
             displayItem %1, %2, BATTLE_LITTLE_CASE_HEIGHT, BATTLE_LITTLE_CASE_WIDTH
-
             %assign %%_label_id %%_label_id + 1
             %assign %2 %2+BATTLE_LITTLE_CASE_WIDTH+2
         %endrep
