@@ -148,6 +148,7 @@
     pop si
     mov bx, [bx + pokemon.attacks + si]
     mov ax, [bx + attack.damage]
+    dec byte [bx + attack.pp]
     mov word [current_attack_damage], ax
 
     %ifidni %1, first_trainerStruc
