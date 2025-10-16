@@ -1,19 +1,13 @@
-%macro assignAttack 4
-    lea si, %2
-    lea di, [%3] ; destination buffer
-    mov cx, ATTACK_SIZE
-    %%copy_loop:
-        lodsb
-        stosb
-        loop %%copy_loop
-    mov word [%1 + pokemon.attacks + %4], di
+%macro assignAttack 3
+    mov ax, %2
+    mov word [%1 + pokemon.attacks + %3], ax
 %endmacro
 
-%macro initPokeAttacks 9
-    assignAttack %1, %2, %6, 0
-    assignAttack %1, %3, %7, 2
-    assignAttack %1, %4, %8, 4
-    assignAttack %1, %5, %9, 6
+%macro initPokeAttacks 5
+    assignAttack %1, %2, 0
+    assignAttack %1, %3, 2
+    assignAttack %1, %4, 4
+    assignAttack %1, %5, 6
 %endmacro
 
 %macro assignPoke 3
