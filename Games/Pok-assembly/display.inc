@@ -345,6 +345,9 @@
 %endmacro
 
 %macro displayCaseBg 3
+    cmp byte [%3 + trainer.battle_tab], 1
+    je %%CaseBgBattle
+
     mov si, %3
     mov bl, [si + trainer.current_poke]
     xor bh, bh
@@ -361,7 +364,26 @@
     xor bh, bh
     mov al, byte [type_color_table+bx]
     mov byte [current_case_color], al
+    jmp %%display
 
+    %%CaseBgBattle:
+        mov si, %3
+        mov bx, [si + trainer.pokemons]
+        pop si
+        push si
+        shl si, 1
+        add bx, si
+        ; add index of the poke depending on the case
+        
+        mov dl, 0x0F
+        mov ax, word [bx + pokemon.hp]
+        cmp ax, 0
+        jg %%skip
+        mov dl, 0x07
+        %%skip:
+        mov byte [current_case_color], dl
+
+    %%display:
     mov ax, [viewport_memory_block_pos]
     mov es, ax
     ; calculate the position of the item
@@ -399,12 +421,12 @@
     %rep 2
         %rep 3
             %if %%_label_id = 0
-            jmp %%skipCaseBg%+%%_label_id
+                jmp %%skipCaseBgBattle%+%%_label_id
             %elif %%_label_id = 3
-            jmp %%skipCaseBg%+%%_label_id
+                jmp %%skipCaseBgBattle%+%%_label_id
             %endif
             cmp byte [%5 + trainer.battle_tab], 0
-            jne %%skipCaseBg%+%%_label_id
+            jne %%skipCaseBgBattle%+%%_label_id
             pop bx
             push bx
             displayCaseBg %1, %2, %5
@@ -413,7 +435,18 @@
             push bx
             mov si, fontSlash
             displayItem %1+FONT_HEIGHT*3, %2+BATTLE_LITTLE_CASE_WIDTH/2-FONT_WIDTH+2, FONT_HEIGHT, FONT_WIDTH
-            %%skipCaseBg%+%%_label_id:
+            jmp %%skipCaseBgPoke%+%%_label_id
+
+            %%skipCaseBgBattle%+%%_label_id:
+            cmp byte [%5 + trainer.battle_tab], 1
+            jne %%skipCaseBgPoke%+%%_label_id
+            pop bx
+            push bx
+            displayCaseBg %1, %2, %5
+            pop bx
+            inc bx
+            push bx
+            %%skipCaseBgPoke%+%%_label_id:
             mov si, little_case
             displayItem %1, %2, BATTLE_LITTLE_CASE_HEIGHT, BATTLE_LITTLE_CASE_WIDTH
             %assign %%_label_id %%_label_id + 1
