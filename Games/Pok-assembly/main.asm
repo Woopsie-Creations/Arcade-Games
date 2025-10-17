@@ -14,10 +14,20 @@ section .text
     int 10h         ;--------------------------------
 
     call initViewport
-    initPokeAttacks first_onepokemonStruc, attack_tackle_template, attack_tailwhip_template, attack_bulletseed_template, attack_tackle_template
+    initPokeAttacks first_onepokemonStruc, attack_tackle_template, attack_sunnyday_template, attack_bulletseed_template, attack_sludgebomb_template
+    initPokeAttacks first_twopokemonStruc, attack_bulletseed_template, attack_sludgebomb_template, attack_tackle_template, attack_tailwhip_template
+    initPokeAttacks first_threepokemonStruc, attack_bulletseed_template, attack_sludgebomb_template, attack_tackle_template, attack_tailwhip_template
+    initPokeAttacks first_fourpokemonStruc, attack_bulletseed_template, attack_sludgebomb_template, attack_tackle_template, attack_tailwhip_template
+    initPokeAttacks first_fivepokemonStruc, attack_bulletseed_template, attack_sludgebomb_template, attack_tackle_template, attack_tailwhip_template
+    initPokeAttacks first_sixpokemonStruc, attack_bulletseed_template, attack_sludgebomb_template, attack_tackle_template, attack_tailwhip_template
     initPokes first_trainerStruc, first_onepokemonStruc, first_twopokemonStruc, first_threepokemonStruc, first_fourpokemonStruc, first_fivepokemonStruc, first_sixpokemonStruc
 
-    initPokeAttacks second_onepokemonStruc, attack_bulletseed_template, attack_bulletseed_template, attack_tackle_template, attack_tailwhip_template
+    initPokeAttacks second_onepokemonStruc, attack_bulletseed_template, attack_sludgebomb_template, attack_tackle_template, attack_tailwhip_template
+    initPokeAttacks second_twopokemonStruc, attack_tackle_template, attack_sunnyday_template, attack_bulletseed_template, attack_sludgebomb_template
+    initPokeAttacks second_threepokemonStruc, attack_tackle_template, attack_sunnyday_template, attack_bulletseed_template, attack_sludgebomb_template
+    initPokeAttacks second_fourpokemonStruc, attack_tackle_template, attack_sunnyday_template, attack_bulletseed_template, attack_sludgebomb_template
+    initPokeAttacks second_fivepokemonStruc, attack_tackle_template, attack_sunnyday_template, attack_bulletseed_template, attack_sludgebomb_template
+    initPokeAttacks second_sixpokemonStruc, attack_tackle_template, attack_sunnyday_template, attack_bulletseed_template, attack_sludgebomb_template
     initPokes second_trainerStruc, second_onepokemonStruc, second_twopokemonStruc, second_threepokemonStruc, second_fourpokemonStruc, second_fivepokemonStruc, second_sixpokemonStruc
     call displayFrame
 

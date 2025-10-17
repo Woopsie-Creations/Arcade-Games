@@ -21,17 +21,6 @@ section .data
         dw 40 ; damage
         db 0 ; effect
 
-    ; attack_tackle:
-    ;     istruc attack
-    ;         at attack.name, dw attackNameTackle
-    ;         at attack.type, db 0
-    ;         at attack.category, db 1
-    ;         at attack.pp, db 25
-    ;         at attack.max_pp, db 25
-    ;         at attack.damage, dw 40
-    ;         at attack.effect, db 0
-    ;     iend
-
     attack_tailwhip_template:
         dw attackNameTailWhip ; name
         db 0 ; type
@@ -41,33 +30,29 @@ section .data
         dw 0 ; damage
         db 1 ; effect
 
-    ; attack_tailwhip:
-    ;     istruc attack
-    ;         at attack.name, dw attackNameTailWhip
-    ;         at attack.type, db 0
-    ;         at attack.category, db 0
-    ;         at attack.pp, db 30
-    ;         at attack.max_pp, db 30
-    ;         at attack.damage, dw 0
-    ;         at attack.effect, db 1
-    ;     iend
-
     attack_bulletseed_template:
         dw attackNameBulletseed ; name
         db 4 ; type
         db 1 ; category
-        db 15 ; pp
-        db 15 ; max_pp
+        db 30 ; pp
+        db 30 ; max_pp
         dw 20 ; damage
         db 0 ; effect
-    
-    ; attack_bulletseed:
-    ;     istruc attack
-    ;         at attack.name, dw attackNameBulletseed
-    ;         at attack.type, db 4
-    ;         at attack.category, db 1
-    ;         at attack.pp, db 15
-    ;         at attack.max_pp, db 15
-    ;         at attack.damage, dw 20
-    ;         at attack.effect, db 0
-    ;     iend
+
+    attack_sludgebomb_template:
+        dw attackNameSludgeBomb ; name
+        db 7 ; type
+        db 2 ; category
+        db 10 ; pp
+        db 10 ; max_pp
+        dw 90 ; damage
+        db 0 ; effect
+
+    attack_sunnyday_template:
+        dw attackNameSunnyDay ; name
+        db 1 ; type
+        db 0 ; category
+        db 5 ; pp
+        db 5 ; max_pp
+        dw 0 ; damage
+        db 2 ; effect
