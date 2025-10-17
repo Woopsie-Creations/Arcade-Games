@@ -1,7 +1,28 @@
 %macro assignAttack 3
-    mov ax, %2
+section .data
+attack_%1_%3:
+    istruc attack
+        at attack.name,      dw 0
+        at attack.type,      db 0
+        at attack.category,  db 0
+        at attack.pp,        db 0
+        at attack.max_pp,    db 0
+        at attack.damage,    dw 0
+        at attack.effect,    db 0
+    iend
+
+section .text
+    lea si, [%2]
+    lea di, [attack_%1_%3]
+    mov cx, attack_size
+    push di
+    rep movsb
+    pop di
+
+    mov ax, di
     mov word [%1 + pokemon.attacks + %3], ax
 %endmacro
+
 
 %macro initPokeAttacks 5
     assignAttack %1, %2, 0

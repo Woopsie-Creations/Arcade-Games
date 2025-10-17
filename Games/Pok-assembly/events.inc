@@ -139,7 +139,7 @@
     %%executeHit:
     shl bx, 1
     push bx
-    mov si, first_trainerStruc
+    mov si, %1
     mov bl, [si + trainer.current_poke]
     xor bh, bh
     shl bx, 1
@@ -152,9 +152,9 @@
     mov word [current_attack_damage], ax
 
     %ifidni %1, first_trainerStruc
-    jmp hit_second
+        jmp hit_second
     %else
-    jmp hit_first
+        jmp hit_first
     %endif
 
     %%change:
