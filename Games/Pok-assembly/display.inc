@@ -367,12 +367,10 @@
     jmp %%display
 
     %%CaseBgBattle:
-        mov si, %3
-        mov bx, [si + trainer.pokemons]
         pop si
         push si
         shl si, 1
-        add bx, si
+        mov bx, [%3 + trainer.pokemons + si]
         ; add index of the poke depending on the case
         
         mov dl, 0x0F
@@ -420,13 +418,13 @@
     push bx
     %rep 2
         %rep 3
+            cmp byte [%5 + trainer.battle_tab], 1
+            je %%skipCaseBgBattle%+%%_label_id
             %if %%_label_id = 0
-                jmp %%skipCaseBgBattle%+%%_label_id
+                jmp %%skipCaseBgPoke%+%%_label_id
             %elif %%_label_id = 3
-                jmp %%skipCaseBgBattle%+%%_label_id
+                jmp %%skipCaseBgPoke%+%%_label_id
             %endif
-            cmp byte [%5 + trainer.battle_tab], 0
-            jne %%skipCaseBgBattle%+%%_label_id
             pop bx
             push bx
             displayCaseBg %1, %2, %5
@@ -438,12 +436,25 @@
             jmp %%skipCaseBgPoke%+%%_label_id
 
             %%skipCaseBgBattle%+%%_label_id:
-            cmp byte [%5 + trainer.battle_tab], 1
-            jne %%skipCaseBgPoke%+%%_label_id
             pop bx
+            add bx, [%5 + trainer.current_poke]
+            cmp bx, 6
+            jl %%skipDecBx%+%%_label_id
+            sub bx, 6
             push bx
             displayCaseBg %1, %2, %5
             pop bx
+            add bx, 6
+            sub bx, [%5 + trainer.current_poke]
+            inc bx
+            push bx
+            jmp %%skipCaseBgPoke%+%%_label_id
+
+            %%skipDecBx%+%%_label_id:
+            push bx
+            displayCaseBg %1, %2, %5
+            pop bx
+            sub bx, [%5 + trainer.current_poke]
             inc bx
             push bx
             %%skipCaseBgPoke%+%%_label_id:
@@ -456,7 +467,6 @@
         %assign %1 %1-BATTLE_LITTLE_CASE_HEIGHT-2
     %endrep
     pop bx
-
     %assign %2 %4
     %assign %1 %3
 %endmacro

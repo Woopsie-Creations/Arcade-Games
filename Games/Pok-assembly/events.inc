@@ -49,7 +49,8 @@
     wait 50000
 
     mov al, byte [%1 + trainer.current_poke]
-    inc al
+    inc al ; should be capped (not restricted to index 5 max)
+    ; should also check if the poke is already dead -> cannot switch to it
     changePoke %1, al
     %%end:
 %endmacro
