@@ -147,6 +147,7 @@
     add bx, trainer.pokemons
     mov bx, [si + bx]
     pop si
+    push si
     mov bx, [bx + pokemon.attacks + si]
     mov ax, [bx + attack.damage]
     dec byte [bx + attack.pp]
@@ -159,6 +160,7 @@
     %endif
 
     %%change:
+    displayCurrentAction %1, PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS-FONT_HEIGHT/2, PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS
     xor bx, bx
     mov bl, [%1 + trainer.current_poke]
     cmp ah, %2
@@ -209,12 +211,10 @@ section .text
         cmp byte [second_trainerStruc + trainer.battle_tab], 1
         je .second
         .first:
-        displayCurrentAction first_trainerStruc, PLAYER_ONE_HAS_CHOSEN_TEXT_Y_POS, PLAYER_ONE_HAS_CHOSEN_TEXT_X_POS
         events first_trainerStruc, I_KEY, J_KEY, K_KEY, N_KEY, M_KEY
         cmp byte [second_trainerStruc + trainer.has_chosen], FALSE
         je .end
         .second:
-        displayCurrentAction second_trainerStruc, PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS, PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS
         events second_trainerStruc, T_KEY, F_KEY, G_KEY, C_KEY, V_KEY
         cmp byte [first_trainerStruc + trainer.has_chosen], TRUE
         je .first
@@ -225,6 +225,7 @@ section .text
         ret
 
     hit_second:
+        displayCurrentAction first_trainerStruc, PLAYER_ONE_HAS_CHOSEN_TEXT_Y_POS-FONT_HEIGHT/2, PLAYER_ONE_HAS_CHOSEN_TEXT_X_POS
         cmp word [current_attack_damage], 0
         je .skip
         ; got index of attack previously in bx
@@ -238,6 +239,7 @@ section .text
         je executeEvents.second
         ret 
     hit_first:
+        displayCurrentAction second_trainerStruc, PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS-FONT_HEIGHT/2, PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS
         cmp word [current_attack_damage], 0
         je .skip
         ; got index of attack previously in bx

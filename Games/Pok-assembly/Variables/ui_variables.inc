@@ -61,8 +61,8 @@ section .data
 
     ACTION_TEXT dw space,U,S,E,S,space
     ACTION_TEXT_WIDTH equ 6
-    SWITCH_TEXT dw space,C,O,M,E,space,B,A,C,K
-    SWITCH_TEXT_WIDTH equ 10
+    SWITCH_TEXT dw fontComma,space,C,O,M,E,space,B,A,C,K
+    SWITCH_TEXT_WIDTH equ 11
 
     displayNumbersFont dw font0
                        dw font1

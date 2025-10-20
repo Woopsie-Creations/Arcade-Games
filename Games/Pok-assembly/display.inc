@@ -475,25 +475,35 @@
     mov byte [has_written_fancy_text], FALSE
     call displayFrame
 
-    mov si, %1
-    mov bl, [si + trainer.current_poke]
+    mov bl, [%1 + trainer.current_poke]
     xor bh, bh
     shl bx, 1
     add bx, trainer.pokemons
-    mov bx, [si + bx]
+    mov bx, [%1 + bx]
+    push bx
     
     mov ax, word [bx + pokemon.name]
     mov word [current_action_pokemon_name_text], ax
 
     textDisplay [current_action_pokemon_name_text], 10, %2, %3, FONT_HEIGHT, FONT_WIDTH, TRUE
-    mov ax, %2
     mov byte [has_written_fancy_text], FALSE
     cmp byte [%1 + trainer.battle_tab], 1
     je %%pokemon_tab
-    textDisplay ACTION_TEXT, ACTION_TEXT_WIDTH, ax, bx, FONT_HEIGHT, FONT_WIDTH, TRUE
-    je %%end
+        textDisplay ACTION_TEXT, ACTION_TEXT_WIDTH, %2, bx, FONT_HEIGHT, FONT_WIDTH, TRUE
+        pop bx
+        pop si
+        mov bx, [bx + pokemon.attacks + si] ; here we get the correct attack with si being the attack index previously pushed
+        ; display the attack name
+        mov ax, word [bx + attack.name]
+        mov word [current_action_pokemon_name_text], ax
+        mov byte [has_written_fancy_text], FALSE
+        textDisplay [current_action_pokemon_name_text], 6, %2+FONT_HEIGHT+4, %3+(10*FONT_WIDTH+ACTION_TEXT_WIDTH*FONT_WIDTH)/2, FONT_HEIGHT, FONT_WIDTH, TRUE
+        jmp %%end
+
     %%pokemon_tab:
-    textDisplay SWITCH_TEXT, SWITCH_TEXT_WIDTH, ax, bx, FONT_HEIGHT, FONT_WIDTH, TRUE
+    pop dx
+    ; we need to pop hihi
+    textDisplay SWITCH_TEXT, SWITCH_TEXT_WIDTH, %2, bx, FONT_HEIGHT, FONT_WIDTH, TRUE
     %%end:
     %rep 15
         mov dx, 50000
