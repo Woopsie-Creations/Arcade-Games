@@ -1,6 +1,8 @@
 section .data
+    reset_game_file dw '', 0
     sf_game_file dw 'Games/Street-Fighssembly/Bin/SF.com', 0
     ps_game_file dw 'Games/Pac-ssembly/Bin/PS.com', 0
+    reset_game_file_actual_len db 1
     ps_game_file_actual_len db 28
     sf_game_file_actual_len db 35
     
@@ -17,6 +19,14 @@ section .bss
     file_handle dw ?
 
 section .text
+    reset_file:
+        mov si, reset_game_file
+        mov [program_to_execute], si
+        mov al, [reset_game_file_actual_len]
+        mov byte [program_to_execute_len], al
+        call writeOntoFile
+        ret
+
     change_current_game:
         mov ax, [current_game]
         mov bx, ps_game
@@ -46,6 +56,10 @@ section .text
         jmp execute_game
 
     execute_game:
+        call writeOntoFile
+        jmp exit_launcher
+
+    writeOntoFile:
         ; Recreate file
         mov ah, 3ch
         mov cx, 0
@@ -65,11 +79,4 @@ section .text
         mov bx, [file_handle]
         mov ah, 3Eh
         int 21h
-
-        jmp exitProgram
-
-    ; -----------------------------------------------
-    exitProgram:
-        mov ah, 4Ch
-        xor al, al
-        int 21h
+        ret

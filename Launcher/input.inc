@@ -17,6 +17,9 @@ section .text:
         ; which key is pressed
         mov ah, 00h
         int 16h
+
+        cmp ah, ESC_KEY
+        je exit_launcher
         
         cmp ah, LEFT_ARROW
         je change_current_game
@@ -24,6 +27,7 @@ section .text:
         je change_current_game
         cmp ah, ENTER_KEY
         je choose_current_game
+
         jmp checkForKeyPress
 
 %include "gameSetup.inc"
