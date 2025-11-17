@@ -1,0 +1,114 @@
+section .data
+    BATTLE_CASE_WIDTH equ 157
+    BATTLE_CASE_HEIGHT equ 72
+    FIRST_BATTLE_CASE_X_POS equ 2
+    FIRST_BATTLE_CASE_Y_POS equ FIRST_PLAYER_POKE_Y_POS + BACK_SPRITE_HEIGHT + 3
+    SECOND_BATTLE_CASE_X_POS equ FIRST_BATTLE_CASE_X_POS + BATTLE_CASE_WIDTH + 2
+    SECOND_BATTLE_CASE_Y_POS equ FIRST_BATTLE_CASE_Y_POS
+
+    FIRST_POKE_NAME_X_POS equ SECOND_BATTLE_CASE_X_POS + BATTLE_CASE_WIDTH / 2
+    FIRST_POKE_NAME_Y_POS equ 93
+    SECOND_POKE_NAME_X_POS equ 5
+    SECOND_POKE_NAME_Y_POS equ 2
+
+    HP_BAR_HEIGHT equ 6
+    HP_BAR_WIDTH equ 68
+    FIRST_PLAYER_HP_BAR_X_POS equ FIRST_POKE_NAME_X_POS
+    FIRST_PLAYER_HP_BAR_Y_POS equ FIRST_POKE_NAME_Y_POS + FONT_HEIGHT + 2
+    SECOND_PLAYER_HP_BAR_X_POS equ SECOND_POKE_NAME_X_POS + 8
+    SECOND_PLAYER_HP_BAR_Y_POS equ SECOND_POKE_NAME_Y_POS + 8
+
+    HP_ARROW_HEIGHT equ 23
+    HP_ARROW_WIDTH equ 80
+    FIRST_PLAYER_HP_ARROW_X_POS equ FIRST_POKE_NAME_X_POS - 4
+    FIRST_PLAYER_HP_ARROW_Y_POS equ 100
+    SECOND_PLAYER_HP_ARROW_X_POS equ SECOND_POKE_NAME_X_POS
+    SECOND_PLAYER_HP_ARROW_Y_POS equ SECOND_POKE_NAME_Y_POS + 8
+
+    FIRST_BATTLE_CASE_TEXT_X_POS equ FIRST_BATTLE_CASE_X_POS+(BATTLE_CASE_WIDTH/2)-FONT_WIDTH*4
+    FIRST_BATTLE_CASE_TEXT_Y_POS equ FIRST_BATTLE_CASE_Y_POS+FONT_HEIGHT+2
+    SECOND_BATTLE_CASE_TEXT_X_POS equ SECOND_BATTLE_CASE_X_POS+(BATTLE_CASE_WIDTH/2)-FONT_WIDTH*4
+    SECOND_BATTLE_CASE_TEXT_Y_POS equ SECOND_BATTLE_CASE_Y_POS+FONT_HEIGHT+2
+
+    BATTLE_CASE_ARROW_HEIGHT equ 5
+    BATTLE_CASE_ARROW_WIDTH equ 3
+    BATTLE_CASE_ARROW_Y_POS equ FIRST_BATTLE_CASE_Y_POS+(BATTLE_CASE_HEIGHT/2)-(BATTLE_CASE_ARROW_HEIGHT/2)
+    FIRST_BATTLE_CASE_ARROW_LEFT_X_POS equ FIRST_BATTLE_CASE_X_POS+4
+    FIRST_BATTLE_CASE_ARROW_RIGHT_X_POS equ FIRST_BATTLE_CASE_X_POS+BATTLE_CASE_WIDTH-BATTLE_CASE_ARROW_WIDTH-4
+    SECOND_BATTLE_CASE_ARROW_LEFT_X_POS equ SECOND_BATTLE_CASE_X_POS+4
+    SECOND_BATTLE_CASE_ARROW_RIGHT_X_POS equ SECOND_BATTLE_CASE_X_POS+BATTLE_CASE_WIDTH-BATTLE_CASE_ARROW_WIDTH-4
+
+    BATTLE_LITTLE_CASE_HEIGHT equ BATTLE_CASE_HEIGHT/2-FONT_HEIGHT-6 ; 25
+    BATTLE_LITTLE_CASE_WIDTH equ BATTLE_CASE_WIDTH/3-8 ; 44
+
+    FIRST_TEAM_POKE_NAME_X_POS equ FIRST_BATTLE_CASE_X_POS+14
+    FIRST_TEAM_POKE_NAME_Y_POS equ FIRST_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20
+    SECOND_TEAM_POKE_NAME_X_POS equ SECOND_BATTLE_CASE_X_POS+14
+    SECOND_TEAM_POKE_NAME_Y_POS equ SECOND_BATTLE_CASE_Y_POS+BATTLE_LITTLE_CASE_HEIGHT+2+20
+
+    POKEMON_TEXT dw P,O,K,E,M,O,N
+    POKEMON_TEXT_WIDTH equ 7
+    ATTACKS_TEXT dw A,T,T,A,C,K,S
+    ATTACKS_TEXT_WIDTH equ 7
+
+    PLAYER_HAS_CHOSEN_TEXT_WIDTH equ 20
+    PLAYER_ONE_HAS_CHOSEN_TEXT dw W,A,I,T,I,N,G,space,F,O,R,space,P,L,A,Y,E,R,space,font2
+    PLAYER_ONE_HAS_CHOSEN_TEXT_X_POS equ FIRST_BATTLE_CASE_X_POS+(BATTLE_CASE_WIDTH/2)-(PLAYER_HAS_CHOSEN_TEXT_WIDTH*(FONT_WIDTH+1)/2)
+    PLAYER_ONE_HAS_CHOSEN_TEXT_Y_POS equ FIRST_BATTLE_CASE_Y_POS+(BATTLE_CASE_HEIGHT/2)-1
+    PLAYER_TWO_HAS_CHOSEN_TEXT dw W,A,I,T,I,N,G,space,F,O,R,space,P,L,A,Y,E,R,space,font1
+    PLAYER_TWO_HAS_CHOSEN_TEXT_X_POS equ SECOND_BATTLE_CASE_X_POS+(BATTLE_CASE_WIDTH/2)-(PLAYER_HAS_CHOSEN_TEXT_WIDTH*(FONT_WIDTH+1)/2)
+    PLAYER_TWO_HAS_CHOSEN_TEXT_Y_POS equ SECOND_BATTLE_CASE_Y_POS+(BATTLE_CASE_HEIGHT/2)-1
+
+    ACTION_TEXT dw space,U,S,E,S,space
+    ACTION_TEXT_WIDTH equ 6
+    SWITCH_TEXT dw fontComma,space,C,O,M,E,space,B,A,C,K
+    SWITCH_TEXT_WIDTH equ 11
+
+    displayNumbersFont dw font0
+                       dw font1
+                       dw font2
+                       dw font3
+                       dw font4
+                       dw font5
+                       dw font6
+                       dw font7
+                       dw font8
+                       dw font9
+
+    hp_color_table:
+        db 0x2F
+        db 0x2B
+        db 0x28
+
+    type_color_table:
+        db 0x0F ; normal
+        db 0x28 ; fire
+        db 0x35 ; water
+        db 0x2C ; electrik
+        db 0x2F ; grass
+        db 0x0B ; ice
+        db 0x29 ; fighting
+        db 0x23 ; poison
+        db 0x2B ; ground
+        db 0x66 ; flying
+        db 0x0D ; psychic
+        db 0x2D ; bug
+        db 0x06 ; rock
+        db 0x22 ; ghost
+        db 0x37 ; dragon
+        db 0x15 ; dark
+        db 0x07 ; steel
+
+section .bss
+    player_one_has_chosen resb 1
+    player_two_has_chosen resb 1
+    letter_x_pos resw 1
+    letter_y_pos resw 1
+    current_hp_width resb 1
+    current_hp_color resb 1
+    current_case_color resb 1
+    current_action_pokemon_name_text resw 10
+    concatenatedNumbers resb 2
+    displayedNumbers resw 2
+    has_written_fancy_text resb 1
+    in_execution resb 1
