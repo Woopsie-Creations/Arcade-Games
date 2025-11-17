@@ -18,6 +18,9 @@ clear
 # Read the file
 if [ -f "$FILE_PATH" ]; then
     GAME_PATH=$(head -n 1 "$FILE_PATH" | sed 's/[[:space:]]*$//')
+    if [ -z "$GAME_PATH" ]; then
+        exit 1
+    fi
 else
     echo "Error: File not found: $FILE_PATH"
     exit 1
