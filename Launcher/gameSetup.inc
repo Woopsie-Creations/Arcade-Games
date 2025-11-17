@@ -16,7 +16,7 @@ section .data
     file_name db 'file.txt', 0
 
 section .bss
-    file_handle dw ?
+    file_handle dw ""
 
 section .text
     reset_file:
