@@ -67,7 +67,7 @@ sudo apt install dosbox nasm -y
 Navigate to the repository folder:
 
 ```bash
-cd assembly-games
+cd Arcade-Games
 ```
 
 ---
