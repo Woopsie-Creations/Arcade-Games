@@ -2,7 +2,7 @@
 
 The project is dedicated to recreating a combat-based game from Pokemon games, written in x86 16-bit Assembly, developed using NASM and executed with DOSBox. Players can build their own team and battle against each other.
 
-<!-- title img -->
+<img width="500" src="https://github.com/user-attachments/assets/2892db98-6aca-4eef-9447-169bd7a1f6d6" />
 
 ## 🏮 Introduction
 
@@ -21,7 +21,7 @@ To create or edit games, you'll need the prerequisites above and:
 
 ## Gameplay
 
-<!-- game img -->
+<img width="500" src="https://github.com/user-attachments/assets/2892db98-6aca-4eef-9447-169bd7a1f6d6" />
 
 The gameplay is quite **similar to the original Pokemon games**. You can navigate through the menus, by **using 2 directions** (_left_ and _right_), and confirm your choices by clicking the _Confirm_ button.
 
@@ -33,13 +33,13 @@ The gameplay is quite **similar to the original Pokemon games**. You can navigat
 
 ### Attacks
 
-<!-- attack img -->
+<img width="500" src="https://github.com/user-attachments/assets/1423131c-f7c4-4b51-b732-3d2d9bb3932c" />
 
 Each Pokemon has **4 attacks assigned** to it. Each of them has a dedicated type, damage and so on.<br>
 The more you use an attack, the more its _PPs_ are going to decrease.
 
 ### Team
 
-<!-- team img -->
+<img width="500" src="https://github.com/user-attachments/assets/82ee3165-567c-4439-a298-bfad89b65f00" />
 
 In combat, you can see your **Pokemon team**, **switch Pokemon** and see which ones already fainted.
