@@ -10,14 +10,8 @@
     mov ax, [bx + pokemon.hp]
     ; ax contains the enemy pokemon hp
 
-    cmp word [current_attack_damage], ax
-    jge %%setToZero
-
     sub word ax, [current_attack_damage]
     jmp %%progressively
-
-    %%setToZero:
-    mov word ax, 0
 
     %%progressively:
     ; serves as animation
